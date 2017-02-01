@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  root "schools#index"
+
   get "/index" => "schools#index"
   get "/information" => "schools#information"
 
