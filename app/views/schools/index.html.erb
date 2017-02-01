@@ -1,0 +1,5 @@
+<h1>Dental Schools</h1>
+
+<% @schools.each do |school| %>
+  <p><%= link_to( school.university , {:action => 'information', :id => school.id} ) %></p>
+<% end %>
