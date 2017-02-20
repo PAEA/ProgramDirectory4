@@ -1,0 +1,2 @@
+class MainHeader < ApplicationRecord
+end

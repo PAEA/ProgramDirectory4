@@ -1,0 +1,2 @@
+class SubHeader < ApplicationRecord
+end
