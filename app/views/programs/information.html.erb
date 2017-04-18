@@ -1,0 +1,54 @@
+<div id="<%= @program.id %>" style="width: 80%; margin: 0 auto;">
+  <div style="background-color: grey; color: white; margin-top: 2em;">
+  <h2><strong><%= @program.program %><strong></h2>
+  </div>
+
+  <% this_section = "" %>
+  <% @fields_to_display.each do |f| %>
+    <% if ( this_section != f.section_name ) %>
+      <h2><%= f.section_name %></h2>
+      <% this_section = f.section_name %>
+    <% end %>
+    <% if ( f.content_type == 'field' ) %>
+      <p><%= f.display_name %> <i><%= f.field_value %></i></p>
+    <% elsif ( f.content_type == 'table' ) %>
+      <p><%= f.display_name %></p>
+
+      <!-- Display table -->
+      <% @data_table_configs.each do |data_table_config| %>
+        <% if ( data_table_config.table_name_id == f.id ) %>
+          <table style="border: 1px solid grey;">
+          <% for y in 1..data_table_config.rows %>
+            <tr>
+              <!-- Left-aligned text for categories -->
+              <td style="border: 1px solid grey; text-align: left;">
+                <%= @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s %>
+              </td>
+
+              <!-- Everything else center-aligned -->
+              <% x = 2
+                 while (x <= data_table_config.columns)
+                   if ( y == 1 )
+                     colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
+                     length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
+                     @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
+                   else
+                     colspan = 1
+                   end %>
+                <td style="border: 1px solid grey; text-align: center;" colspan="<%= colspan %>">
+                  <%= @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s %>
+                  <% x += colspan.to_i %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+          </table>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+</div>
+
+<!-- Back to index.html -->
+<p><%= link_to( 'Back to schools list' , {:action => 'index'} ) %></p>

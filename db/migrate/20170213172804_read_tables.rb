@@ -1,11 +1,30 @@
 require "csv"
 
 class ReadTables < ActiveRecord::Migration[5.0]
+
   def change
+
+    # Table's metadata parameters in CSVs
+    section_parameter = 'section'
+    order_parameter = 'order'
+    table_name_parameter = 'table_name'
+    display_table_name_parameter = 'display_table_name'
+    table_content_parameter = 'content'
 
     # Creates Table Names table in the database
     create_table :table_names do |t|
       t.string :table_name
+      t.string :display_table_name
+
+      t.timestamps
+    end
+
+    # Creates Sections table in the database
+    create_table :display_sections do |t|
+      t.string :section_name
+      t.integer :section_order
+      t.string :section_to_link
+      t.string :section_type
 
       t.timestamps
     end
@@ -37,6 +56,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
     # Creates Programs table in the database
     create_table :programs do |t|
       t.string :program
+      t.string :program_string
 
       t.timestamps
     end
@@ -79,27 +99,64 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
       array_from_csv = CSV.read( csvfile ).reject { |row| row.all?(&:nil?) }
 
-      # Get table Title and remove it from the array
-      # Title must be in the first row of the CSV file
-      # and remove all non-ASCII characters from title
-      title = array_from_csv[0][0].to_s.strip.gsub(/\r/,"").gsub(/\n/,"").gsub!(/\P{ASCII}/, '')
-      current_table = TableName.create(
-        table_name: title
-      )
-      puts "--> Table title: " + title
-      array_from_csv.delete_at(0)
-
       # Get how many rows and columns for this table
       rows = array_from_csv.size - 1
       columns = array_from_csv[0].size
 
+      # Get first cell in the CSV array_from_csv
+      # The 'content' value marks the end for the metadata rows and the
+      # beginning for the table data starting on next row
+      metadata_line = 0
+      current_metadata = array_from_csv[metadata_line][0].to_s.strip.gsub(/\r/,"").gsub(/\n/,"").gsub!(/\P{ASCII}/, '')
+      current_metadata_value = array_from_csv[metadata_line][1].to_s.strip
+
+      while ( current_metadata != table_content_parameter && metadata_line <= rows ) do
+
+        if ( current_metadata == section_parameter )
+          table_section = current_metadata_value
+        elsif ( current_metadata == order_parameter )
+          table_order = current_metadata_value
+        elsif ( current_metadata == table_name_parameter )
+          table_name = current_metadata_value
+        elsif ( current_metadata == display_table_name_parameter )
+          display_table_name = current_metadata_value
+        end
+
+        metadata_line += 1
+        current_metadata = array_from_csv[metadata_line][0].to_s.strip.gsub(/\r/,"").gsub(/\n/,"")
+        current_metadata_value = array_from_csv[metadata_line][1].to_s.strip
+
+      end
+      table_start_line = metadata_line + 1
+
+      current_table = TableName.create(
+        table_name: table_name,
+        display_table_name: display_table_name
+      )
+
+      if ( !display_table_name.blank? )
+        puts "--> Table title: " + display_table_name + "(" + table_name + ")"
+      else
+        puts "--> Table title: (no title) (" + table_name + ")"
+      end
+
+      current_display_section = DisplaySection.create(
+        section_name: table_section,
+        section_order: table_order,
+        section_to_link: table_name,
+        section_type: 'table'
+      )
+
       display_rows = rows + 1 # Starting from 1 (instead of 0)
       display_columns = columns - 1 # Removing program's column
 
-      # Get row number for cell 'Dental School'
-      dental_school_row = 0
-      while ( array_from_csv[ dental_school_row ][0] != "Dental School" ) do
+      # Get row number for cell 'Dental School' starting from the next line after 'content'
+      # in the CSV file
+      @table_header_rows = 1
+      dental_school_row = metadata_line + 1
+      while ( array_from_csv[ dental_school_row ][0].to_s.strip != "Dental School" ) do
         dental_school_row += 1
+        @table_header_rows += 1
       end
 
       # Check how many rows with data
@@ -125,28 +182,28 @@ class ReadTables < ActiveRecord::Migration[5.0]
       for x in 1..columns
 
         # Find each header in the column within headers array
-        header = main_headers.find_index( array_from_csv[0][x] )
+        header = main_headers.find_index( array_from_csv[table_start_line][x] )
 
-        if ( header.nil? && !array_from_csv[0][x].nil? )
-          main_headers << array_from_csv[0][x]
-          array_from_csv[0][x] = main_headers.size
+        if ( header.nil? && !array_from_csv[table_start_line][x].nil? )
+          main_headers << array_from_csv[table_start_line][x]
+          array_from_csv[table_start_line][x] = main_headers.size
         else
           # Add 1 since array index starts with 0
           if ( !header.nil? )
-            array_from_csv[0][x] = header + 1
+            array_from_csv[table_start_line][x] = header + 1
           end
         end
 
-        if ( dental_school_row  > 0 )
-          header = sub_headers.find_index( array_from_csv[1][x] )
+        if ( dental_school_row  > table_start_line )
+          header = sub_headers.find_index( array_from_csv[dental_school_row][x] )
 
-          if ( header.nil? && !array_from_csv[1][x].nil? )
-            sub_headers << array_from_csv[1][x]
-            array_from_csv[1][x] = sub_headers.size
+          if ( header.nil? && !array_from_csv[dental_school_row][x].nil? )
+            sub_headers << array_from_csv[dental_school_row][x]
+            array_from_csv[dental_school_row][x] = sub_headers.size
           else
             # Add 1 since array index starts with 0
             if ( !header.nil? )
-              array_from_csv[1][x] = header + 1
+              array_from_csv[dental_school_row][x] = header + 1
             end
           end
         end
@@ -159,13 +216,25 @@ class ReadTables < ActiveRecord::Migration[5.0]
       # substitute the category text and program text with its array id
       for y in data_start_row..rows
 
+        # Filter out all characters except letters from the program name.
+        # This is done to avoid small differences in the program names
+        # caused by a comma, a dash or any other special character
+        program_string = array_from_csv[y][0].gsub(/[^a-zA-Z]/, "").downcase
+
         # Find row program within programs array
-        program = programs.find_index( array_from_csv[y][0] )
+        program = programs.find_index( program_string )
 
         # Adds new program to programs array if it doesn't exist
-        if ( program.nil? && !array_from_csv[y][0].nil? )
-          programs << array_from_csv[y][0]
+        if ( program.nil? && !program_string.nil? )
+
+          new_program = Program.create(
+            program: array_from_csv[y][0],
+            program_string: program_string
+          )
+
+          programs << program_string
           array_from_csv[y][0] = programs.size
+
         else
           if ( !program.nil? )
             # Add 1 since array index starts with 0
@@ -179,35 +248,32 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
       # Prepare normalized data table
       rows_counter = 0
-      current_program_id = 0
-      row_per_program_counter = data_start_row + 1
+      current_program_id = array_from_csv[ data_start_row ][ 0 ]
+      row_per_program_counter = 0
+
+      # Read how many rows of data for the first program in the CSV file
+      # The rest of the programs will have the same amount of rows
       for y in data_start_row..rows
+        if ( current_program_id == array_from_csv[ y ][ 0 ] )
+          row_per_program_counter += 1
+          current_program_id = array_from_csv[ y ][ 0 ]
+        end
+      end
 
-        # Since all programs are included in the same CSV file per table type,
-        # it needs to reset the table row counter per program so it is easier
-        # to display each table for each program
-        if ( current_program_id != array_from_csv[ y ][ 0 ] || y == rows)
-
-          if ( y == rows ) # last row of the CSV table listing all programs
-            row_per_program_counter += 1 # to include header
-          end
+      current_program_id = 0
+      matrix_row = @table_header_rows + 1
+      for y in data_start_row..rows
+        if ( current_program_id != array_from_csv[ y ][ 0 ] )
+          current_program_id = array_from_csv[ y ][ 0 ]
 
           # Adds table configuration to the DB table Data Tables Config
-          if ( row_per_program_counter > data_start_row + 1 )
-            new_table = DataTableConfig.create(
-              program_id: current_program_id,
-              table_name_id: current_table.id,
-              rows: row_per_program_counter,
-              columns: display_columns
-            )
-
-            current_table_config_id = new_table.id + 1
-          end
-
-          row_per_program_counter = data_start_row + 1
-          current_program_id = array_from_csv[ y ][ 0 ]
-        else
-          row_per_program_counter += 1
+          new_table = DataTableConfig.create(
+            program_id: current_program_id,
+            table_name_id: current_table.id,
+            rows: row_per_program_counter + @table_header_rows,
+            columns: display_columns
+          )
+          current_table_config_id = new_table.id
         end
 
         # Store each category for each table for each program
@@ -220,11 +286,13 @@ class ReadTables < ActiveRecord::Migration[5.0]
         end
 
         for x in 2..columns
-          if ( !array_from_csv[ 0 ][ x ].nil? && !array_from_csv[ y ][ 1 ].nil? && !array_from_csv[ y ][ x ].nil? )
+          if ( !array_from_csv[ y ][ x ].nil? )
 
             # Adds headers
-            for header_row in 0..dental_school_row
-              final_table[ rows_counter ][ header_row ] = array_from_csv[ header_row ][ x ]
+            column_counter = 0
+            for header_row in table_start_line..dental_school_row
+              final_table[ rows_counter ][ column_counter ] = array_from_csv[ header_row ][ x ]
+              column_counter += 1
             end
 
             # Adds category
@@ -235,12 +303,17 @@ class ReadTables < ActiveRecord::Migration[5.0]
             final_table[ rows_counter ][ 5 ] = array_from_csv[ y ][ 0 ]
             # Adds row and column position for the cell value
             # (this will get handy for rebuilding and displaying the table)
-            final_table[ rows_counter ][ 6 ] = row_per_program_counter # row
+            final_table[ rows_counter ][ 6 ] = matrix_row # row
             final_table[ rows_counter ][ 7 ] = x # column
             final_table[ rows_counter ][ 8 ] = current_table_config_id
 
             rows_counter += 1
           end
+        end
+        matrix_row += 1
+
+        if ( matrix_row > row_per_program_counter + @table_header_rows )
+          matrix_row = @table_header_rows + 1
         end
 
       end
@@ -253,7 +326,9 @@ class ReadTables < ActiveRecord::Migration[5.0]
       #    "%2i [ %s ]" % [i+1, ia.map{|e| "%#{cs}s" % e}.join(" | ") ] }
       #  puts report.join("\n")
       #end
-      #print_2d_array(final_table)
+      #if ( table_order == "75" )
+      #  print_2d_array(final_table)
+      #end
 
       # Stores main_headers array in the DB table Main Headers
       main_headers.each do |head|
@@ -274,7 +349,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
       # Stores final_table bidimensional array in the DB table DataTables
       final_table.each do |row|
 
-        # Check that the cell's row and column values are not NULL
+        # Check that the cell's row (row[6]) and column (row[7]) values are not NULL
         # so there are no blank records in the DB table
         if ( !row[6].nil? && !row[7].nil? )
           new_row = DataTable.create(
@@ -294,11 +369,11 @@ class ReadTables < ActiveRecord::Migration[5.0]
     end # Dir.glob
 
     # Stores programs array in the DB table Programs
-    programs.each do |prog|
-      new_program = Program.create(
-        program: prog
-      )
-    end
+    #programs.each do |prog|
+    #  new_program = Program.create(
+    #    program: prog
+    #  )
+    #end
 
   end
 

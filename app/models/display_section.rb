@@ -1,0 +1,2 @@
+class DisplaySection < ApplicationRecord
+end

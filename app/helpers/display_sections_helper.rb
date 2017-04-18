@@ -1,0 +1,2 @@
+module DisplaySectionsHelper
+end

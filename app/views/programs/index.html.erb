@@ -1,0 +1,5 @@
+<h1>Dental Schools</h1>
+
+<% @programs.each do |p| %>
+  <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
+<% end %>

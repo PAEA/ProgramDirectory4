@@ -1,0 +1,2 @@
+class FieldsString < ApplicationRecord
+end

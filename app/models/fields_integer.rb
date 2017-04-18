@@ -1,0 +1,2 @@
+class FieldsInteger < ApplicationRecord
+end

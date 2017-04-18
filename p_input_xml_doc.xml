@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<authentication-request>
+ <integratorUsername>paea</integratorUsername><!--  REQUIRED if bypassing IP whitelisting, provided by ACGI -->
+ <integratorPassword>Authnt1c8n</integratorPassword><!--  REQUIRED if bypassing IP whitelisting, provided by ACGI -->
+ <cust-id></cust-id>
+ <last-nm></last-nm>
+ <alias></alias>
+ <username></username>
+ <password></password>
+ <session-id></session-id>
+</authentication-request>

@@ -10,7 +10,7 @@ class SchoolsController < ApplicationController
     @id = @id_temp.to_i - 1
 
     # Get all of the table configurations (title, number of rows and columns)
-    @data_table_configs = DataTableConfig.where( :program_id => @id )
+    @data_table_configs = DataTableConfig.where( program_id: @id )
 
     # Get how many table configurations
     table_types_amount = @data_table_configs.count
@@ -105,13 +105,14 @@ class SchoolsController < ApplicationController
           @table[ 1 ][ this_column_header ] = header.header.to_s
         end
         this_column_header += column_increment
+
       end
 
       # Get table name
       table_title = TableName.find( table_configuration.table_name_id )
 
       @table_types[ table_configuration.table_name_id ] = @table
-      @table_names[ table_configuration.table_name_id ] = table_title.table_name
+      @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
     end
 
   end

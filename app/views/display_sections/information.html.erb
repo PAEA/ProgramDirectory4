@@ -1,0 +1,12 @@
+<!--
+<% this_section = "" %>
+<% @sections.each do |s| %>
+  <% if ( this_section != s.section_name ) %>
+    <h2><%= s.section_name %></h2>
+    <h3><%= s.section_to_link %></h3>
+    <% this_section = s.section_name %>
+  <% else %>
+    <h3><%= s.section_to_link %></h3>
+  <% end %>
+<% end %>
+-->

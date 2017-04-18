@@ -1,0 +1,2 @@
+class FieldsDecimal < ApplicationRecord
+end
