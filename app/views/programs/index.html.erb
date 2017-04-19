@@ -1,5 +1,8 @@
-<h1>Dental Schools</h1>
+<div class="container" style="max-width: 90vw;">
 
-<% @programs.each do |p| %>
-  <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
-<% end %>
+  <h1>Dental Schools</h1>
+
+  <% @programs.each do |p| %>
+    <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
+  <% end %>
+</div>

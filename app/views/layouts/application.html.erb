@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Pd4</title>
+    <title>Dental Schools Directory</title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
@@ -9,6 +9,33 @@
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="navbar navbar-inverse bg-primary">
+      <div class="container">
+        <div class="navbar-header">
+          <h1>Dental Schools Directory</h1>
+        </div>
+        <div id="navbar">
+          <!-- <ul class="nav navbar-nav">
+            <li><%= link_to 'Home', root_path %></li>
+          </ul> -->
+          <div class="nav navbar-nav pull-right">
+            <% if current_user %>
+              <p><%= current_user.login %></p>
+              <button class="btn btn-warning"><%= link_to 'Sign Out', sign_out_path, method: :delete %></button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <% flash.each do |key, value| %>
+        <div class="alert alert-<%= key %>">
+          <%= value %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </div>
   </body>
 </html>
