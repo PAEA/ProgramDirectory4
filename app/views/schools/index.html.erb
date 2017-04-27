@@ -1,4 +1,4 @@
-<h1>Dental Schools</h1>
+<h1><%= pluralize(@schools.size, 'Dental School') %></h1>
 
 <% @schools.each do |school| %>
   <p><%= link_to( school.university , {:action => 'information', :id => school.id} ) %></p>
