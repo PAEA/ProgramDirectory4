@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   root "user_sessions#new"
 
   get "/index" => "programs#index"
-  get "/information" => "programs#information"
+  get "/information/:id" => "programs#information"
+  post "/search" => "programs#search"
 
   resources :users, only: [:new, :create]
   resources :user_sessions, only: [:create, :destroy]

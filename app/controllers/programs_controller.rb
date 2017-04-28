@@ -1,7 +1,30 @@
 class ProgramsController < ApplicationController
 
   def index
+
+    @filter_1_field = FieldName.find_by_field_name('type_of_institution')
+    $filter_1_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_1_field.id )
     @programs = Program.all
+
+  end
+
+  def search
+
+    @values_to_search = Array.new
+    params.each do |p|
+      if ( params[p] == "1" )
+        @values_to_search << p
+      end
+    end
+
+    if ( !@values_to_search.empty? )
+      get_programs = FieldsString.select(:program_id).where("field_value IN (?)", @values_to_search)
+    elsif
+      get_programs = FieldsString.select(:program_id)
+    end
+
+    @programs = Program.where("id IN (?)", get_programs)
+
   end
 
   def information
@@ -9,6 +32,7 @@ class ProgramsController < ApplicationController
     @id = params[:id]
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
+
     @fields_to_display = FieldName.find_by_sql("
     SELECT *
       FROM

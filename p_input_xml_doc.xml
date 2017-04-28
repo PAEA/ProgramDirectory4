@@ -5,7 +5,7 @@
  <cust-id></cust-id>
  <last-nm></last-nm>
  <alias></alias>
- <username></username>
- <password></password>
+ <username>og_online_test01</username>
+ <password>test</password>
  <session-id></session-id>
 </authentication-request>

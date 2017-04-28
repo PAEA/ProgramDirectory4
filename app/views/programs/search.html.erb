@@ -1,14 +1,12 @@
 <div class="container" style="max-width: 90vw;">
 
-  <h1><%= pluralize(@programs.size, 'Dental School') %></h1>
-
   <%= form_tag('/search') do %>
     <div style="margin-bottom: 2em;">
       <p>Type of institution:</p>
       <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
         <% $filter_1_values.each do |item| %>
           <li>
-            <%= check_box_tag item.field_value %>
+            <%= check_box_tag(item.field_value) %>
             <%= item.field_value %>
           </li>
         <% end %>
@@ -16,6 +14,14 @@
       <%= submit_tag("Filter", class: 'btn btn-primary btn-lg') %>
     </div>
   <% end %>
+
+  <% if ( !@values_to_search.empty? ) %>
+    <h4>Filtered by</h4>
+    <p>Type of institution: <%= @values_to_search.join(', ') %></p>
+    <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
+  <% end %>
+  
+  <h1>Search result: <%= pluralize(@programs.size, 'Dental School') %></h1>
 
   <% @programs.each do |p| %>
     <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
