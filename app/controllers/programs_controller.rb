@@ -4,26 +4,84 @@ class ProgramsController < ApplicationController
 
     @filter_1_field = FieldName.find_by_field_name('type_of_institution')
     $filter_1_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_1_field.id )
+
+    $filter_2_values = DataTable.find_by_sql("
+      SELECT distinct categories.category as field_value
+        FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
+        WHERE table_names.table_name = 'residency_requirements'
+          AND data_table_configs.table_name_id = table_names.id
+          AND categories.data_table_config_id = data_table_configs.id
+          AND data_tables.category_id = categories.id
+          AND data_tables.header_id = main_headers.id
+          AND main_headers.table_name_id = table_names.id
+          AND data_table_configs.id = data_tables.data_table_config_id
+          AND data_tables.program_id = programs.id order by program")
     @programs = Program.all
 
   end
 
   def search
 
-    @values_to_search = Array.new
+    @values_to_search_1 = Array.new
+    @values_to_search_2 = Array.new
     params.each do |p|
       if ( params[p] == "1" )
-        @values_to_search << p
+        @values_to_search_1 << p
+      elsif ( params[p] == "2" )
+        @values_to_search_2 << p
       end
     end
 
-    if ( !@values_to_search.empty? )
-      get_programs = FieldsString.select(:program_id).where("field_value IN (?)", @values_to_search)
-    elsif
-      get_programs = FieldsString.select(:program_id)
+    get_programs = [1,2,3,4,5,6]
+
+    puts get_programs
+
+    if ( !@values_to_search_1.empty? )
+      these_values = @values_to_search_1.map{ |e| "'" + e + "'" }.join(', ')
+      get_programs_query = FieldsString.find_by_sql("
+        SELECT program_id as program_id
+          FROM fields_strings
+          WHERE field_value IN (" + these_values + ")" )
+
+      programs_array = Array.new
+      get_programs_query.each do |p|
+        programs_array << p.program_id
+      end
+      get_programs = programs_array
     end
 
-    @programs = Program.where("id IN (?)", get_programs)
+    if ( !@values_to_search_2.empty? )
+      these_values = @values_to_search_2.map{ |e| "'" + e + "'" }.join(', ')
+      get_programs_query = Program.find_by_sql("
+        SELECT DISTINCT programs.id
+          FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
+          WHERE table_names.table_name = 'residency_requirements'
+            AND data_table_configs.table_name_id = table_names.id
+            AND categories.data_table_config_id = data_table_configs.id
+            AND data_tables.category_id = categories.id
+            AND data_tables.header_id = main_headers.id
+            AND main_headers.table_name_id = table_names.id
+            AND data_table_configs.id = data_tables.data_table_config_id
+            AND data_tables.program_id = programs.id
+            AND categories.category in (" + these_values +")
+            AND main_headers.header = 'Yes'"
+      )
+
+      programs_array = Array.new
+      get_programs_query.each do |p|
+        programs_array << p.id
+      end
+      get_programs_2 = programs_array
+
+      get_programs = get_programs & get_programs_2
+
+    end
+
+    if ( @values_to_search_1.empty? && @values_to_search_2.empty? )
+      get_programs = @all_programs
+    end
+
+    @programs = Program.where( "id IN (?)", get_programs )
 
   end
 
@@ -34,54 +92,53 @@ class ProgramsController < ApplicationController
     @field_string = FieldsString.find_by_program_id(@id)
 
     @fields_to_display = FieldName.find_by_sql("
-    SELECT *
-      FROM
-      (SELECT display_sections.section_name, display_sections.section_order,
-        field_names.id as id, field_names.field_name,
-        field_names.display_field_name as display_name,
-        fields_strings.field_value, 'field' as content_type
-        FROM field_names, fields_strings, display_sections
-        WHERE display_sections.section_to_link = field_names.field_name
-          AND fields_strings.field_id = field_names.id
-          AND fields_strings.program_id = " + @id + "
-      UNION
-      SELECT display_sections.section_name, display_sections.section_order,
-        field_names.id as id, field_names.field_name,
-        field_names.display_field_name as display_name,
-        fields_texts.field_value, 'field' as content_type
-        FROM field_names, fields_texts, display_sections
-        WHERE display_sections.section_to_link = field_names.field_name
-          AND fields_texts.field_id = field_names.id
-          AND fields_texts.program_id = " + @id + "
-      UNION
-      SELECT display_sections.section_name, display_sections.section_order,
-        field_names.id as id, field_names.field_name,
-        field_names.display_field_name as display_name,
-        fields_decimals.field_value, 'field' as content_type
-        FROM field_names, fields_decimals, display_sections
-        WHERE display_sections.section_to_link = field_names.field_name
-          AND fields_decimals.field_id = field_names.id
-          AND fields_decimals.program_id = " + @id + "
-      UNION
-      SELECT display_sections.section_name, display_sections.section_order,
-        field_names.id as id, field_names.field_name,
-        field_names.display_field_name as display_name,
-        fields_integers.field_value, 'field' as content_type
-        FROM field_names, fields_integers, display_sections
-        WHERE display_sections.section_to_link = field_names.field_name
-          AND fields_integers.field_id = field_names.id
-          AND fields_integers.program_id = " + @id + "
-      UNION
-      SELECT display_sections.section_name, display_sections.section_order,
-        table_names.id as id, table_names.table_name,
-        table_names.display_table_name as display_name,
-        0, 'table' as content_type
-        FROM display_sections, table_names, data_table_configs
-        WHERE display_sections.section_to_link = table_names.table_name
-          AND data_table_configs.table_name_id = table_names.id
-          AND data_table_configs.program_id = " + @id + ") as tables_union
-      ORDER BY tables_union.section_order
-    ")
+      SELECT *
+        FROM
+        (SELECT display_sections.section_name, display_sections.section_order,
+          field_names.id as id, field_names.field_name,
+          field_names.display_field_name as display_name,
+          fields_strings.field_value, 'field' as content_type
+          FROM field_names, fields_strings, display_sections
+          WHERE display_sections.section_to_link = field_names.field_name
+            AND fields_strings.field_id = field_names.id
+            AND fields_strings.program_id = " + @id + "
+        UNION
+        SELECT display_sections.section_name, display_sections.section_order,
+          field_names.id as id, field_names.field_name,
+          field_names.display_field_name as display_name,
+          fields_texts.field_value, 'field' as content_type
+          FROM field_names, fields_texts, display_sections
+          WHERE display_sections.section_to_link = field_names.field_name
+            AND fields_texts.field_id = field_names.id
+            AND fields_texts.program_id = " + @id + "
+        UNION
+        SELECT display_sections.section_name, display_sections.section_order,
+          field_names.id as id, field_names.field_name,
+          field_names.display_field_name as display_name,
+          fields_decimals.field_value, 'field' as content_type
+          FROM field_names, fields_decimals, display_sections
+          WHERE display_sections.section_to_link = field_names.field_name
+            AND fields_decimals.field_id = field_names.id
+            AND fields_decimals.program_id = " + @id + "
+        UNION
+        SELECT display_sections.section_name, display_sections.section_order,
+          field_names.id as id, field_names.field_name,
+          field_names.display_field_name as display_name,
+          fields_integers.field_value, 'field' as content_type
+          FROM field_names, fields_integers, display_sections
+          WHERE display_sections.section_to_link = field_names.field_name
+            AND fields_integers.field_id = field_names.id
+            AND fields_integers.program_id = " + @id + "
+        UNION
+        SELECT display_sections.section_name, display_sections.section_order,
+          table_names.id as id, table_names.table_name,
+          table_names.display_table_name as display_name,
+          0, 'table' as content_type
+          FROM display_sections, table_names, data_table_configs
+          WHERE display_sections.section_to_link = table_names.table_name
+            AND data_table_configs.table_name_id = table_names.id
+            AND data_table_configs.program_id = " + @id + ") as tables_union
+        ORDER BY tables_union.section_order")
 
     # Get all of the table configurations (title, number of rows and columns)
     @data_table_configs = DataTableConfig.where( program_id: @id )

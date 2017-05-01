@@ -1,26 +1,46 @@
 <div class="container" style="max-width: 90vw;">
 
   <%= form_tag('/search') do %>
-    <div style="margin-bottom: 2em;">
-      <p>Type of institution:</p>
-      <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
-        <% $filter_1_values.each do |item| %>
-          <li>
-            <%= check_box_tag(item.field_value) %>
-            <%= item.field_value %>
-          </li>
-        <% end %>
-      </ul>
+    <div style="margin: 0 auto;">
+      <div style="margin-bottom: 2em; display: inline-block; width: 25%; vertical-align: text-top;">
+        <p>Type of institution:</p>
+        <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
+          <% $filter_1_values.each do |item| %>
+            <li>
+              <%= check_box_tag(item.field_value, 1) %>
+              <%= item.field_value %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div style="margin-bottom: 2em; display: inline-block; width: 25%; vertical-align: text-top;">
+        <p>Residency requirements:</p>
+        <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
+          <% $filter_2_values.each do |item| %>
+            <li>
+              <%= check_box_tag(item.field_value, 2) %>
+              <%= item.field_value.gsub("?","") %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div style="margin-bottom: 2em; display: inline-block; width: 50%; vertical-align: text-top;">
+      </div>
       <%= submit_tag("Filter", class: 'btn btn-primary btn-lg') %>
     </div>
   <% end %>
 
-  <% if ( !@values_to_search.empty? ) %>
-    <h4>Filtered by</h4>
-    <p>Type of institution: <%= @values_to_search.join(', ') %></p>
-    <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
+  <h4>Filtered by:</h4>
+
+  <% if ( !@values_to_search_1.empty? ) %>
+    <p>Type of institution: <%= @values_to_search_1.join(', ') %></p>
   <% end %>
-  
+  <% if ( !@values_to_search_2.empty? ) %>
+    <p>Residency requirements: <%= @values_to_search_2.join(', ') %></p>
+  <% end %>
+
+  <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
+
   <h1>Search result: <%= pluralize(@programs.size, 'Dental School') %></h1>
 
   <% @programs.each do |p| %>

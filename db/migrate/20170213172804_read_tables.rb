@@ -186,7 +186,11 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
         if ( header.nil? && !array_from_csv[table_start_line][x].nil? )
           main_headers << array_from_csv[table_start_line][x]
-          array_from_csv[table_start_line][x] = main_headers.size
+          new_header = MainHeader.create(
+            table_name_id: current_table.id,
+            header: array_from_csv[table_start_line][x]
+          )
+          array_from_csv[table_start_line][x] = new_header.id
         else
           # Add 1 since array index starts with 0
           if ( !header.nil? )
@@ -199,7 +203,11 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
           if ( header.nil? && !array_from_csv[dental_school_row][x].nil? )
             sub_headers << array_from_csv[dental_school_row][x]
-            array_from_csv[dental_school_row][x] = sub_headers.size
+            new_subheader = SubHeader.create(
+              table_name_id: current_table.id,
+              subheader: array_from_csv[dental_school_row][x]
+            )
+            array_from_csv[dental_school_row][x] = new_subheader.id
           else
             # Add 1 since array index starts with 0
             if ( !header.nil? )
@@ -331,20 +339,20 @@ class ReadTables < ActiveRecord::Migration[5.0]
       #end
 
       # Stores main_headers array in the DB table Main Headers
-      main_headers.each do |head|
-        new_header = MainHeader.create(
-          table_name_id: current_table.id,
-          header: head
-        )
-      end
+      #main_headers.each do |head|
+      #  new_header = MainHeader.create(
+      #    table_name_id: current_table.id,
+      #    header: head
+      #  )
+      #end
 
       # Stores sub_headers array in the DB table Sub Headers
-      sub_headers.each do |subhead|
-        new_header = SubHeader.create(
-          table_name_id: current_table.id,
-          subheader: subhead
-        )
-      end
+      #sub_headers.each do |subhead|
+      #  new_header = SubHeader.create(
+      #    table_name_id: current_table.id,
+      #    subheader: subhead
+      #  )
+      #end
 
       # Stores final_table bidimensional array in the DB table DataTables
       final_table.each do |row|
