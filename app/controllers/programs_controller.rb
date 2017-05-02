@@ -18,17 +18,30 @@ class ProgramsController < ApplicationController
           AND data_tables.program_id = programs.id order by program")
     @programs = Program.all
 
+    @filter_3_field = FieldName.find_by_field_name('predental_programs_offered')
+    $filter_3_values = FieldsText.select(:field_value).uniq.where( field_id: @filter_3_field.id )
+
+    @filter_4_field = FieldName.find_by_field_name('state_territory_province')
+    $filter_4_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_4_field.id )
+
   end
 
   def search
 
     @values_to_search_1 = Array.new
     @values_to_search_2 = Array.new
+    @values_to_search_3 = Array.new
+    @values_to_search_4 = Array.new
+
     params.each do |p|
       if ( params[p] == "1" )
         @values_to_search_1 << p
       elsif ( params[p] == "2" )
         @values_to_search_2 << p
+      elsif ( params[p] == "3" )
+        @values_to_search_3 << p
+      elsif ( params[p] == "4" )
+        @values_to_search_4 << p
       end
     end
 
@@ -77,7 +90,39 @@ class ProgramsController < ApplicationController
 
     end
 
-    if ( @values_to_search_1.empty? && @values_to_search_2.empty? )
+    if ( !@values_to_search_3.empty? )
+      these_values = @values_to_search_3.map{ |e| "'" + e + "'" }.join(', ')
+      get_programs_query = FieldsString.find_by_sql("
+        SELECT program_id as program_id
+          FROM fields_texts
+          WHERE field_value IN (" + these_values + ")" )
+
+      programs_array = Array.new
+      get_programs_query.each do |p|
+        programs_array << p.program_id
+      end
+      get_programs_3 = programs_array
+
+      get_programs = get_programs & get_programs_3
+    end
+
+    if ( !@values_to_search_4.empty? )
+      these_values = @values_to_search_4.map{ |e| "'" + e + "'" }.join(', ')
+      get_programs_query = FieldsString.find_by_sql("
+        SELECT program_id as program_id
+          FROM fields_strings
+          WHERE field_value IN (" + these_values + ")" )
+
+      programs_array = Array.new
+      get_programs_query.each do |p|
+        programs_array << p.program_id
+      end
+      get_programs_4 = programs_array
+
+      get_programs = get_programs & get_programs_4
+    end
+
+    if ( @values_to_search_1.empty? && @values_to_search_2.empty? && @values_to_search_3.empty? && @values_to_search_4.empty? )
       get_programs = @all_programs
     end
 
