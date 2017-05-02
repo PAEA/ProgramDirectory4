@@ -5,15 +5,23 @@ module ProgramsHelper
     if ( f.content_type == 'field' )
       ("<p>" + f.display_name.to_s.strip + " <i>" + f.field_value.to_s.strip + "</i></p>").html_safe
     elsif ( f.content_type == 'table' )
-      html = "<p>TABLE: " + f.display_name.to_s.strip + "</p>"
+      if ( !f.display_name.to_s.strip.blank? )
+        html = "<p>TABLE: " + f.display_name.to_s.strip + "</p>"
+      else
+        html = "<p>&nbsp;</p>"
+      end
 
       data_table_config = @data_table_configs.find_by_table_name_id(f.id)
 
       html += "<table style='border: 1px solid grey;'>"
       for y in 1..data_table_config.rows
         html += "<tr>"
-          # Left-aligned text for categories
-          html += "<td style='border: 1px solid grey; text-align: left;'>"
+          # Left-aligned text for categories, unless it's a checkmark
+          if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
+            html += "<td style='border: 1px solid grey; text-align: center;'>"
+          else
+            html += "<td style='border: 1px solid grey; text-align: left;'>"
+          end
           html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
           html += "</td>"
 

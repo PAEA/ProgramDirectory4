@@ -212,9 +212,9 @@ class ProgramsController < ApplicationController
         end
 
         # Fills each table type with its cell values per row and column
-        if ( cell.cell_value.to_s == "x" )
+        if ( cell.cell_value.to_s == "x" || ( cell.cell_value.to_s.include? "x ") || ( cell.cell_value.to_s.include? "x\n") || ( cell.cell_value.to_s.include? "x\r") )
           # ascii checkmark symbol
-          @table[ cell.cell_row ][ cell.cell_column ] = "\u2713"
+          @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s.gsub("x","\u2713")
         else
           @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s
         end
@@ -224,7 +224,12 @@ class ProgramsController < ApplicationController
       # Add categories to the table from the bottom up
       categories = Category.where( :data_table_config_id => table_configuration.id ).order(id: :desc)
       categories.each do |category|
-        @table[ this_row ][ 1 ] = category.category
+        if ( category.category.to_s == "x" || ( category.category.to_s.include? "x " ) || ( category.category.to_s.include? "x\n") || ( category.category.to_s.include? "x\r") )
+          # ascii checkmark symbol
+          @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
+        else
+          @table[ this_row ][ 1 ] = category.category
+        end
         this_row -= 1
       end
 
