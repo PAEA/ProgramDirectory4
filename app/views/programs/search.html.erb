@@ -2,7 +2,7 @@
 
   <%= form_tag('/search') do %>
     <div style="margin: 0 auto;">
-      <div style="margin-bottom: 2em; display: inline-block; width: 24%; vertical-align: text-top;">
+      <div style="margin-bottom: 2em; display: inline-block; width: 14%; vertical-align: text-top;">
         <p>Type of institution:</p>
         <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
           <% $filter_1_values.each do |item| %>
@@ -35,12 +35,23 @@
           <% end %>
         </ul>
       </div>
-      <div style="margin-bottom: 2em; display: inline-block; width: 24%; vertical-align: text-top;">
+      <div style="margin-bottom: 2em; display: inline-block; width: 20%; vertical-align: text-top;">
         <p>State/Territory/Province:</p>
         <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
           <% $filter_4_values.each do |item| %>
             <li>
               <%= check_box_tag(item.field_value, 4) %>
+              <%= item.field_value.gsub("?","") %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div style="margin-bottom: 2em; display: inline-block; width: 14%; vertical-align: text-top;">
+        <p>Degree offered:</p>
+        <ul style="list-style-type: none; margin: 0; padding: 0 0 1em 1em;">
+          <% $filter_5_values.each do |item| %>
+            <li>
+              <%= check_box_tag(item.field_value, 5) %>
               <%= item.field_value.gsub("?","") %>
             </li>
           <% end %>
@@ -63,6 +74,9 @@
   <% end %>
   <% if ( !@values_to_search_4.empty? ) %>
     <p>State/Territory/Province: <%= @values_to_search_4.join(', ') %></p>
+  <% end %>
+  <% if ( !@values_to_search_5.empty? ) %>
+    <p>Degree offered: <%= @values_to_search_5.join(', ') %></p>
   <% end %>
 
   <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
