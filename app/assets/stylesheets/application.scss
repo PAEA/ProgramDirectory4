@@ -16,3 +16,194 @@
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
+
+$font-stack:    Arial, Helvetica, sans-serif;
+$primary-type-color: #000;
+$primary-bg-color: #fff;
+$header-bg-color: #ccc;
+$lighter-bg-color: #dedede;
+
+
+html, body {
+	background-color: $primary-bg-color;
+	color: $primary-type-color;
+	font-family: $font-stack;
+	font-size: 16px;
+}
+
+header {
+	background-color: $header-bg-color;
+	height: 50px;
+	width: 100%;
+}
+
+.navbar {
+	border-radius: 0;
+}
+.container {
+	padding-top: 10px;
+}
+.input {
+	width: 100%;
+}
+
+.input-group {
+	display: block;
+	margin-top: 40px;
+}
+
+
+.checkbox-label  {
+	position: relative;
+	padding-left: 30px;
+	cursor: pointer;
+	font-weight: normal;
+}
+.checkbox-label:before, .checkbox-label:after {
+	font-family: FontAwesome;
+	font-size: 30px;
+	/*absolutely positioned*/
+	position: absolute; top: -10px; left: 0;
+}
+.checkbox-label:before {
+	content: '\f096'; /*unchecked*/
+}
+.checkbox-label:after {
+	content: '\f046'; /*checked*/
+	/*checked icon will be hidden by default by using 0 max-width and overflow hidden*/
+	max-width: 0;
+	overflow: hidden;
+	opacity: 0.5;
+	/*CSS3 transitions for animated effect*/
+	transition: all 0.35s;
+}
+
+/*hiding the original checkboxes*/
+.checkbox-input[type="checkbox"] {
+	display: none;
+}
+/*when the user checks the checkbox the checked icon will animate in*/
+.checkbox-input[type="checkbox"]:checked + label:after {
+	max-width: 35px; /*an arbitratry number more than the icon's width*/
+	opacity: 1; /*for fade in effect*/
+}
+
+
+
+// ******** MATCH ME FORM *****************
+//also for filter options
+.match-option {
+	background-color: $lighter-bg-color;
+	min-height: 40px;
+	margin: 5px 0 5px 0;
+	padding: 10px;
+}
+
+// ******************* FILTER STYLES HERE ****************
+
+// .collapseFilters {
+// 	background-color: $lighter-bg-color;
+// }
+
+.btn-filter {
+	background-color: $header-bg-color;
+	border: none;
+	margin: 1px 0 1px 0;
+	text-align: left;
+
+}
+
+
+// animation on arrow 
+
+.btn-filter > span {
+	transition: transform .5s;
+}
+
+.arrowdown {
+	transform: rotate(0deg);
+}
+.arrowup {
+	transform: rotate(180deg);
+}
+
+// **************** CARD STYLES **********************
+
+
+// ****************** RESPONSIVE TABLES **************
+
+table {
+  border: 1px solid #000;
+  border-collapse: collapse;
+  margin: 0 0 20px 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table tr {
+  // background: #f8f8f8;
+  border: 1px solid #000;
+  // padding: .35em;
+}
+tr:nth-of-type(odd) { 
+  background: #eee;
+}
+
+table th,
+table td {
+  padding: 5px;
+  text-align: left;
+}
+.secondary-subject {  	
+	background-color: #666;
+	color: #fff;
+	text-align: left;
+}
+@media screen and (max-width: 600px) {
+  table {
+    border: 0;
+  }
+ 
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  .subject {
+		text-transform: uppercase;
+  }
+  .subject-solo {  	
+  	background-color: #666;
+  	color: #fff;
+  	text-align: left;
+  }
+  table tr {
+    // border-bottom: 3px solid #333;
+    display: block;
+    margin-bottom: 15px;
+  }
+  table td {
+    border-top: 1px solid #333;
+    display: block;
+    text-align: right;
+  }
+  table td:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-align: left;
+  }
+  table td:last-child {
+    border-bottom: 0;
+  }
+}

@@ -6,7 +6,7 @@ module ProgramsHelper
       ("<p>" + f.display_name.to_s.strip + " <i>" + f.field_value.to_s.strip + "</i></p>").html_safe
     elsif ( f.content_type == 'table' )
       if ( !f.display_name.to_s.strip.blank? )
-        html = "<p>TABLE: " + f.display_name.to_s.strip + "</p>"
+        html = "<h3>TABLE: " + f.display_name.to_s.strip + "</h3>"
       else
         html = "<p>&nbsp;</p>"
       end
