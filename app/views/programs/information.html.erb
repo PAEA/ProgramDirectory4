@@ -11,14 +11,16 @@
       <% @fields_to_display.each do |f| %>
 
         <% if ( this_section != f.section_name ) %>
+              <% puts "this_section: " + this_section.to_s.strip %>
+              <% puts "f.section_name: " + f.section_name.to_s.strip %>
             </div>
           </div>
           <h2>
-          <a role="button" data-toggle="collapse" href="#collapse<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse<%= f.section_name %>">
+          <a role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
           <%= f.section_name %>
           </a>
           </h2>
-          <div class="collapse" id="collapse<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+          <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
             <div class="well">
               <% this_section = f.section_name %>
         <% end %>

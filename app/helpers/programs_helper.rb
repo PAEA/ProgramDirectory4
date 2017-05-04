@@ -6,9 +6,9 @@ module ProgramsHelper
       ("<p>" + f.display_name.to_s.strip + " <i>" + f.field_value.to_s.strip + "</i></p>").html_safe
     elsif ( f.content_type == 'table' )
       if ( !f.display_name.to_s.strip.blank? )
-        html = "<h3>TABLE: " + f.display_name.to_s.strip + "</h3>"
+        html = "<h3>" + f.display_name.to_s.strip + "</h3>"
       else
-        html = "<p>&nbsp;</p>"
+        html = ""
       end
 
       data_table_config = @data_table_configs.find_by_table_name_id(f.id)
@@ -57,7 +57,7 @@ module ProgramsHelper
           end
         html += "</tr>"
       end
-      html += "</table><p></p>"
+      html += "</table>"
 
       html.html_safe
 
