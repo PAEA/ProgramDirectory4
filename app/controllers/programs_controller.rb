@@ -63,8 +63,6 @@ class ProgramsController < ApplicationController
 
     get_programs = [1,2,3,4,5,6]
 
-    puts get_programs
-
     if ( !@values_to_search_1.empty? )
       these_values = @values_to_search_1.map{ |e| "'" + e + "'" }.join(', ')
       get_programs_query = FieldsString.find_by_sql("
