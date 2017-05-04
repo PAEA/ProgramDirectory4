@@ -21,10 +21,13 @@ function checkWidth() {
         $("#collapseAllFilters").removeClass("in");
         $(".search-page-filter").removeClass("in");
         // $(".glyphicon").removeClass("glyphicon-menu-up").addClass("glyphicon-menu-down");
+        $(".information-page").find('.collapse').removeClass("in");
 
     } else {
         $("#collapseAllFilters").addClass("in");
         $(".search-page-filter").addClass("in");
+        $(".information-page").find('.collapse').addClass("in");
+
         // if $(".search-page-filter").hasClass("in") {
         //     $(".glyphicon").removeClass("glyphicon-menu-down").addClass("glyphicon-menu-up");
         // } else {
