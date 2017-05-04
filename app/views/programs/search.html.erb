@@ -9,8 +9,8 @@
           <div class="search-page-filter collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
               <p class="match-option">
-                <%= check_box_tag(item.field_value, 1) %>
-                <%= item.field_value %>
+              <input value="1" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
               </p>
             <% end %>
           </div>
@@ -18,8 +18,8 @@
           <div class="search-page-filter collapse" id="collapseFilterResidence">
             <% $filter_2_values.each do |item| %>
               <p class="match-option">
-              <%= check_box_tag(item.field_value, 2) %>
-              <%= item.field_value.gsub("?","") %>
+              <input value="2" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
               </p>
             <% end %>
           </div>
@@ -29,8 +29,8 @@
           <div class="search-page-filter collapse" id="collapseFilterPrograms">
             <% $filter_3_values.each do |item| %>
               <p class="match-option">
-              <%= check_box_tag(item.field_value, 3) %>
-              <%= item.field_value.gsub("?","") %>
+              <input value="3" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
               </p>
             <% end %>
           </div>
@@ -40,8 +40,8 @@
             <div style="height:150px; overflow-y:scroll;">
               <% $filter_4_values.each do |item| %>
                 <p class="match-option">
-                <%= check_box_tag(item.field_value, 4) %>
-                <%= item.field_value.gsub("?","") %>
+                <input value="4" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+                <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                 </p>
               <% end %>
               <p class="match-option"><%= check_box_tag("Delaware", 4) %> Delaware</p>
@@ -54,8 +54,8 @@
           <div class="search-page-filter collapse" id="collapseFilterDegrees">
             <% $filter_5_values.each do |item| %>
             <p class="match-option">
-            <%= check_box_tag(item.field_value, 5) %>
-            <%= item.field_value.gsub("?","") %>
+            <input value="5" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
             </p>
             <% end %>
           </div>
@@ -89,7 +89,9 @@
       <h1>Search result: <%= pluralize(@programs.size, 'Dental School') %></h1>
 
       <% @programs.each do |p| %>
-        <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
+        <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
+        <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
+        <hr />
       <% end %>
     </div>
   </div>

@@ -41,7 +41,7 @@ $(window).resize(checkWidth);
 
 
 $(document).ready(function () {
-    $('.btn-filter').on('click', function (e) {
+    $('.btn-filter-index').on('click', function (e) {
     	  // e.preventDefault();
         if ($(this).find('> span').hasClass('arrowup')) {
         	$(this).find('> span').removeClass('arrowup').addClass('arrowdown');
@@ -54,27 +54,11 @@ $(document).ready(function () {
 
         }
 
-        if ($(this).find('> span').hasClass('arrowup')) {
-            $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
-
-        } else if ($(this).find('> span').hasClass('arrowdown')) {
-            $(this).find('> span').removeClass('arrowdown').addClass('arrowup');
-
-        } else {
-            $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
-
-        }
+        
     });
     
 });
 
-// if 
-
-// function resetArrows(){
-//     if $('.collapse').hasClass('in'){
-//         $(".glyphicon").removeClass("glyphicon-menu-down").addClass("glyphicon-menu-up");
-//     }
-// }
 
 
 

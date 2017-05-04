@@ -8,48 +8,49 @@
       <h3>Or use the filters below</h3>
         <div>
           <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
+            <a class="input btn btn-lg btn-filter-index" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
             <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
             <div class="collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
               <p class="match-option">
-                <%= check_box_tag(item.field_value, 1) %>
-                <%= item.field_value %>
+              <input value="1" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value %></label>
               </p>
               <% end %>
             </div>
           </div>
           <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
+            <a class="input btn btn-lg btn-filter-index" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
             <div class="collapse" id="collapseFilterResidence">
               <% $filter_2_values.each do |item| %>
                 <p class="match-option">
-                <%= check_box_tag(item.field_value, 2) %>
-                <%= item.field_value.gsub("?","") %>
+                <input value="2" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+                <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
+                
                 </p>
               <% end %>
             </div>
           </div>
           <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
+            <a class="input btn btn-lg btn-filter-index" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
             <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
             <div class="collapse filter-options" id="collapseFilterPrograms">
               <% $filter_3_values.each do |item| %>
                 <p class="match-option">
-                <%= check_box_tag(item.field_value, 3) %>
-                <%= item.field_value.gsub("?","") %>
+                <input value="3" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+                <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                 </p>
               <% end %>
             </div>
           </div>
           <div>
-          <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
+          <a class="input btn btn-lg btn-filter-index" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
             <div class="collapse" id="collapseFilterLocation">
               <div style="height:150px; overflow-y:scroll;">
                 <% $filter_4_values.each do |item| %>
                   <p class="match-option">
-                  <%= check_box_tag(item.field_value, 4) %>
-                  <%= item.field_value.gsub("?","") %>
+                  <input value="4" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+                  <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                   </p>
                 <% end %>
                 <p class="match-option"><%= check_box_tag("Delaware", 4) %> Delaware</p>
@@ -62,20 +63,20 @@
             </div>
           </div>
           <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
+            <a class="input btn btn-lg btn-filter-index" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
             <div class="collapse" id="collapseFilterDegrees">
               <% $filter_5_values.each do |item| %>
               <p class="match-option">
               
-              <%= check_box_tag(item.field_value, 5) %>
-              <%= item.field_value.gsub("?","") %>
+              <input value="5" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
+              <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
               </p>
               <% end %>
             </div>
             
           </div>
           &nbsp;
-          <%= submit_tag("Filter", class: 'btn btn-primary btn-lg input') %>
+          <%= submit_tag("Filter Results", class: 'btn btn-primary btn-lg input') %>
           &nbsp;
         </div>
 
@@ -83,7 +84,10 @@
       <% end %>
       <h1><%= pluralize(@programs.size, 'Dental School') %></h1>
       <% @programs.each do |p| %>
-        <p><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></p>
+        
+            <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
+            <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
+            <hr />
       <% end %>
     </div>
   </div>

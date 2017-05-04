@@ -104,16 +104,18 @@ header {
 	margin: 5px 0 5px 0;
 	padding: 10px;
 }
+.match-option label {
+  width: 100%;
+}
 
 // ******************* FILTER STYLES HERE ****************
 
 
-.btn-filter {
+.btn-filter, .btn-filter-index {
 	background-color: $header-bg-color;
 	border: none;
 	margin: 1px 0 1px 0;
 	text-align: left;
-
 }
 // .glyphicon-menu-down {
 //     display: inline-block;
