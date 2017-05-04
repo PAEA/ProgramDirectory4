@@ -17,13 +17,22 @@ module ProgramsHelper
       for y in 1..data_table_config.rows
         html += "<tr>"
           # Left-aligned text for categories, unless it's a checkmark
-          if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
-            html += "<td class='subject subject-solo' style='border: 1px solid grey; text-align: center;'>"
+          if ( y == 1 )
+            html += "<th "
           else
-            html += "<td style='border: 1px solid grey; text-align: left;'>"
+            html += "<td "
+          end
+          if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
+            html += "class='subject subject-solo' style='border: 1px solid grey; text-align: center;'>"
+          else
+            html += "style='border: 1px solid grey; text-align: left;'>"
           end
           html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
-          html += "</td>"
+          if ( y == 1 )
+            html += "</th>"
+          else
+            html += "</td>"
+          end
 
           # Everything else center-aligned
           x = 2
@@ -32,13 +41,19 @@ module ProgramsHelper
               colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
               length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
               @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
+              html += "<th "
             else
               colspan = 1
+              html += "<td "
             end
-            html += "<td style='border: 1px solid grey; text-align: center;' colspan='" + colspan.to_s.strip + "'>"
+            html += "style='border: 1px solid grey; text-align: center;' colspan='" + colspan.to_s.strip + "'>"
             html += @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
             x += colspan.to_i
-            html += "</td>"
+            if ( y == 1 )
+              html += "</th>"
+            else
+              html += "</td>"
+            end
           end
         html += "</tr>"
       end
