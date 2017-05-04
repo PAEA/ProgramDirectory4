@@ -1,66 +1,71 @@
-<div class="container" style="max-width: 90vw;">
+<div class="container">
   <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      <%= form_tag('/search') do %>
-        <div style="margin: 0 auto;">
-          <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
-            <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
-            <div class="collapse" id="collapseFilterType">
+    <div class="col-sm-5 col-md-4 col-lg-3">
+      <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseAllFilters" aria-expanded="false" aria-controls="collapseAllFilters"><span class="glyphicon glyphicon-menu-down"></span> Search Filters</a>
+      <div class="collapse in" id="collapseAllFilters">
+        <%= form_tag('/search') do %>
+          <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
+          <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
+          <div class="search-page-filter collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
               <p class="match-option">
                 <%= check_box_tag(item.field_value, 1) %>
                 <%= item.field_value %>
               </p>
-              <% end %>
-            </div>
+            <% end %>
           </div>
-          <div>
           <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
-            <div class="collapse" id="collapseFilterResidence">
-              <% $filter_2_values.each do |item| %>
-                <p class="match-option">
-                <%= check_box_tag(item.field_value, 2) %>
-                <%= item.field_value.gsub("?","") %>
-                </p>
-              <% end %>
-            </div>
-          </div>
-          <div>
-          <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
-            <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
-            <div class="collapse filter-options" id="collapseFilterPrograms">
-              <% $filter_3_values.each do |item| %>
-                <p class="match-option">
-                <%= check_box_tag(item.field_value, 3) %>
-                <%= item.field_value.gsub("?","") %>
-                </p>
-              <% end %>
-            </div>
-          </div>
-          <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
-            <div class="collapse" id="collapseFilterLocation">
-            
-             <%= select_tag 'location', options_for_select($filter_4_values.collect{ |item| [item.field_value.gsub("?",""), item.field_value] }), multiple: true, class: "input" %>
-             <p>&nbsp;</p>
-            </div>
-          <div>
-            <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
-            <div class="collapse" id="collapseFilterDegrees">
-              <% $filter_5_values.each do |item| %>
+          <div class="search-page-filter collapse" id="collapseFilterResidence">
+            <% $filter_2_values.each do |item| %>
               <p class="match-option">
-              <%= check_box_tag(item.field_value, 5) %>
+              <%= check_box_tag(item.field_value, 2) %>
               <%= item.field_value.gsub("?","") %>
               </p>
+            <% end %>
+          </div>
+          
+          <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
+          <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
+          <div class="search-page-filter collapse" id="collapseFilterPrograms">
+            <% $filter_3_values.each do |item| %>
+              <p class="match-option">
+              <%= check_box_tag(item.field_value, 3) %>
+              <%= item.field_value.gsub("?","") %>
+              </p>
+            <% end %>
+          </div>
+          
+          <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
+          <div class="search-page-filter collapse" id="collapseFilterLocation">
+            <div style="height:150px; overflow-y:scroll;">
+              <% $filter_4_values.each do |item| %>
+                <p class="match-option">
+                <%= check_box_tag(item.field_value, 4) %>
+                <%= item.field_value.gsub("?","") %>
+                </p>
               <% end %>
+              <p class="match-option"><%= check_box_tag("Delaware", 4) %> Delaware</p>
+              <p class="match-option"><%= check_box_tag("District of Columbia", 4) %> District of Columbia</p>
             </div>
+           <p>&nbsp;</p>
+          </div>
+            
+          <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
+          <div class="search-page-filter collapse" id="collapseFilterDegrees">
+            <% $filter_5_values.each do |item| %>
+            <p class="match-option">
+            <%= check_box_tag(item.field_value, 5) %>
+            <%= item.field_value.gsub("?","") %>
+            </p>
+            <% end %>
           </div>
           <%= submit_tag("Filter", class: 'btn btn-primary btn-lg input') %>
-        </div>
-      <% end %>
-
+          
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="col-md-offset-1 col-md-7 col-lg-offset-1 col-lg-8 col-sm-7">
       <h4>Filtered by:</h4>
 
       <% if ( !@values_to_search_1.empty? ) %>

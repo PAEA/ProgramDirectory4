@@ -88,12 +88,18 @@ header {
 	opacity: 1; /*for fade in effect*/
 }
 
-
+// ************** sign in page ***************************
+.terms {
+  height: 150px;
+  margin-bottom: 30px;
+  overflow-y: scroll;
+}
 
 // ******** MATCH ME FORM *****************
 //also for filter options
 .match-option {
-	background-color: $lighter-bg-color;
+	background-color: $primary-bg-color;
+  border-bottom: 1px solid $lighter-bg-color;
 	min-height: 40px;
 	margin: 5px 0 5px 0;
 	padding: 10px;
@@ -101,9 +107,6 @@ header {
 
 // ******************* FILTER STYLES HERE ****************
 
-// .collapseFilters {
-// 	background-color: $lighter-bg-color;
-// }
 
 .btn-filter {
 	background-color: $header-bg-color;
@@ -112,21 +115,32 @@ header {
 	text-align: left;
 
 }
+// .glyphicon-menu-down {
+//     display: inline-block;
+// }
 
+
+// @media screen and (min-width: 768px) {
+//   .glyphicon-menu-down {
+//     display: none;
+//   }
+//   .glyphicon-menu-up {
+//     display: inline-block;
+//   }
+// }
 
 // animation on arrow 
 
 .btn-filter > span {
-	transition: transform .5s;
+  transition: transform .5s;
 }
 
 .arrowdown {
-	transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 .arrowup {
-	transform: rotate(180deg);
+  transform: rotate(180deg);
 }
-
 // **************** CARD STYLES **********************
 
 
@@ -207,3 +221,4 @@ table td {
     border-bottom: 0;
   }
 }
+

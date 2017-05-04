@@ -45,8 +45,19 @@
           <div>
           <a class="input btn btn-lg btn-filter" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
             <div class="collapse" id="collapseFilterLocation">
-            
-             <%= select_tag 'location', options_for_select($filter_4_values.collect{ |item| [item.field_value, 4] }), multiple: true, class: "input" %>
+              <div style="height:150px; overflow-y:scroll;">
+                <% $filter_4_values.each do |item| %>
+                  <p class="match-option">
+                  <%= check_box_tag(item.field_value, 4) %>
+                  <%= item.field_value.gsub("?","") %>
+                  </p>
+                <% end %>
+                <p class="match-option"><%= check_box_tag("Delaware", 4) %> Delaware</p>
+                <p class="match-option"><%= check_box_tag("District of Columbia", 4) %> District of Columbia</p>
+
+
+              </div>
+            <!--  <%= select_tag 'location', options_for_select($filter_4_values.collect{ |item| [item.field_value, 4, name: item.field_value] }), multiple: true, class: "input" %> -->
              <p>&nbsp;</p>
             </div>
           </div>

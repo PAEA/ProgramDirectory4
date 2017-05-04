@@ -18,7 +18,7 @@ module ProgramsHelper
         html += "<tr>"
           # Left-aligned text for categories, unless it's a checkmark
           if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
-            html += "<td style='border: 1px solid grey; text-align: center;'>"
+            html += "<td class='subject subject-solo' style='border: 1px solid grey; text-align: center;'>"
           else
             html += "<td style='border: 1px solid grey; text-align: left;'>"
           end

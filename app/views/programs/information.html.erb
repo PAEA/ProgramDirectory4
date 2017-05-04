@@ -5,13 +5,25 @@
       <h2><strong><%= @program.program %></strong></h2>
       </div>
 
+
+      
+ 
+
+
       <% this_section = "" %>
       <% @fields_to_display.each do |f| %>
         <% if ( this_section != f.section_name ) %>
-          <h2><%= f.section_name %></h2>
+          <h2>
+          <a role="button" data-toggle="collapse" href="<%= f.section_name %>" aria-expanded="false" aria-controls="collapseExample">
+          <%= f.section_name %></a>
+          </h2>
           <% this_section = f.section_name %>
         <% end %>
-        <%= display_fields_and_tables(f) %>
+        <div class="" id="<%= f.section_name %>">
+          <div class="well">
+            <%= display_fields_and_tables(f) %>
+          </div>
+        </div>
 
       <% end %>
 
