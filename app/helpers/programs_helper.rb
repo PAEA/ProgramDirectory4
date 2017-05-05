@@ -15,12 +15,12 @@ module ProgramsHelper
 
       html += "<table style='border: 1px solid grey;'>"
       for y in 1..data_table_config.rows
-        html += "<tr>"
         # Left-aligned text for categories, unless it's a checkmark
         if ( y == 1 )
-          html += "<th "
+          html += "<thead><tr><th scope='row' "
         else
-          html += "<td "
+          header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ 1 ].to_s
+          html += "<tr><td data-label='" + header_first_row + "' "
         end
         colspan = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0..2].gsub("#","")
         if ( colspan.to_i <= 1 )
@@ -31,13 +31,17 @@ module ProgramsHelper
           @table_types[ data_table_config.table_name_id ][ y ][ 1 ] = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[3..length]
         end
         if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
-          html += "class='subject subject-solo' style='border: 1px solid grey; text-align: center;'>"
+          html += "style='border: 1px solid grey; text-align: center;'>"
         else
 
           # colspan for subsections within tables
-          html += "style='border: 1px solid grey; text-align: left;' colspan='" + colspan.to_s.strip + "'>"
+          html += "class='subject subject-solo' style='border: 1px solid grey; text-align: left;' colspan='" + colspan.to_s.strip + "'>"
         end
-        html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
+        if @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank?
+          html += "&nbsp;"
+        else
+          html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
+        end
         if ( y == 1 )
           html += "</th>"
         else
@@ -50,13 +54,18 @@ module ProgramsHelper
             colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
             length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
             @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
-            html += "<th "
+            html += "<th scope='row' "
           else
             colspan = 1
-            html += "<td "
+            header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
+            html += "<td data-label='" + header_first_row + "' "
           end
           html += "style='border: 1px solid grey; text-align: center;' colspan='" + colspan.to_s.strip + "'>"
-          html += @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
+          if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
+            html += "&nbsp;"
+          else
+            html += @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
+          end
           x += colspan.to_i
           if ( y == 1 )
             html += "</th>"
@@ -64,7 +73,11 @@ module ProgramsHelper
             html += "</td>"
           end
         end
-        html += "</tr>"
+        if ( y == 1 )
+          html += "</tr></thead>"
+        else
+          html += "</tr>"
+        end
       end
       html += "</table>"
 

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "/information/:id" => "programs#information"
   post "/search" => "programs#search"
 
-  resources :users, only: [:new, :create]
+  resources :users, only: [:create] # [:new, :create]
   resources :user_sessions, only: [:create, :destroy]
 
   delete '/sign_out', to: 'user_sessions#destroy', as: :sign_out
