@@ -13,7 +13,7 @@ module ProgramsHelper
 
       data_table_config = @data_table_configs.find_by_table_name_id(f.id)
 
-      html += "<table style='border: 1px solid grey;'>"
+      html += "<table>"
       for y in 1..data_table_config.rows
         # Left-aligned text for categories, unless it's a checkmark
         if ( y == 1 )
@@ -31,11 +31,11 @@ module ProgramsHelper
           @table_types[ data_table_config.table_name_id ][ y ][ 1 ] = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[3..length]
         end
         if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
-          html += "style='border: 1px solid grey; text-align: center;'>"
+          html += "style='border: 1px solid grey;'>"
         else
 
           # colspan for subsections within tables
-          html += "class='subject subject-solo' style='border: 1px solid grey; text-align: left;' colspan='" + colspan.to_s.strip + "'>"
+          html += "class='subject subject-solo' style='border: 1px solid grey;' colspan='" + colspan.to_s.strip + "'>"
         end
         if @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank?
           html += "&nbsp;"
@@ -60,7 +60,7 @@ module ProgramsHelper
             header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
             html += "<td data-label='" + header_first_row + "' "
           end
-          html += "style='border: 1px solid grey; text-align: center;' colspan='" + colspan.to_s.strip + "'>"
+          html += "style='border: 1px solid grey;' colspan='" + colspan.to_s.strip + "'>"
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else

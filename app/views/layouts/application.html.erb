@@ -19,22 +19,28 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-inverse bg-primary">
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div id="navbar">
           <!-- <ul class="nav navbar-nav">
             <li><%= link_to 'Home', root_path %></li>
           </ul> -->
+          <div class="navbar-header">
+            <div class="logo">Dental Schools Directory</div>
+          </div>
           <div class="nav navbar-nav pull-right">
             <% if current_user %>
-              <p>Hello, <%= current_user.login %>!
-              <button class="btn btn-warning"><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
+                <button class="btn navbar-btn">
+                  <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
+                </button>
+              
+
+              <button class="btn navbar-btn"><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
             <% end %>
           </div>
+          
         </div>
-        <div class="navbar-header">
-          <h1>Dental Schools Directory</h1>
-        </div>
+        
         
       </div>
     </nav>

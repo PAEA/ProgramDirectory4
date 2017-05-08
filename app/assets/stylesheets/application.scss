@@ -33,15 +33,32 @@ html, body {
 	font-family: $font-stack;
 	font-size: 16px;
 }
-
+body {
+  padding-top: 70px;
+}
 header {
 	background-color: $header-bg-color;
 	height: 50px;
 	width: 100%;
 }
-
+nav {
+  height: 70px;
+}
 .navbar {
 	border-radius: 0;
+}
+.pull-right {
+  z-index: 5 !important;
+}
+.navbar-nav {
+  position: relative;
+  top: -30px;
+  right: 8px;
+}
+.logo {
+  font-size:20px;
+  position: relative;
+  top: 20px;
 }
 .container {
 	padding-top: 10px;
@@ -93,8 +110,10 @@ header {
 
 // ************** sign in page ***************************
 .terms {
+  border:5px solid #eee;
   height: 150px;
   margin-bottom: 30px;
+  padding:10px;
   overflow-y: scroll;
 }
 
@@ -114,7 +133,7 @@ header {
 // ******************* FILTER STYLES HERE ****************
 
 
-.btn-filter, .btn-filter-index {
+.btn-filter {
 	background-color: $header-bg-color;
 	border: none;
 	margin: 1px 0 1px 0;
@@ -133,6 +152,12 @@ header {
 //     display: inline-block;
 //   }
 // }
+@media screen and (min-width: 768px) {
+  #btn-search-filters, .btn-search-page > span {
+    display: none;
+  }
+  
+}
 
 // animation on arrow
 
@@ -172,7 +197,7 @@ tr:nth-of-type(odd) {
 table th,
 table td {
   padding: 5px;
-  text-align: left;
+  text-align: center;
 }
 .secondary-subject {
 	background-color: #666;
@@ -222,7 +247,23 @@ table td {
     font-weight: bold;
     text-align: left;
   }
+  table td.subject-solo:before {
+    content: "";
+  }
   table td:last-child {
     border-bottom: 0;
   }
 }
+
+//////////// DESKTOP /////////
+@media screen and (min-width: 768px) {
+  .logo {
+    font-size: 40px;
+    top:0px;
+  }
+ 
+  .navbar-nav {
+    top:0px;
+  }
+}
+
