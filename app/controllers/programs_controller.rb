@@ -5,7 +5,7 @@ class ProgramsController < ApplicationController
     @programs = Program.all
 
     @filter_1_field = FieldName.find_by_field_name('type_of_institution')
-    $filter_1_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_1_field.id )
+    $filter_1_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_1_field.id )
 
     $filter_2_values = DataTable.find_by_sql("
       SELECT distinct categories.category as field_value
@@ -32,10 +32,10 @@ class ProgramsController < ApplicationController
           AND data_tables.program_id = programs.id order by program")
 
     @filter_4_field = FieldName.find_by_field_name('state_territory_province')
-    $filter_4_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_4_field.id )
+    $filter_4_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_4_field.id )
 
     @filter_5_field = FieldName.find_by_field_name('doctoral_dental_degree_offered')
-    $filter_5_values = FieldsString.select(:field_value).uniq.where( field_id: @filter_5_field.id )
+    $filter_5_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_5_field.id )
 
   end
 
@@ -46,6 +46,9 @@ class ProgramsController < ApplicationController
     @values_to_search_3 = Array.new
     @values_to_search_4 = Array.new
     @values_to_search_5 = Array.new
+    @programs_search    = Array.new
+
+    get_programs = @all_programs
 
     params.each do |p|
       if ( params[p] == "1" )
@@ -58,10 +61,32 @@ class ProgramsController < ApplicationController
         @values_to_search_4 << p
       elsif ( params[p] == "5" )
         @values_to_search_5 << p
+      elsif ( p == "q" )
+
+        keywords_array = params['q'].split(",").map{ |e| e.strip }
+        where_condition = ""
+        where_values = Array.new
+        keywords_array.each_with_index do |keyword, index|
+          if ( index == 0 )
+            where_condition << "field_value LIKE ?"
+            where_values << "%#{keyword}%"
+          else
+            where_condition << " OR field_value LIKE ?"
+            where_values << "%#{keyword}%"
+          end
+        end
+
+        search_query = [ where_condition ] + where_values
+
+        programs_search = FieldsString.distinct.where( search_query )
+
+        programs_array = Array.new
+        programs_search.each do |ps|
+          programs_array << ps.program_id
+        end
+        get_programs = programs_array
       end
     end
-
-    get_programs = [1,2,3,4,5,6]
 
     if ( !@values_to_search_1.empty? )
       these_values = @values_to_search_1.map{ |e| "'" + e + "'" }.join(', ')
@@ -161,10 +186,6 @@ class ProgramsController < ApplicationController
       get_programs_5 = programs_array
 
       get_programs = get_programs & get_programs_5
-    end
-
-    if ( @values_to_search_1.empty? && @values_to_search_2.empty? && @values_to_search_3.empty? && @values_to_search_4.empty? && @values_to_search_5.empty? )
-      get_programs = @all_programs
     end
 
     @programs = Program.where( "id IN (?)", get_programs )
