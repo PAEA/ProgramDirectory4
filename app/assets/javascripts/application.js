@@ -28,6 +28,8 @@ $(document).ready(function () {
             $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
         }
     });
+    // $(".information-page").find('.collapse').addClass("in");
+
 
 });
 
@@ -42,7 +44,7 @@ function checkWidth() {
     } else {
         $("#collapseAllFilters").addClass("in");
         $(".search-page-filter").addClass("in");
-        $(".information-page").find('.collapse').addClass("in");
+        // $(".information-page").find('.collapse').addClass("in");
         // if $(".search-page-filter").hasClass("in") {
         //     $(".glyphicon").removeClass("glyphicon-menu-down").addClass("glyphicon-menu-up");
         // } else {
