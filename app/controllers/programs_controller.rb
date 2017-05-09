@@ -48,7 +48,7 @@ class ProgramsController < ApplicationController
     @values_to_search_5 = Array.new
     @programs_search    = Array.new
 
-    get_programs = @all_programs
+    get_programs = [1,2,3,4,5,6]
 
     params.each do |p|
       if ( params[p] == "1" )
@@ -61,7 +61,7 @@ class ProgramsController < ApplicationController
         @values_to_search_4 << p
       elsif ( params[p] == "5" )
         @values_to_search_5 << p
-      elsif ( p == "q" )
+      elsif ( p == "q" && !params['q'].blank? )
 
         keywords_array = params['q'].split(",").map{ |e| e.strip }
         where_condition = ""
@@ -88,6 +88,8 @@ class ProgramsController < ApplicationController
       end
     end
 
+    puts params
+
     if ( !@values_to_search_1.empty? )
       these_values = @values_to_search_1.map{ |e| "'" + e + "'" }.join(', ')
       get_programs_query = FieldsString.find_by_sql("
@@ -99,7 +101,7 @@ class ProgramsController < ApplicationController
       get_programs_query.each do |p|
         programs_array << p.program_id
       end
-      get_programs = programs_array
+      get_programs = get_programs & programs_array
     end
 
     if ( !@values_to_search_2.empty? )
