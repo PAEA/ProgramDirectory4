@@ -22,9 +22,14 @@ module ProgramsHelper
           header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ 1 ].to_s
           html += "<tr><td data-label='" + header_first_row + "' "
         end
-        colspan = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0..2].gsub("#","")
+        if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0] == "#")
+          colspan = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0..2].gsub("#","")
+        else
+          colspan = "1"
+        end
         if ( colspan.to_i <= 1 )
           x = 2
+          colspan = "1"
         else
           x = colspan.to_i + 1
           length = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.length
