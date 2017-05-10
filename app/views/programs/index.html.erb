@@ -1,4 +1,3 @@
-<div class="container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
       <h2>Hi, <%= current_user.login %>! Let's help find the right dental program for you.</h2>
@@ -12,7 +11,7 @@
             <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
             <div class="collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
-              <p class="match-option">
+              <p class="filter-option">
               <input value="1" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
               <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value %></label>
               </p>
@@ -23,7 +22,7 @@
             <a class="input btn btn-lg btn-filter btn-index-page" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
             <div class="collapse" id="collapseFilterResidence">
               <% $filter_2_values.each do |item| %>
-                <p class="match-option">
+                <p class="filter-option">
                 <input value="2" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
                 <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                 
@@ -36,7 +35,7 @@
             <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
             <div class="collapse filter-options" id="collapseFilterPrograms">
               <% $filter_3_values.each do |item| %>
-                <p class="match-option">
+                <p class="filter-option">
                 <input value="3" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
                 <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                 </p>
@@ -48,15 +47,15 @@
             <div class="collapse" id="collapseFilterLocation">
               <div style="height:150px; overflow-y:scroll;">
                 <% $filter_4_values.each do |item| %>
-                  <p class="match-option">
+                  <p class="filter-option">
                   <input value="4" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
                   <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                   </p>
                 <% end %>
-                <p class="match-option">
+                <p class="filter-option">
                 <input value="4" class="checkbox-input" type="checkbox" name="Delaware" id="Delaware" />
                 <label class="checkbox-label" for="Delaware">Delaware</label></p>
-                <p class="match-option">
+                <p class="filter-option">
                 <input value="4" class="checkbox-input" type="checkbox" name="District of Columbia" id="District of Columbia" />
                 <label class="checkbox-label" for="District of Columbia">District of Columbia</label></p>
 
@@ -70,7 +69,7 @@
             <a class="input btn btn-lg btn-filter btn-index-page" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
             <div class="collapse" id="collapseFilterDegrees">
               <% $filter_5_values.each do |item| %>
-              <p class="match-option">
+              <p class="filter-option">
               
               <input value="5" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
               <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
@@ -96,4 +95,3 @@
       <% end %>
     </div>
   </div>
-</div>

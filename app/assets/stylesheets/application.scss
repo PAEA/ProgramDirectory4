@@ -16,33 +16,41 @@
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
 
-$font-stack:    Arial, Helvetica, sans-serif;
+$font-stack: Roboto, arial, Helvetica, sans-serif;
+$font-light: 100;
+$font-reg: 300;
 $primary-type-color: #000;
-$primary-bg-color: #fff;
-$header-bg-color: #ccc;
+$primary-color: #219ab4;
+$primary-bg-color: #ffffff;
+
+$secondary-color: #005d83;
+
+$accent-color: #f59c36;
+$inverse-type: #ffffff;
 $lighter-bg-color: #dedede;
+$sign-in-bg: url('/assets/dental-web3.jpg');
 
 h3:not(:first-child) {
 	margin-top: 1.5em;
 }
 
-html, body {
-	background-color: $primary-bg-color;
+body {
+	background-color: $secondary-color;
 	color: $primary-type-color;
 	font-family: $font-stack;
 	font-size: 16px;
-}
-body {
+  font-weight: $font-reg;
+  min-height: 100vh;
   padding-top: 70px;
 }
-header {
-	background-color: $header-bg-color;
-	height: 50px;
-	width: 100%;
-}
+
 nav {
-  height: 70px;
+  background-color: $primary-color;
+  height: 120px;
+  outline: 20px solid $secondary-color;
 }
 .navbar {
 	border-radius: 0;
@@ -53,15 +61,46 @@ nav {
 .navbar-nav {
   position: relative;
   top: -30px;
-  right: 8px;
+  right: 35px;
 }
 .logo {
+  color: $inverse-type;
   font-size:20px;
+  font-weight: $font-light;
+  margin-left: 20px;
   position: relative;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   top: 20px;
 }
+.logo-img {
+  width: 100px;
+}
+.logo-text {
+  position: absolute;
+  left: 0px;
+  top:40px;
+}
+
 .container {
-	padding-top: 10px;
+  background: none;
+  margin: 0 auto;
+  padding-top: 70px;
+}
+.col-md-8 {
+  background: $primary-bg-color;
+}
+.main-img {
+  height: 30px;
+  width: 100%;
+}
+.main-img > img {
+  object-fit: cover;
+  height: 420px;
+  width: 100vw;  
+}
+.form-control {
+  border:1px solid $primary-color;
 }
 .input {
 	width: 100%;
@@ -71,7 +110,6 @@ nav {
 	display: block;
 	margin-top: 40px;
 }
-
 
 .checkbox-label  {
 	position: relative;
@@ -108,33 +146,58 @@ nav {
 	opacity: 1; /*for fade in effect*/
 }
 
-// ************** sign in page ***************************
-.terms {
-  border:5px solid #eee;
-  height: 150px;
-  margin-bottom: 30px;
-  padding:10px;
-  overflow-y: scroll;
+.btn-inverse {
+  color: $primary-color;
+  background-color: $inverse-type;
+  border-color: $primary-color;
+  &:hover {
+    color: $inverse-type;
+    background-color: $primary-color;
+  }
 }
 
-// ******** MATCH ME FORM *****************
-//also for filter options
-.match-option {
-	background-color: $primary-bg-color;
-  border-bottom: 1px solid $lighter-bg-color;
-	min-height: 40px;
-	margin: 5px 0 5px 0;
-	padding: 10px;
+a:link, a:visted {
+  color: $accent-color;
 }
-.match-option label {
-  width: 100%;
+// ************** sign in page ***************************
+#sign-in-block {
+    background-color: $primary-color;
+    border: 5px solid $accent-color;
+    border-radius: 25px;
+    color: $inverse-type;
+    margin-top:70px;
+    padding: 15px 45px 45px;
+  }
+.terms {
+  color: $primary-type-color;
+  // border:5px solid #eee;
+  // height: 150px;
+  // margin-bottom: 30px;
+  // padding:10px;
+  // overflow-y: scroll;
+}
+.panel {
+  color: $primary-type-color;
+}
+
+label {
+  font-weight: $font-light;
 }
 
 // ******************* FILTER STYLES HERE ****************
-
+.filter-option {
+  background-color: $primary-bg-color;
+  border-bottom: 1px solid $lighter-bg-color;
+  min-height: 40px;
+  margin: 5px 0 5px 0;
+  padding: 10px;
+}
+.filter-option label {
+  width: 100%;
+}
 
 .btn-filter {
-	background-color: $header-bg-color;
+	background-color: $primary-color;
 	border: none;
 	margin: 1px 0 1px 0;
 	text-align: left;
@@ -257,14 +320,28 @@ table td {
 
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
-  .logo {
-    font-size: 40px;
-    top:0px;
+  body {
+    background-image: $sign-in-bg;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
- 
+  nav {
+    height: 70px;
+  }
   .navbar-nav {
     top:0px;
   }
+  .logo-text {
+    position: inherit;
+    top: 0px;
+    left: 0px;
+  }
+  .main-img {
+    display: none;
+  }
+
   .information-page > .collapse
     {
         display: block;
