@@ -26,20 +26,19 @@
     <nav class="navbar navbar-fixed-top">
       <!-- <div class="container"> -->
         <div id="navbar">
-          <!-- <ul class="nav navbar-nav">
-            <li><%= link_to 'Home', root_path %></li>
-          </ul> -->
+          
           <div class="navbar-header">
-            <div class="logo">Dental Schools Directory</div>
+            <div class="logo"><%= image_tag("adea-logo.png", class: "logo-img") %>
+            <span class="logo-text">Official Guide to Dental Schools</span></div>
           </div>
           <div class="nav navbar-nav pull-right">
             <% if current_user %>
-                <button class="btn navbar-btn">
+                <button class="btn navbar-btn btn-inverse ">
                   <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
                 </button>
               
 
-              <button class="btn navbar-btn"><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
+              <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
             <% end %>
           </div>
           
