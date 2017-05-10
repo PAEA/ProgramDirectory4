@@ -19,9 +19,11 @@
 
 $font-stack:    Arial, Helvetica, sans-serif;
 $primary-type-color: #000;
-$primary-bg-color: #fff;
-$header-bg-color: #ccc;
+$primary-color: #219ab4;
+$primary-bg-color: #ffffff;
+$inverse-type: #ffffff;
 $lighter-bg-color: #dedede;
+$sign-in-bg: url('/assets/dental-web3.jpg');
 
 h3:not(:first-child) {
 	margin-top: 1.5em;
@@ -34,14 +36,12 @@ html, body {
 	font-size: 16px;
 }
 body {
+  min-height: 100vh;
   padding-top: 70px;
 }
-header {
-	background-color: $header-bg-color;
-	height: 50px;
-	width: 100%;
-}
+
 nav {
+  background-color: $primary-color;
   height: 70px;
 }
 .navbar {
@@ -61,7 +61,7 @@ nav {
   top: 20px;
 }
 .container {
-	padding-top: 10px;
+	padding-top: 50px;
 }
 .input {
 	width: 100%;
@@ -117,24 +117,21 @@ nav {
   overflow-y: scroll;
 }
 
-// ******** MATCH ME FORM *****************
-//also for filter options
-.match-option {
-	background-color: $primary-bg-color;
+
+// ******************* FILTER STYLES HERE ****************
+.filter-option {
+  background-color: $primary-bg-color;
   border-bottom: 1px solid $lighter-bg-color;
-	min-height: 40px;
-	margin: 5px 0 5px 0;
-	padding: 10px;
+  min-height: 40px;
+  margin: 5px 0 5px 0;
+  padding: 10px;
 }
-.match-option label {
+.filter-option label {
   width: 100%;
 }
 
-// ******************* FILTER STYLES HERE ****************
-
-
 .btn-filter {
-	background-color: $header-bg-color;
+	background-color: $primary-color;
 	border: none;
 	margin: 1px 0 1px 0;
 	text-align: left;
@@ -265,6 +262,22 @@ table td {
   .navbar-nav {
     top:0px;
   }
+
+  body {
+    background-image: $sign-in-bg;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  #sign-in-block {
+    background-color: $primary-color;
+    border-radius: 25px;
+    color: $inverse-type;
+    padding: 5px 25px 25px;
+  }
+
   .information-page > .collapse
     {
         display: block;
