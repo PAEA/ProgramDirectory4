@@ -27,6 +27,8 @@ $primary-color: #219ab4;
 $primary-bg-color: #ffffff;
 
 $secondary-color: #005d83;
+
+$accent-color: #f59c36;
 $inverse-type: #ffffff;
 $lighter-bg-color: #dedede;
 $sign-in-bg: url('/assets/dental-web3.jpg');
@@ -35,14 +37,12 @@ h3:not(:first-child) {
 	margin-top: 1.5em;
 }
 
-html, body {
-	background-color: $primary-bg-color;
+body {
+	background-color: $secondary-color;
 	color: $primary-type-color;
 	font-family: $font-stack;
 	font-size: 16px;
   font-weight: $font-reg;
-}
-body {
   min-height: 100vh;
   padding-top: 70px;
 }
@@ -81,10 +81,24 @@ nav {
   left: 0px;
   top:40px;
 }
-.container {
-	padding-top: 70px;
-}
 
+.container {
+  background: none;
+  margin: 0 auto;
+  padding-top: 70px;
+}
+.col-md-8 {
+  background: $primary-bg-color;
+}
+.main-img {
+  height: 30px;
+  width: 100%;
+}
+.main-img > img {
+  object-fit: cover;
+  height: 420px;
+  width: 100vw;  
+}
 .form-control {
   border:1px solid $primary-color;
 }
@@ -141,7 +155,19 @@ nav {
     background-color: $primary-color;
   }
 }
+
+a:link, a:visted {
+  color: $accent-color;
+}
 // ************** sign in page ***************************
+#sign-in-block {
+    background-color: $primary-color;
+    border: 5px solid $accent-color;
+    border-radius: 25px;
+    color: $inverse-type;
+    margin-top:70px;
+    padding: 15px 45px 45px;
+  }
 .terms {
   color: $primary-type-color;
   // border:5px solid #eee;
@@ -149,6 +175,9 @@ nav {
   // margin-bottom: 30px;
   // padding:10px;
   // overflow-y: scroll;
+}
+.panel {
+  color: $primary-type-color;
 }
 
 label {
@@ -291,7 +320,6 @@ table td {
 
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
-
   body {
     background-image: $sign-in-bg;
     background-attachment: fixed;
@@ -310,11 +338,8 @@ table td {
     top: 0px;
     left: 0px;
   }
-  #sign-in-block {
-    background-color: $primary-color;
-    border-radius: 25px;
-    color: $inverse-type;
-    padding: 15px 45px 45px;
+  .main-img {
+    display: none;
   }
 
   .information-page > .collapse

@@ -47,8 +47,11 @@
         
       <!-- </div> -->
     </nav>
-
+    <div class="main-img">
+       <%= image_tag('dental-stock2.jpg') %>
+    </div>
     <div class="container">
+
       <% flash.each do |key, value| %>
         <div class="alert alert-<%= key %>">
           <%= value %>
