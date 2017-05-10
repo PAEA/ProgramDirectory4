@@ -1,5 +1,6 @@
-  <div class="row">
+  <div class="row white-bg">
     <div class="col-sm-5 col-md-4 col-lg-3">
+    <p>&nbsp;</p>
       <a id="btn-search-filters" class="input btn btn-lg btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseAllFilters" aria-expanded="false" aria-controls="collapseAllFilters"><span class="glyphicon glyphicon-menu-down"></span> Search Filters</a>
       <div class="collapse in" id="collapseAllFilters">
         <%= form_tag('/search') do %>
@@ -72,6 +73,7 @@
     </div>
 
     <div class="col-md-offset-1 col-md-7 col-lg-offset-1 col-lg-8 col-sm-7">
+      <br />
       <h4>Filtered by:</h4>
 
       <% if ( !@values_to_search_1.empty? ) %>

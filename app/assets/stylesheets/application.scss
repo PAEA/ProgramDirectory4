@@ -87,7 +87,7 @@ nav {
   margin: 0 auto;
   padding-top: 70px;
 }
-.col-md-8 {
+.white-bg {
   background: $primary-bg-color;
 }
 .main-img {
@@ -148,23 +148,18 @@ nav {
 .btn-primary {
   background-color: $primary-color;
   border: none;
-  color: $inverse-type;
-  &:hover {
-    background-color: $accent-color;
-    color: $inverse-type;
-  }
+  color: $inverse-type;  
 }
 
 .btn-inverse {
   color: $primary-color;
   background-color: $inverse-type;
   border-color: $primary-color;
-  &:hover {
-    color: $inverse-type;
-    background-color: $accent-color;
-  }
 }
-
+.btn:hover {
+    background-color: $accent-color;
+    color: $inverse-type;
+  }
 a, a:link, a:visted {
   color: $accent-color;
 }
@@ -203,6 +198,7 @@ label {
 
 .btn-filter {
 	background-color: $primary-color;
+  color: $inverse-type;
 	border: none;
 	margin: 1px 0 1px 0;
 	text-align: left;
