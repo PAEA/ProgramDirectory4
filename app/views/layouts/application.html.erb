@@ -28,8 +28,10 @@
         <div id="navbar">
           
           <div class="navbar-header">
-            <div class="logo"><%= image_tag("adea-logo.png", class: "logo-img") %>
-            <span class="logo-text">Official Guide to Dental Schools</span></div>
+            <div class="logo">
+            <a class="header-link" href="/index"><%= image_tag("adea-logo.png", class: "logo-img") %>
+            <span class="logo-text">Official Guide to Dental Schools</span></a>
+            </div>
           </div>
           <div class="nav navbar-nav pull-right">
             <% if current_user %>
