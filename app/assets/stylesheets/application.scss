@@ -16,41 +16,20 @@
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
-@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese);
-@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
+@import 'theme';
 
-$font-stack: Roboto, arial, Helvetica, sans-serif;
-$font-light: 300;
-$font-reg: 400;
-$primary-type-color: #000;
-$primary-color: #219ab4;
-$primary-bg-color: #ffffff;
-
-$secondary-color: #005d83;
-
-$accent-color: #f59c36;
-$inverse-type: #ffffff;
-$lighter-bg-color: #dedede;
-$sign-in-bg: url('/assets/dental-web3.jpg');
 
 h3:not(:first-child) {
 	margin-top: 1.5em;
 }
 
 body {
-	background-color: $secondary-color;
-	color: $primary-type-color;
-	font-family: $font-stack;
-	font-size: 16px;
-  font-weight: $font-reg;
   min-height: 100vh;
   padding-top: 70px;
 }
 
 nav {
-  background-color: $primary-color;
   height: 120px;
-  outline: 20px solid $secondary-color;
 }
 .navbar {
 	border-radius: 0;
@@ -64,13 +43,8 @@ nav {
   right: 35px;
 }
 .logo {
-  color: $inverse-type;
-  font-size:20px;
-  font-weight: $font-light;
   margin-left: 20px;
   position: relative;
-  text-transform: uppercase;
-  letter-spacing: 2px;
   top: 20px;
 }
 .logo-img {
@@ -145,49 +119,17 @@ nav {
 	max-width: 35px; /*an arbitratry number more than the icon's width*/
 	opacity: 1; /*for fade in effect*/
 }
-.btn-primary {
-  background-color: $primary-color;
-  border: none;
-  color: $inverse-type;  
-}
 
-.btn-inverse {
-  color: $primary-color;
-  background-color: $inverse-type;
-  border-color: $primary-color;
-}
-.btn:hover {
-    background-color: $accent-color;
-    color: $inverse-type;
-  }
-a, a:link, a:visted {
-  color: $accent-color;
-}
 
 // ************** sign in page ***************************
 #sign-in-block {
-    background-color: $primary-color;
-    border: 5px solid $accent-color;
-    border-radius: 25px;
-    color: $inverse-type;
     margin-top:70px;
     padding: 15px 45px 45px;
   }
-.terms {
-  color: $primary-type-color;
-}
-.panel {
-  color: $primary-type-color;
-}
 
-label {
-  font-weight: $font-light;
-}
+// ******************* FILTERS STYLES HERE ****************
 
-// ******************* FILTER STYLES HERE ****************
 .filter-option {
-  background-color: $primary-bg-color;
-  border-bottom: 1px solid $lighter-bg-color;
   min-height: 40px;
   margin: 5px 0 5px 0;
   padding: 10px;
@@ -195,27 +137,10 @@ label {
 .filter-option label {
   width: 100%;
 }
-
 .btn-filter {
-	background-color: $primary-color;
-  color: $inverse-type;
-	border: none;
 	margin: 1px 0 1px 0;
-	text-align: left;
 }
-// .glyphicon-menu-down {
-//     display: inline-block;
-// }
 
-
-// @media screen and (min-width: 768px) {
-//   .glyphicon-menu-down {
-//     display: none;
-//   }
-//   .glyphicon-menu-up {
-//     display: inline-block;
-//   }
-// }
 @media screen and (min-width: 768px) {
   #btn-search-filters, .btn-search-page > span {
     display: none;
@@ -250,9 +175,7 @@ table {
 }
 
 table tr {
-  // background: #f8f8f8;
   border: 1px solid #000;
-  // padding: .35em;
 }
 tr:nth-of-type(odd) {
   background: #eee;
@@ -321,13 +244,6 @@ table td {
 
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
-  body {
-    background-image: $sign-in-bg;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
   nav {
     height: 70px;
   }
@@ -339,10 +255,7 @@ table td {
     top: 0px;
     left: 0px;
   }
-  .main-img {
-    display: none;
-  }
-
+  
   .information-page > .collapse
     {
         display: block;
