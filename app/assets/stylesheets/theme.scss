@@ -39,6 +39,14 @@ nav {
   letter-spacing: 2px;
 }
 
+.logo-link {
+	color: $inverse-type;
+	&:hover, &:active, &:visited {
+		color: $inverse-type;
+		text-decoration: none;
+	}
+}
+
 .white-bg {
   background: $primary-bg-color;
 }
