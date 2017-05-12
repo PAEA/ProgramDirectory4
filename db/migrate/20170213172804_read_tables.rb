@@ -32,7 +32,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
     # Creates Categories table in the database
     create_table :categories do |t|
       t.integer :data_table_config_id
-      t.string :category
+      t.string :category, :limit => 500
 
       t.timestamps
     end
@@ -78,7 +78,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
       t.integer :subheader_id
       t.integer :extraheader_id
       t.integer :category_id
-      t.string  :cell_value
+      t.string  :cell_value, :limit => 400
       t.integer :program_id
       t.integer :cell_row
       t.integer :cell_column
@@ -91,7 +91,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
     # Initialize how many different configurations for the tables
     current_table_config_id = 1
 
-    Dir.glob("table_*.csv") do |csvfile|
+    Dir.glob("csv/table_*.csv") do |csvfile|
 
       categories = Array.new
       main_headers = Array.new

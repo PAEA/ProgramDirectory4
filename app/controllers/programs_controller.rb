@@ -2,7 +2,8 @@ class ProgramsController < ApplicationController
 
   def index
 
-    @programs = Program.all
+    @programs = Program.all.order(:program_string)
+    @program_ids = Program.select(:id)
 
     @filter_1_field = FieldName.find_by_field_name('type_of_institution')
     $filter_1_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_1_field.id )
@@ -19,17 +20,20 @@ class ProgramsController < ApplicationController
           AND data_table_configs.id = data_tables.data_table_config_id
           AND data_tables.program_id = programs.id order by program")
 
-    $filter_3_values = DataTable.find_by_sql("
-      SELECT distinct categories.category as field_value
-        FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
-        WHERE table_names.table_name = 'predental_programs'
-          AND data_table_configs.table_name_id = table_names.id
-          AND categories.data_table_config_id = data_table_configs.id
-          AND data_tables.category_id = categories.id
-          AND data_tables.header_id = main_headers.id
-          AND main_headers.table_name_id = table_names.id
-          AND data_table_configs.id = data_tables.data_table_config_id
-          AND data_tables.program_id = programs.id order by program")
+    #$filter_3_values = DataTable.find_by_sql("
+    #  SELECT distinct categories.category as field_value
+    #    FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
+    #    WHERE table_names.table_name = 'predental_programs'
+    #      AND data_table_configs.table_name_id = table_names.id
+    #      AND categories.data_table_config_id = data_table_configs.id
+    #      AND data_tables.category_id = categories.id
+    #      AND data_tables.header_id = main_headers.id
+    #      AND main_headers.table_name_id = table_names.id
+    #      AND data_table_configs.id = data_tables.data_table_config_id
+    #      AND data_tables.program_id = programs.id order by program")
+
+    @filter_3_field = FieldName.find_by_field_name('predental_programs')
+    $filter_3_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_3_field.id )
 
     @filter_4_field = FieldName.find_by_field_name('state_territory_province')
     $filter_4_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_4_field.id )
@@ -48,7 +52,7 @@ class ProgramsController < ApplicationController
     @values_to_search_5 = Array.new
     @programs_search    = Array.new
 
-    get_programs = [1,2,3,4,5,6]
+    get_programs = @program_ids
 
     params.each do |p|
       if ( params[p] == "1" )
@@ -125,36 +129,36 @@ class ProgramsController < ApplicationController
       get_programs_query.each do |p|
         programs_array << p.id
       end
-      get_programs_2 = programs_array
-
-      get_programs = get_programs & get_programs_2
+      get_programs = get_programs & programs_array
 
     end
 
     if ( !@values_to_search_3.empty? )
       these_values = @values_to_search_3.map{ |e| "'" + e + "'" }.join(', ')
-      get_programs_query = Program.find_by_sql("
-        SELECT DISTINCT programs.id
-          FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
-          WHERE table_names.table_name = 'predental_programs'
-            AND data_table_configs.table_name_id = table_names.id
-            AND categories.data_table_config_id = data_table_configs.id
-            AND data_tables.category_id = categories.id
-            AND data_tables.header_id = main_headers.id
-            AND main_headers.table_name_id = table_names.id
-            AND data_table_configs.id = data_tables.data_table_config_id
-            AND data_tables.program_id = programs.id
-            AND categories.category in (" + these_values +")
-            AND main_headers.header = 'Yes'"
-      )
+      get_programs_query = FieldsString.find_by_sql("
+        SELECT program_id as program_id
+          FROM fields_strings
+          WHERE field_value IN (" + these_values + ")" )
+      #get_programs_query = Program.find_by_sql("
+      #  SELECT DISTINCT programs.id
+      #    FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
+      #    WHERE table_names.table_name = 'predental_programs'
+      #      AND data_table_configs.table_name_id = table_names.id
+      #      AND categories.data_table_config_id = data_table_configs.id
+      #      AND data_tables.category_id = categories.id
+      #      AND data_tables.header_id = main_headers.id
+      #      AND main_headers.table_name_id = table_names.id
+      #      AND data_table_configs.id = data_tables.data_table_config_id
+      #      AND data_tables.program_id = programs.id
+      #      AND categories.category in (" + these_values +")
+      #      AND main_headers.header = 'Yes'"
+      #)
 
       programs_array = Array.new
       get_programs_query.each do |p|
         programs_array << p.id
       end
-      get_programs_3 = programs_array
-
-      get_programs = get_programs & get_programs_3
+      get_programs = get_programs & programs_array
 
     end
 
@@ -169,9 +173,8 @@ class ProgramsController < ApplicationController
       get_programs_query.each do |p|
         programs_array << p.program_id
       end
-      get_programs_4 = programs_array
+      get_programs = get_programs & programs_array
 
-      get_programs = get_programs & get_programs_4
     end
 
     if ( !@values_to_search_5.empty? )
@@ -185,9 +188,8 @@ class ProgramsController < ApplicationController
       get_programs_query.each do |p|
         programs_array << p.program_id
       end
-      get_programs_5 = programs_array
+      get_programs = get_programs & programs_array
 
-      get_programs = get_programs & get_programs_5
     end
 
     @programs = Program.where( "id IN (?)", get_programs )
