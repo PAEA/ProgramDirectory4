@@ -16,7 +16,7 @@
 //= require_tree .
 
 $(document).ready(function () {
-    $('.btn-filter').on('click', function (e) {
+    $('.btn-header').on('click', function (e) {
           // e.preventDefault();
         if ($(this).find('> span').hasClass('arrowup')) {
             $(this).find('> span').removeClass('arrowup').addClass('arrowdown');

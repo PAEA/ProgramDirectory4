@@ -13,28 +13,14 @@
  *= require_tree .
  *= require_self
  */
+@import 'variables';
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
 
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese);
-@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
-
-/////////// colors and fonts ////////
-$font: Roboto, arial, Helvetica, sans-serif;
-$font-light: 300;
-$font-reg: 400;
-$primary-type-color: #000;
-$primary-color: #219ab4;
-$primary-bg-color: #ffffff;
-
-$secondary-color: #005d83;
-
-$accent-color: #f59c36;
-$inverse-type: #ffffff;
-$lighter-bg-color: #dedede;
-$sign-in-bg: url('/assets/dental-web3.jpg');
+// @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
 
 
 
@@ -42,7 +28,7 @@ $sign-in-bg: url('/assets/dental-web3.jpg');
 
 body {
   background-color: $secondary-color;
-  color: $primary-type-color;
+  color: $primary-type;
   font-family: $font;
   font-size: 16px;
   font-weight: $font-reg;
@@ -91,8 +77,9 @@ a, a:link, a:visted {
   padding-top: 70px;
 }
 
-.white-bg {
+.overlay{
   background: $primary-bg-color;
+  padding-top: 5px;
 }
 
 
@@ -143,7 +130,7 @@ a, a:link, a:visted {
 .form-control {
   border:1px solid $primary-color;
 }
-.input {
+.input-wide {
 	width: 100%;
 }
 
@@ -157,6 +144,8 @@ a, a:link, a:visted {
 	padding-left: 30px;
 	cursor: pointer;
 	font-weight: normal;
+  width: 100%;
+
 }
 .checkbox-label:before, .checkbox-label:after {
 	font-family: FontAwesome;
@@ -204,26 +193,27 @@ a, a:link, a:visted {
 
 /////////////// modal module /////////////
 .modal-content {
-  color: $primary-type-color;
+  color: $primary-type;
 }
 
 /////////////// panel module ///////////////
 
 .panel {
-  color: $primary-type-color;
+  color: $primary-type;
 }
 
 // ******************* FILTERS STYLES HERE ****************
 
 .filter-option {
   background-color: $primary-bg-color;
-  border-bottom: 1px solid $lighter-bg-color;
+  border-bottom: 1px solid $secondary-color;
   min-height: 40px;
   margin: 5px 0 5px 0;
   padding: 10px;
 }
-.filter-option label {
-  width: 100%;
+
+.filter-option:last-child {
+  border-bottom: 0px;
 }
 
 /////////////////////////// buttons ///////////////////
@@ -238,9 +228,10 @@ a, a:link, a:visted {
   border: none;
   color: $inverse-type;  
 }
-.btn-filter {
+.btn-header {
 	margin: 1px 0 1px 0;
   text-align: left;
+  width: 100%;
 }
 
 .btn-inverse {
@@ -252,7 +243,7 @@ a, a:link, a:visted {
 
 // animation on arrow
 
-.btn-filter > span {
+.btn-header > span {
   transition: transform .5s;
 }
 
@@ -264,11 +255,23 @@ a, a:link, a:visted {
 }
 // **************** SCHOOL LISTING STYLES **********************
 
+.info-hed {
+  color: $secondary-color;
+  font-weight: $font-reg;
+}
 
+.info-well {
+  min-height: 20px;
+  margin-bottom: 20px;
+}
+
+.info-subhed {
+
+}
 // ****************** RESPONSIVE TABLES **************
 
 table {
-  border: 1px solid #000;
+  // border: 1px solid $primary-type;
   border-collapse: collapse;
   margin: 0 0 20px 0;
   padding: 0;
@@ -277,20 +280,27 @@ table {
 }
 
 table tr {
-  border: 1px solid #000;
+  // border: 1px solid $secondary-color;
 }
-tr:nth-of-type(odd) {
-  background: #eee;
+tr:nth-of-type(even) {
+  background: $lighter-bg-color;
 }
 
+table th {
+  background-color: $secondary-color;
+  color: $inverse-type;
+  font-weight: $font-bold;
+}
 table th,
 table td {
   padding: 5px;
   text-align: center;
+  border: 1px solid $secondary-color;
+
 }
 .secondary-subject {
-	background-color: #666;
-	color: #fff;
+	background-color: $secondary-color;
+	color: $inverse-type;
 	text-align: left;
 }
 @media screen and (max-width: 600px) {
@@ -312,17 +322,20 @@ table td {
 		text-transform: uppercase;
   }
   .subject-solo {
-  	background-color: #666;
-  	color: #fff;
+  	background-color: $primary-color;
+  	color: $inverse-type;
   	text-align: left;
   }
   table tr {
-    // border-bottom: 3px solid #333;
+    border-bottom: 1px solid $secondary-color;
     display: block;
     margin-bottom: 15px;
   }
   table td {
-    border-top: 1px solid #333;
+    border:none;
+    border-top: 1px solid $secondary-color;
+
+    // border-top: 1px solid #333;
     display: block;
     text-align: right;
   }
@@ -376,7 +389,11 @@ table td {
         display: block;
     }
 
-  #btn-search-filters, .btn-search-page > span {
+  #btn-search-filters, .nodisplay {
+    display: none;
+  }
+
+  .nodisplay {
     display: none;
   }
 }

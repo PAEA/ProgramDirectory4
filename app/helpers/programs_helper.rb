@@ -36,11 +36,11 @@ module ProgramsHelper
           @table_types[ data_table_config.table_name_id ][ y ][ 1 ] = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[3..length]
         end
         if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
-          html += "style='border: 1px solid grey;'>"
+          html += ">"
         else
 
           # colspan for subsections within tables
-          html += "class='subject subject-solo' style='border: 1px solid grey;' colspan='" + colspan.to_s.strip + "'>"
+          html += "class='subject subject-solo' colspan='" + colspan.to_s.strip + "'>"
         end
         if @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank?
           html += "&nbsp;"
@@ -65,7 +65,7 @@ module ProgramsHelper
             header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
             html += "<td data-label='" + header_first_row + "' "
           end
-          html += "style='border: 1px solid grey;' colspan='" + colspan.to_s.strip + "'>"
+          html += "colspan='" + colspan.to_s.strip + "'>"
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else
