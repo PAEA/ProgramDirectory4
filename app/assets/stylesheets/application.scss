@@ -16,38 +16,106 @@
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
-@import 'theme';
-
-//testing github push
 
 
-h3:not(:first-child) {
-	margin-top: 1.5em;
-}
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
+
+/////////// colors and fonts ////////
+$font: Roboto, arial, Helvetica, sans-serif;
+$font-light: 300;
+$font-reg: 400;
+$primary-type-color: #000;
+$primary-color: #219ab4;
+$primary-bg-color: #ffffff;
+
+$secondary-color: #005d83;
+
+$accent-color: #f59c36;
+$inverse-type: #ffffff;
+$lighter-bg-color: #dedede;
+$sign-in-bg: url('/assets/dental-web3.jpg');
+
+
+
+///////////// base //////////////
 
 body {
+  background-color: $secondary-color;
+  color: $primary-type-color;
+  font-family: $font;
+  font-size: 16px;
+  font-weight: $font-reg;
   min-height: 100vh;
   padding-top: 70px;
 }
 
-nav {
+header {
+  background-color: $primary-color;
   height: 120px;
+  outline: 20px solid $secondary-color;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top:0;
+  z-index: 1030;
 }
-.navbar {
-	border-radius: 0;
+
+
+h3 {
+	margin-top: 1.5em;
 }
-.pull-right {
+
+label {
+  font-weight: $font-light;
+}
+
+a, a:link, a:visted {
+  color: $accent-color;
+}
+
+/////////////// layout ///////////////////////
+
+
+.header-nav {
+  float: right;
+  position: relative;
+  top: -20px;
+  right: 35px;
   z-index: 5 !important;
 }
-.navbar-nav {
-  position: relative;
-  top: -30px;
-  right: 35px;
+
+.container {
+  background: none;
+  margin: 0 auto;
+  padding-top: 70px;
 }
+
+.white-bg {
+  background: $primary-bg-color;
+}
+
+
+////////////// modules //////////////////////
+
+/// logo module //////////
 .logo {
+  color: $inverse-type;
+  font-size:20px;
+  font-weight: $font-light;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   margin-left: 20px;
   position: relative;
   top: 20px;
+}
+
+.logo-link {
+  color: $inverse-type;
+  &:hover, &:active, &:visited {
+    color: $inverse-type;
+    text-decoration: none;
+  }
 }
 .logo-img {
   width: 100px;
@@ -58,14 +126,8 @@ nav {
   top:40px;
 }
 
-.container {
-  background: none;
-  margin: 0 auto;
-  padding-top: 70px;
-}
-.white-bg {
-  background: $primary-bg-color;
-}
+
+
 .main-img {
   height: 30px;
   width: 100%;
@@ -75,6 +137,9 @@ nav {
   height: 420px;
   width: 100vw;  
 }
+
+////////////////// form module //////////////////
+
 .form-control {
   border:1px solid $primary-color;
 }
@@ -123,15 +188,36 @@ nav {
 }
 
 
-// ************** sign in page ***************************
-#sign-in-block {
-    margin-top:70px;
-    padding: 15px 45px 45px;
-  }
+// ************** block module ***************************
+.block {
+  border-radius: 25px;
+  margin-top:70px;
+  padding: 15px 45px 45px;
+}
+
+.block-blue {
+  background-color: $primary-color;
+  border: 5px solid $accent-color;
+  color: $inverse-type;
+
+}
+
+/////////////// modal module /////////////
+.modal-content {
+  color: $primary-type-color;
+}
+
+/////////////// panel module ///////////////
+
+.panel {
+  color: $primary-type-color;
+}
 
 // ******************* FILTERS STYLES HERE ****************
 
 .filter-option {
+  background-color: $primary-bg-color;
+  border-bottom: 1px solid $lighter-bg-color;
   min-height: 40px;
   margin: 5px 0 5px 0;
   padding: 10px;
@@ -139,16 +225,30 @@ nav {
 .filter-option label {
   width: 100%;
 }
-.btn-filter {
-	margin: 1px 0 1px 0;
+
+/////////////////////////// buttons ///////////////////
+
+.btn:hover {
+    background-color: $accent-color;
+    color: $inverse-type;
 }
 
-@media screen and (min-width: 768px) {
-  #btn-search-filters, .btn-search-page > span {
-    display: none;
-  }
-  
+.btn-primary {
+  background-color: $primary-color;
+  border: none;
+  color: $inverse-type;  
 }
+.btn-filter {
+	margin: 1px 0 1px 0;
+  text-align: left;
+}
+
+.btn-inverse {
+  color: $primary-color;
+  background-color: $inverse-type;
+  border-color: $primary-color;
+}
+
 
 // animation on arrow
 
@@ -162,7 +262,7 @@ nav {
 .arrowup {
   transform: rotate(180deg);
 }
-// **************** CARD STYLES **********************
+// **************** SCHOOL LISTING STYLES **********************
 
 
 // ****************** RESPONSIVE TABLES **************
@@ -246,11 +346,20 @@ table td {
 
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
-  nav {
+   body {
+    background-image: $sign-in-bg;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+
+  header {
     height: 70px;
   }
-  .navbar-nav {
-    top:0px;
+  .header-nav {
+    top:10px;
   }
   .logo-text {
     position: inherit;
@@ -258,9 +367,17 @@ table td {
     left: 0px;
   }
   
+  .main-img {
+    display: none;
+  }
+
   .information-page > .collapse
     {
         display: block;
     }
+
+  #btn-search-filters, .btn-search-page > span {
+    display: none;
+  }
 }
 
