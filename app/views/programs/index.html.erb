@@ -8,6 +8,7 @@
         <div>
           <div>
             <a class="input btn btn-lg btn-primary btn-filter" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
+            <a class="input btn btn-lg btn-filter btn-index-page" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">
             <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
             <div class="collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
@@ -25,7 +26,7 @@
                 <p class="filter-option">
                 <input value="2" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
                 <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
-                
+
                 </p>
               <% end %>
             </div>
@@ -52,13 +53,6 @@
                   <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                   </p>
                 <% end %>
-                <p class="filter-option">
-                <input value="4" class="checkbox-input" type="checkbox" name="Delaware" id="Delaware" />
-                <label class="checkbox-label" for="Delaware">Delaware</label></p>
-                <p class="filter-option">
-                <input value="4" class="checkbox-input" type="checkbox" name="District of Columbia" id="District of Columbia" />
-                <label class="checkbox-label" for="District of Columbia">District of Columbia</label></p>
-
 
               </div>
             <!--  <%= select_tag 'location', options_for_select($filter_4_values.collect{ |item| [item.field_value, 4, name: item.field_value] }), multiple: true, class: "input" %> -->
@@ -70,13 +64,13 @@
             <div class="collapse" id="collapseFilterDegrees">
               <% $filter_5_values.each do |item| %>
               <p class="filter-option">
-              
+
               <input value="5" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
               <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
               </p>
               <% end %>
             </div>
-            
+
           </div>
           &nbsp;
           <%= submit_tag("Filter Results", class: 'btn btn-primary btn-lg input') %>
@@ -87,7 +81,7 @@
       <% end %>
       <h2><%= pluralize(@programs.size, 'Dental School') %></h2>
       <% @programs.each do |p| %>
-        
+
             <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
 
             <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>

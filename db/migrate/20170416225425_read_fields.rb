@@ -55,7 +55,7 @@ class ReadFields < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    Dir.glob("fields_*.csv") do |csvfile|
+    Dir.glob("csv/fields_*.csv") do |csvfile|
 
       array_from_csv = CSV.read( csvfile ).reject { |row| row.all?(&:nil?) }
 

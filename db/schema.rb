@@ -14,9 +14,9 @@ ActiveRecord::Schema.define(version: 20170419150541) do
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
-    t.string   "category"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.string   "category",             limit: 500
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   create_table "data_table_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -34,12 +34,12 @@ ActiveRecord::Schema.define(version: 20170419150541) do
     t.integer  "subheader_id"
     t.integer  "extraheader_id"
     t.integer  "category_id"
-    t.string   "cell_value"
+    t.string   "cell_value",           limit: 400
     t.integer  "program_id"
     t.integer  "cell_row"
     t.integer  "cell_column"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   create_table "display_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
