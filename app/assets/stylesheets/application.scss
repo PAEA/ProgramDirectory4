@@ -20,7 +20,7 @@
 
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese);
-@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
+// @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700&subset=latin,latin-ext,greek-ext,greek,vietnamese,cyrillic,cyrillic-ext);
 
 
 
@@ -28,7 +28,7 @@
 
 body {
   background-color: $secondary-color;
-  color: $primary-type-color;
+  color: $primary-type;
   font-family: $font;
   font-size: 16px;
   font-weight: $font-reg;
@@ -192,13 +192,13 @@ a, a:link, a:visted {
 
 /////////////// modal module /////////////
 .modal-content {
-  color: $primary-type-color;
+  color: $primary-type;
 }
 
 /////////////// panel module ///////////////
 
 .panel {
-  color: $primary-type-color;
+  color: $primary-type;
 }
 
 // ******************* FILTERS STYLES HERE ****************
@@ -259,7 +259,6 @@ a, a:link, a:visted {
 }
 
 .info-well {
-  border-bottom: 1px solid $secondary-color;
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
@@ -271,7 +270,7 @@ a, a:link, a:visted {
 // ****************** RESPONSIVE TABLES **************
 
 table {
-  border: 1px solid #000;
+  // border: 1px solid $primary-type;
   border-collapse: collapse;
   margin: 0 0 20px 0;
   padding: 0;
@@ -280,20 +279,27 @@ table {
 }
 
 table tr {
-  border: 1px solid #000;
+  // border: 1px solid $secondary-color;
 }
-tr:nth-of-type(odd) {
-  background: #eee;
+tr:nth-of-type(even) {
+  background: $lighter-bg-color;
 }
 
+table th {
+  background-color: $secondary-color;
+  color: $inverse-type;
+  font-weight: $font-bold;
+}
 table th,
 table td {
   padding: 5px;
   text-align: center;
+  border: 1px solid $secondary-color;
+
 }
 .secondary-subject {
-	background-color: #666;
-	color: #fff;
+	background-color: $secondary-color;
+	color: $inverse-type;
 	text-align: left;
 }
 @media screen and (max-width: 600px) {
@@ -315,17 +321,20 @@ table td {
 		text-transform: uppercase;
   }
   .subject-solo {
-  	background-color: #666;
-  	color: #fff;
+  	background-color: $primary-color;
+  	color: $inverse-type;
   	text-align: left;
   }
   table tr {
-    // border-bottom: 3px solid #333;
+    border-bottom: 1px solid $secondary-color;
     display: block;
     margin-bottom: 15px;
   }
   table td {
-    border-top: 1px solid #333;
+    border:none;
+    border-top: 1px solid $secondary-color;
+
+    // border-top: 1px solid #333;
     display: block;
     text-align: right;
   }
