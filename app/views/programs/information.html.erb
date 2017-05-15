@@ -1,26 +1,24 @@
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="overlay col-md-10 col-md-offset-1">
     <div class="information-page" id="<%= @program.id %>">
-      <div style="background-color: grey; color: white; margin-top: 1em; padding: 0.25em;">
-        <h2><strong><%= @program.program %></strong></h2>
-      </div>
+      <h1 class="info-hed"><strong><%= @program.program %></strong></h1>
 
       <% this_section = "" %>
       <div>
         <div>
           <% @fields_to_display.each do |f| %>
 
-            <% if ( this_section != f.section_name ) %>
-            </div>
-          </div>
-          <h2>
-          <a role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-          <%= f.section_name %>
-          </a>
-          </h2>
-          <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-            <div class="well">
-              <% this_section = f.section_name %>
+          <% if ( this_section != f.section_name ) %>
+        </div>
+      </div>
+        <h2>
+        <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+        <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
+        </a>
+        </h2>
+        <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+          <div class="info-well">
+            <% this_section = f.section_name %>
           <% end %>
           <%= display_fields_and_tables(f) %>
           <% if ( f.equal?(f.section_name.last) ) %>

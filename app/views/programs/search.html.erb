@@ -1,11 +1,11 @@
-  <div class="row white-bg">
+  <div class="row overlay">
     <div class="col-sm-5 col-md-4 col-lg-3">
     <p>&nbsp;</p>
-      <a id="btn-search-filters" class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseAllFilters" aria-expanded="false" aria-controls="collapseAllFilters"><span class="glyphicon glyphicon-menu-down"></span> Search Filters</a>
+      <a id="btn-search-filters" class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseAllFilters" aria-expanded="false" aria-controls="collapseAllFilters"><span class="glyphicon glyphicon-menu-down nodisplay"></span> Search Filters</a>
       <div class="collapse in" id="collapseAllFilters">
         <%= form_tag('/search') do %>
-          <a class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">
-          <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
+          <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">
+          <span class="glyphicon glyphicon-menu-down nodisplay"></span> Type of Institution</a>
 
           <div class="search-page-filter collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>
@@ -16,7 +16,7 @@
             <% end %>
           </div>
 
-          <a class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
+          <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down nodisplay"></span> Residential requirements</a>
           <div class="search-page-filter collapse" id="collapseFilterResidence">
             <% $filter_2_values.each do |item| %>
               <p class="filter-option">
@@ -26,8 +26,8 @@
             <% end %>
           </div>
 
-          <a class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
-          <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
+          <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
+          <span class="glyphicon glyphicon-menu-down nodisplay"></span> Predental programs</a>
           <div class="search-page-filter collapse" id="collapseFilterPrograms">
             <% $filter_3_values.each do |item| %>
               <p class="filter-option">
@@ -37,7 +37,7 @@
             <% end %>
           </div>
 
-          <a class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
+          <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down nodisplay"></span> State/Territory/Province</a>
           <div class="search-page-filter collapse" id="collapseFilterLocation">
             <div style="height:150px; overflow-y:scroll;">
               <% $filter_4_values.each do |item| %>
@@ -46,11 +46,18 @@
                 <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
                 </p>
               <% end %>
+              <p class="filter-option">
+              <input value="4" class="checkbox-input" type="checkbox" name="Delaware" id="Delaware" />
+              <label class="checkbox-label" for="Delaware">Delaware</label></p>
+              <p class="filter-option">
+              <input value="4" class="checkbox-input" type="checkbox" name="District of Columbia" id="District of Columbia" />
+              <label class="checkbox-label" for="District of Columbia">District of Columbia</label></p>
+
             </div>
            <p>&nbsp;</p>
           </div>
 
-          <a class="input btn btn-lg btn-primary btn-filter btn-search-page" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
+          <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down nodisplay"></span> Degree offered</a>
           <div class="search-page-filter collapse" id="collapseFilterDegrees">
             <% $filter_5_values.each do |item| %>
             <p class="filter-option">
@@ -59,7 +66,7 @@
             </p>
             <% end %>
           </div>
-          <%= submit_tag("Filter", class: 'btn btn-primary btn-lg input') %>
+          <%= submit_tag("Filter", class: 'btn btn-primary btn-lg input-wide') %>
 
         <% end %>
       </div>
