@@ -24,22 +24,22 @@
 
   <body>
     <header>
-          <div class="navbar-header">
-            <div class="logo">
-            <a class="logo-link" href="/index"><%= image_tag("adea-logo.png", class: "logo-img") %>
-            <span class="logo-text">Official Guide to Dental Schools</span></a>
-            </div>
-          </div>
-          <div class="header-nav">
-            <% if current_user %>
-                <button class="btn navbar-btn btn-inverse ">
-                  <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
-                </button>
-              
+      <div class="navbar-header">
+        <div class="logo">
+        <a class="logo-link" href="/index"><%= image_tag("adea-logo.png", class: "logo-img") %>
+        <span class="logo-text">Official Guide to Dental Schools</span></a>
+        </div>
+      </div>
+      <div class="header-nav">
+        <% if current_user %>
+            <button class="btn navbar-btn btn-inverse ">
+              <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
+            </button>
+          
 
-              <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
-            <% end %>
-          </div>
+          <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
+        <% end %>
+      </div>
           
     </header>
     <div class="main-img">
@@ -55,5 +55,9 @@
 
       <%= yield %>
     </div>
+
+    <footer>
+      American Dental Education Association
+    </footer>
   </body>
 </html>
