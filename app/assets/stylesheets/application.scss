@@ -79,6 +79,7 @@ a, a:link, a:visted {
 
 .overlay{
   background: $primary-bg-color;
+  padding-top: 5px;
 }
 
 
@@ -256,11 +257,11 @@ a, a:link, a:visted {
 
 .info-hed {
   color: $secondary-color;
+  font-weight: $font-reg;
 }
 
 .info-well {
   min-height: 20px;
-  padding: 19px;
   margin-bottom: 20px;
 }
 
