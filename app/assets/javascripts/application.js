@@ -38,7 +38,7 @@ function checkWidth() {
     if ($(window).width() < 768) {
         $("#collapseAllFilters").removeClass("in");
         $(".search-page-filter").removeClass("in");
-        $(".information-page").find(".btn-header").removeClass("disabled");
+        // $(".information-page").find(".btn-header").removeClass("disabled");
 
         $(document).on("scroll", function(){
             if ($(document).scrollTop() > 100){
@@ -58,7 +58,7 @@ function checkWidth() {
     } else {
         $("#collapseAllFilters").addClass("in");
         $(".search-page-filter").addClass("in");
-        $(".information-page").find(".btn-header").addClass("disabled");
+        // $(".information-page").find(".btn-header").addClass("disabled");
 
 
     }
