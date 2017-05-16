@@ -2,12 +2,12 @@
     <div class="overlay col-md-8 col-md-offset-2">
       <h2>Hi, <%= current_user.login %>! Let's help find the right dental program for you.</h2>
       <%= form_tag('/search') do %>
-      <h3><%= label_tag(:q, "Enter one or more keywords") %></h3>
+      <h3><%= label_tag(:q, "Enter one or more keywords (separated by comma)") %></h3>
       <%= text_field_tag(:q, nil, class: "form-control") %>
       <h3>Or use the filters below</h3>
         <div>
           <div>
-            <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">            
+            <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">
             <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
             <div class="collapse" id="collapseFilterType">
             <% $filter_1_values.each do |item| %>

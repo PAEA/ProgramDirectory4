@@ -48,7 +48,6 @@ class ProgramsController < ApplicationController
     get_programs = Array.new
     programs.each do |p|
       get_programs << p.id
-      puts p.id.to_s + " " + p.program_string
     end
 
     @values_to_search_1 = Array.new
