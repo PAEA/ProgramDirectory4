@@ -124,12 +124,11 @@ a, a:link, a:visted {
 
 .main-img {
   height: 30px;
-  width: 100%;
 }
 .main-img > img {
   object-fit: cover;
   height: 420px;
-  width: 100vw;  
+  width: 100%;  
 }
 
 ////////////////// form module //////////////////
