@@ -391,6 +391,7 @@ table td {
   position: fixed;
   top:60px;
   left: 0;
+  width: 100%;
   z-index: 1000;
 }
 //////////// DESKTOP /////////
@@ -436,9 +437,12 @@ table td {
     display: none;
   }
 
-  .information-page .btn-header {
+  .information-page .btn-header, .search-page .btn-header {
     cursor:not-allowed;
+    margin-top: 20px;
     pointer-events:none;
+    text-transform: uppercase;
   }
+
 }
 
