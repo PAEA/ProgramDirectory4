@@ -3,7 +3,6 @@ class ProgramsController < ApplicationController
   def index
 
     @programs = Program.all.order(:program_string)
-    @program_ids = Program.select(:id)
 
     @filter_1_field = FieldName.find_by_field_name('type_of_institution')
     $filter_1_values = FieldsString.select(:field_value).distinct.where( field_id: @filter_1_field.id )
@@ -45,14 +44,19 @@ class ProgramsController < ApplicationController
 
   def search
 
+    programs = Program.all.order(:program_string)
+    get_programs = Array.new
+    programs.each do |p|
+      get_programs << p.id
+      puts p.id.to_s + " " + p.program_string
+    end
+
     @values_to_search_1 = Array.new
     @values_to_search_2 = Array.new
     @values_to_search_3 = Array.new
     @values_to_search_4 = Array.new
     @values_to_search_5 = Array.new
     @programs_search    = Array.new
-
-    get_programs = @program_ids
 
     params.each do |p|
       if ( params[p] == "1" )
@@ -88,11 +92,10 @@ class ProgramsController < ApplicationController
         programs_search.each do |ps|
           programs_array << ps.program_id
         end
-        get_programs = programs_array
+        get_programs = get_programs & programs_array
+
       end
     end
-
-    puts params
 
     if ( !@values_to_search_1.empty? )
       these_values = @values_to_search_1.map{ |e| "'" + e + "'" }.join(', ')
@@ -105,7 +108,12 @@ class ProgramsController < ApplicationController
       get_programs_query.each do |p|
         programs_array << p.program_id
       end
+
+      puts get_programs
+      puts "***"
       get_programs = get_programs & programs_array
+      puts get_programs
+
     end
 
     if ( !@values_to_search_2.empty? )

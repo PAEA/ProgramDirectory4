@@ -135,7 +135,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
       )
 
       if ( !display_table_name.blank? )
-        puts "--> Table title: " + display_table_name + "(" + table_name + ")"
+        puts "--> Table title: " + display_table_name + " (" + table_name + ")"
       else
         puts "--> Table title: (no title) (" + table_name + ")"
       end
