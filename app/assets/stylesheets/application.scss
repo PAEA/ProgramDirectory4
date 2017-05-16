@@ -436,8 +436,9 @@ table td {
     display: none;
   }
 
-  .nodisplay {
-    display: none;
+  .information-page .btn-header {
+    cursor:not-allowed;
+    pointer-events:none;
   }
 }
 
