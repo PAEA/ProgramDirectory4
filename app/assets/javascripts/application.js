@@ -30,40 +30,23 @@
 //     });
 // });
 
-$(document).ready(function () {
-    // $('.btn-header').on('click', function (e) {
-    //       // e.preventDefault();
-    //     if ($(this).next('.collapse').hasClass('in')) {
-    //         $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
 
-    //     } else {
-    //         $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
-    //     }
-    // });
-});
 
 
 function checkWidth() {
     if ($(window).width() < 768) {
+        $(".btn-header").addClass("collapsed");
+        $(".information-page").find('.btn-header').addClass("collapsed");
+
         $("#collapseAllFilters").removeClass("in");
         $(".search-page-filter").removeClass("in");
-        
-            $('.btn-header').on('click', function (e) {
-              // e.preventDefault();
-            if ($(this).next('.collapse').hasClass('in')) {
-                $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
 
-            } else {
-                $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
-            }
-         });
 
         $(document).on("scroll", function(){
             if ($(document).scrollTop() > 50){
               $("header").addClass("header-shrink");
               $(".logo-text").addClass("logotext-shrink");
               $(".info-hed").addClass("infohed-shrink");
-
             }
             else
             {
@@ -76,6 +59,8 @@ function checkWidth() {
     } else {
         $("#collapseAllFilters").addClass("in");
         $(".search-page-filter").addClass("in");
+        $(".index-page").find('.btn-header').addClass("collapsed");
+
         $(document).on("scroll", function(){
             if ($(document).scrollTop() > 50){
               $(".info-hed").addClass("infohed-shrink");
@@ -87,8 +72,6 @@ function checkWidth() {
             }
         });
         // $(".information-page").find(".btn-header").addClass("disabled");
-
-
     }
 }
 
@@ -96,7 +79,13 @@ $(document).ready(checkWidth);
 $(window).resize(checkWidth);
 
 
-
-
-
-
+$(document).ready(function () {
+    $('.btn-header').on('click', function (e) {
+          // e.preventDefault();
+        if ($(this).hasClass('collapsed')) {
+            $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
+        } else {
+            $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
+        }
+    });
+});
