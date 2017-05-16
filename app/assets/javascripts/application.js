@@ -44,13 +44,14 @@ function checkWidth() {
             if ($(document).scrollTop() > 100){
               $("header").addClass("header-shrink");
               $(".logo-text").addClass("logotext-shrink");
-
+              $(".info-hed").addClass("infohed-shrink");
 
             }
             else
             {
                 $("header").removeClass("header-shrink");
                 $(".logo-text").removeClass("logotext-shrink");
+                $(".info-hed").removeClass("infohed-shrink");
             }
         });
 

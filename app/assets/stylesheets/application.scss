@@ -382,6 +382,17 @@ table td {
   display: none;
 }
 
+.infohed-shrink {
+  background-color: $accent-color;
+  color: $inverse-type;
+  font-size: 20px;
+  margin-bottom: 60px;
+  padding:10px;
+  position: fixed;
+  top:60px;
+  left: 0;
+  z-index: 1000;
+}
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
    body {
