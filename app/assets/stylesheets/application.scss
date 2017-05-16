@@ -86,6 +86,7 @@ a, a:link, a:visted {
 .overlay{
   background: $primary-bg-color;
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 
@@ -268,7 +269,7 @@ a, a:link, a:visted {
   font-weight: $font-reg;
 }
 
-.well {
+.info-well {
   min-height: 20px;
   margin-bottom: 20px;
 }
