@@ -38,19 +38,23 @@ function checkWidth() {
     if ($(window).width() < 768) {
         $("#collapseAllFilters").removeClass("in");
         $(".search-page-filter").removeClass("in");
-        // $(".glyphicon").removeClass("glyphicon-menu-up").addClass("glyphicon-menu-down");
-        // $(".information-page").find('.collapse').removeClass("in");
+        $(document).on("scroll", function(){
+            if ($(document).scrollTop() > 100){
+              $("header").addClass("header-shrink");
+              $(".logo-text").addClass("logotext-shrink");
+
+
+            }
+            else
+            {
+                $("header").removeClass("header-shrink");
+                $(".logo-text").removeClass("logotext-shrink");
+            }
+        });
 
     } else {
         $("#collapseAllFilters").addClass("in");
         $(".search-page-filter").addClass("in");
-        // $(".information-page").find('.collapse').addClass("in");
-        // if $(".search-page-filter").hasClass("in") {
-        //     $(".glyphicon").removeClass("glyphicon-menu-down").addClass("glyphicon-menu-up");
-        // } else {
-        //     $(".glyphicon").removeClass("glyphicon-menu-up").addClass("glyphicon-menu-down");
-
-        // }
 
     }
 }
