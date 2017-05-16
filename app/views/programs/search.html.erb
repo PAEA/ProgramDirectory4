@@ -76,6 +76,9 @@
       <br />
       <h4>Filtered by:</h4>
 
+      <% if ( !params['q'].blank? ) %>
+        <p>Keywords: <%= params['q'] %></p>
+      <% end %>
       <% if ( !@values_to_search_1.empty? ) %>
         <p>Type of institution: <%= @values_to_search_1.join(', ') %></p>
       <% end %>
@@ -91,6 +94,7 @@
       <% if ( !@values_to_search_5.empty? ) %>
         <p>Degree offered: <%= @values_to_search_5.join(', ') %></p>
       <% end %>
+
 
       <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
 

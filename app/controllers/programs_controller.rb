@@ -109,10 +109,7 @@ class ProgramsController < ApplicationController
         programs_array << p.program_id
       end
 
-      puts get_programs
-      puts "***"
       get_programs = get_programs & programs_array
-      puts get_programs
 
     end
 
@@ -200,7 +197,7 @@ class ProgramsController < ApplicationController
 
     end
 
-    @programs = Program.where( "id IN (?)", get_programs )
+    @programs = Program.where( "id IN (?)", get_programs ).order(:program_string)
 
   end
 
