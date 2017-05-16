@@ -246,7 +246,9 @@ a, a:link, a:visted {
   border-color: $primary-color;
 }
 
-
+.btn.disabled {
+  opacity: 1;
+}
 // animation on arrow
 
 .btn-header > span {
@@ -266,7 +268,7 @@ a, a:link, a:visted {
   font-weight: $font-reg;
 }
 
-.info-well {
+.well {
   min-height: 20px;
   margin-bottom: 20px;
 }
