@@ -31,7 +31,16 @@
 // });
 
 
+$(document).on("scroll", function(){
+    if ($(document).scrollTop() > 50){
+      $(".info-hed").addClass("infohed-shrink");
 
+    }
+    else
+    {
+        $(".info-hed").removeClass("infohed-shrink");
+    }
+});
 
 function checkWidth() {
     if ($(window).width() < 768) {
@@ -46,13 +55,11 @@ function checkWidth() {
             if ($(document).scrollTop() > 50){
               $("header").addClass("header-shrink");
               $(".logo-text").addClass("logotext-shrink");
-              $(".info-hed").addClass("infohed-shrink");
             }
             else
             {
                 $("header").removeClass("header-shrink");
                 $(".logo-text").removeClass("logotext-shrink");
-                $(".info-hed").removeClass("infohed-shrink");
             }
         });
 
@@ -61,16 +68,7 @@ function checkWidth() {
         $(".search-page-filter").addClass("in");
         $(".index-page").find('.btn-header').addClass("collapsed");
 
-        $(document).on("scroll", function(){
-            if ($(document).scrollTop() > 50){
-              $(".info-hed").addClass("infohed-shrink");
-
-            }
-            else
-            {
-                $(".info-hed").removeClass("infohed-shrink");
-            }
-        });
+        
         // $(".information-page").find(".btn-header").addClass("disabled");
     }
 }
@@ -84,8 +82,21 @@ $(document).ready(function () {
           // e.preventDefault();
         if ($(this).hasClass('collapsed')) {
             $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
+            console.log("arrow up");
         } else {
             $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
+            console.log("arrow down");
+
+        }
+    });
+    $('#information-page').find('.btn-header').on('click', function (e) {
+          // e.preventDefault();
+        if ($(this).hasClass('collapsed')) {
+            $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
+            console.log("arrow up");
+        } else {
+            $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
+            console.log("arrow down");
         }
     });
 });
