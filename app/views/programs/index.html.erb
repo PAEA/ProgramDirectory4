@@ -4,13 +4,13 @@
 
       <%= render 'form' %>
 
+      <a name="all-schools"></a>
       <h2><%= pluralize($programs.size, 'Dental School') %></h2>
       <% $programs.each do |p| %>
+        <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
 
-            <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
-
-            <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
-            <hr />
+        <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
+        <hr />
       <% end %>
     </div>
   </div>

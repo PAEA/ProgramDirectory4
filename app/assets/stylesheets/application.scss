@@ -50,6 +50,7 @@ header {
 footer {
   background-color: $secondary-color;
   color: $inverse-type;
+  font-size: 14px;
   min-height: 100px;
   padding:10px;
   width: 100%;
@@ -86,6 +87,7 @@ a, a:link, a:visted {
 .overlay{
   background: $primary-bg-color;
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 
@@ -238,6 +240,7 @@ a, a:link, a:visted {
 	margin: 1px 0 1px 0;
   text-align: left;
   width: 100%;
+  white-space: normal;
 }
 
 .btn-inverse {
@@ -268,7 +271,7 @@ a, a:link, a:visted {
   font-weight: $font-reg;
 }
 
-.well {
+.info-well {
   min-height: 20px;
   margin-bottom: 20px;
 }
@@ -379,6 +382,18 @@ table td {
   display: none;
 }
 
+.infohed-shrink {
+  background-color: $accent-color;
+  color: $inverse-type;
+  font-size: 20px;
+  margin-bottom: 60px;
+  padding:10px;
+  position: fixed;
+  top:60px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
    body {
@@ -422,8 +437,13 @@ table td {
     display: none;
   }
 
-  .nodisplay {
-    display: none;
+  .information-page .btn-header, .search-page .btn-header {
+    cursor:not-allowed;
+    margin-top: 20px;
+    pointer-events:none;
+    text-transform: uppercase;
   }
+
+
 }
 
