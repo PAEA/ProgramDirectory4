@@ -254,7 +254,7 @@ a, a:link, a:visted {
 }
 // animation on arrow
 
-.btn-header > span {
+.btn-header .glyphicon {
   transition: transform .5s;
 }
 
@@ -433,11 +433,11 @@ table td {
         display: block;
     }
 
-  #btn-search-filters, .nodisplay {
+  .nodisplay {
     display: none;
   }
 
-  .information-page .btn-header, .search-page .btn-header {
+  .information-page .btn-header {
     cursor:not-allowed;
     margin-top: 20px;
     pointer-events:none;

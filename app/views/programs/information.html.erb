@@ -11,8 +11,8 @@
             <% if ( this_section != f.section_name ) %>
               </div>
               </div>
-              <a class="btn btn-lg btn-primary btn-header" role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-              <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
+              <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+                <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
               </a>
               <br />
               <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
