@@ -71,3 +71,18 @@
     </footer>
   </body>
 </html>
+<script>
+
+    $(".btn-header").click(function(){
+        $(this).find('> span').toggleClass("arrowup");
+        console.log("arrow up");
+    });
+    
+    if ($(window).width() < 768) {
+        $("#collapseAllFilters").removeClass("in");
+    } else {
+        $("#collapseAllFilters").addClass("in");
+    }
+
+   
+</script>

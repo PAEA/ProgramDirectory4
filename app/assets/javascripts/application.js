@@ -15,47 +15,6 @@
 //= require turbolinks
 //= require_tree .
 
-// $(document).ready(function () {
-//     $('.btn-header').on('click', function (e) {
-//           // e.preventDefault();
-//         if ($(this).find('> span').hasClass('arrowup')) {
-//             $(this).find('> span').removeClass('arrowup').addClass('arrowdown');
-
-//         } else if ($(this).find('> span').hasClass('arrowdown')) {
-//             $(this).find('> span').removeClass('arrowdown').addClass('arrowup');
-
-//         } else {
-//             $(this).find('> span').addClass('arrowup').removeClass('arrowdown');
-//         }
-//     });
-// });
-
-$(document).ready(function () {
-    // $(".btn-header").addClass("collapsed");
-    // $(".information-page").find('.btn-header').addClass("collapsed");
-    // $(".index-page").find('.btn-header').addClass("collapsed");
-
-    if ($(window).width() < 768) {
-        $("#collapseAllFilters").removeClass("in");
-    } else {
-        $("#collapseAllFilters").addClass("in");
-    }
-
-    $('.btn-header').on('click', function (e) {
-          // e.preventDefault();
-        if ($(this).hasClass('collapsed')) {
-            $(this).find('> .glyphicon').addClass('arrowup').removeClass('arrowdown');
-            console.log("arrow up");
-        } else {
-            $(this).find('> .glyphicon').removeClass('arrowup').addClass('arrowdown');
-            console.log("arrow down");
-
-        }
-    });
-
-});
-
-
 $(document).on("scroll", function(){
     if ($(document).scrollTop() > 50){
       $(".info-hed").addClass("infohed-shrink");
