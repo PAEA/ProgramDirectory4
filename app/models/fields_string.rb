@@ -17,4 +17,14 @@ class FieldsString < ApplicationRecord
         AND fields_strings.field_value IN (" + these_values + ")" )
   end
 
+  def self.select_card_fields( card_fields, get_programs )
+    find_by_sql("
+    SELECT fields_strings.program_id, field_names.display_field_name,
+      fields_strings.field_value
+      FROM field_names, fields_strings
+      WHERE field_names.id = fields_strings.field_id
+        AND field_names.field_name IN (" +  card_fields + ")
+        AND fields_strings.program_id IN (" + get_programs + ")" )
+  end
+
 end

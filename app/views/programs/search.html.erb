@@ -37,10 +37,7 @@
 
       <h2>Search result: <%= pluralize($programs.size, 'Dental School') %></h2>
 
-      <% $programs.each do |p| %>
-        <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
-        <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
-        <hr />
-      <% end %>
+      <%= render 'show_programs' %>
+
     </div>
   </div>

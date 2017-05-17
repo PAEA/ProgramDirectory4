@@ -1,0 +1,11 @@
+<% $programs.each do |p| %>
+  <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
+  <ul>
+    <% program_card = $get_card_fields.select{ |item| item[:program_id] == p.id } %>
+    <% program_card.each do |gcf| %>
+      <li><%= gcf.display_field_name %> : <%= gcf.field_value %></li>
+    <% end %>
+  </ul>
+  <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
+  <hr />
+<% end %>
