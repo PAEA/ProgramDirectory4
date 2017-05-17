@@ -10,7 +10,7 @@ class ProgramsController < ApplicationController
 
     # Fields to display right below the program name on the homepage or the results page
     card_fields = [ 'type_of_institution', 'time_to_degree_in_months', 'start_month', 'doctoral_dental_degree_offered', 'campus_setting_urban', 'campus_housing_available' ]
-    # Build SQL statement to get card field values
+    # Get card field values based on the card_fields array
     $get_card_fields = FieldsString.select_card_fields( card_fields.map{ |e| "'" + e + "'" }.join(', '), get_programs.join(', ') )
 
     filter_field = FieldName.find_by_field_name('type_of_institution')
