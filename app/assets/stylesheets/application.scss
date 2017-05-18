@@ -273,11 +273,12 @@ a, a:link, a:visted {
 
 .info-well {
   min-height: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .info-subhed {
-
+  color: $secondary-color;
+  font-weight: $font-bold;
 }
 // ****************** RESPONSIVE TABLES **************
 
