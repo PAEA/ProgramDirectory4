@@ -22,7 +22,7 @@ class FieldsString < ApplicationRecord
     SELECT *
       FROM (
         SELECT fields_strings.program_id, fields_strings.field_id,
-          field_names.display_field_name,
+          field_names.display_field_name, field_names.field_name,
           fields_strings.field_value
           FROM field_names, fields_strings
           WHERE field_names.id = fields_strings.field_id
@@ -30,7 +30,7 @@ class FieldsString < ApplicationRecord
             AND fields_strings.program_id IN (" + get_programs + ")
         UNION
         SELECT fields_integers.program_id, fields_integers.field_id,
-          field_names.display_field_name,
+          field_names.display_field_name, field_names.field_name,
           fields_integers.field_value
           FROM field_names, fields_integers
           WHERE field_names.id = fields_integers.field_id
@@ -38,7 +38,7 @@ class FieldsString < ApplicationRecord
             AND fields_integers.program_id IN (" + get_programs + ")
         UNION
         SELECT fields_texts.program_id, fields_texts.field_id,
-          field_names.display_field_name,
+          field_names.display_field_name, field_names.field_name,
           fields_texts.field_value
           FROM field_names, fields_texts
           WHERE field_names.id = fields_texts.field_id
@@ -46,7 +46,7 @@ class FieldsString < ApplicationRecord
             AND fields_texts.program_id IN (" + get_programs + ")
         UNION
         SELECT fields_decimals.program_id, fields_decimals.field_id,
-          field_names.display_field_name,
+          field_names.display_field_name, field_names.field_name,
           fields_decimals.field_value
           FROM field_names, fields_decimals
           WHERE field_names.id = fields_decimals.field_id
