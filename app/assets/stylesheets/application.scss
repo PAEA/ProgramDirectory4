@@ -156,7 +156,7 @@ a, a:link, a:visted {
 
 }
 .checkbox-label:before, .checkbox-label:after {
-	font-family: FontAwesome;
+	font-family: $icon-font;
 	font-size: 30px;
 	/*absolutely positioned*/
 	position: absolute; top: -10px; left: 0;
@@ -264,7 +264,16 @@ a, a:link, a:visted {
 .arrowup {
   transform: rotate(180deg);
 }
-// **************** SCHOOL LISTING STYLES **********************
+
+// **************** SCHOOL CARD STYLES **********************
+
+.card-summary {
+  padding: 0 0 10px;
+  margin: 0;
+  list-style-type: none;
+}
+
+// **************** SCHOOL PAGES STYLES **********************
 
 .info-hed {
   color: $secondary-color;
@@ -429,6 +438,14 @@ table td {
     display: none;
   }
 
+  .card-summary {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 20px;
+    column-count: 2;
+    column-gap: 20px;
+  }
   .information-page > .collapse
     {
         display: block;
