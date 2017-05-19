@@ -296,7 +296,7 @@ a, a:link, a:visted {
 // ****************** RESPONSIVE TABLES **************
 
 table {
-  // border: 1px solid $primary-type;
+  border: 1px solid $secondary-color;
   border-collapse: collapse;
   margin: 0 0 20px 0;
   padding: 0;
@@ -305,23 +305,26 @@ table {
 }
 
 table tr {
-  // border: 1px solid $secondary-color;
 }
 tr:nth-of-type(even) {
   background: $lighter-bg-color;
 }
 
-table th {
-  background-color: $secondary-color;
-  color: $inverse-type;
-  font-weight: $font-bold;
-}
-table th,
 table td {
   padding: 5px;
   text-align: center;
   border: 1px solid $secondary-color;
-
+}
+table th {
+  background-color: $secondary-color;
+  border-left: 1px solid $primary-bg-color;
+  color: $inverse-type;
+  font-weight: $font-bold;
+  padding: 5px;
+  text-align: center;
+}
+table th:first-child {
+  border-left: $secondary-color;
 }
 .secondary-subject {
 	background-color: $secondary-color;
