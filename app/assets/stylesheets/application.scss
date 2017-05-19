@@ -272,6 +272,10 @@ a, a:link, a:visted {
   margin: 0;
   list-style-type: none;
 }
+.card-location {
+  font-style: italic;
+  font-weight: $font-reg;
+}
 
 // **************** SCHOOL PAGES STYLES **********************
 
@@ -446,6 +450,8 @@ table td {
     column-count: 2;
     column-gap: 20px;
   }
+
+
   .information-page > .collapse
     {
         display: block;

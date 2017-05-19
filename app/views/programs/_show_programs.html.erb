@@ -1,8 +1,11 @@
 <% $programs.each do |p| %>
   <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => p.id} ) %></h3>
+	<% program_card = $get_card_fields.select{ |item| item[:program_id] == p.id } %>
+  <h4 class="card-location"><%= program_card[0].field_value %></h4>
+
   <ul class="card-summary">
-    <% program_card = $get_card_fields.select{ |item| item[:program_id] == p.id } %>
-    <% program_card.each do |gcf| %>
+    
+    <% program_card.drop(1).each do |gcf| %>
       <li><span class="info-subhed"><%= gcf.display_field_name %>:</span> <%= gcf.field_value %></li>
     <% end %>
   </ul>
