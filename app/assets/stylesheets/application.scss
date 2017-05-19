@@ -468,7 +468,10 @@ table th:first-child {
   .nodisplay {
     display: none;
   }
-
+  .infohed-shrink {
+    padding-top: 20px;
+    text-align: center;
+  }
   .information-page .btn-header {
     cursor:not-allowed;
     margin-top: 20px;
