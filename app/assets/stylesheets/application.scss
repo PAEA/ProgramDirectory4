@@ -30,8 +30,9 @@ body {
   background-color: $secondary-color;
   color: $primary-type;
   font-family: $font;
-  font-size: 16px;
-  font-weight: $font-reg;
+  font-size: 18px;
+  font-weight: $font-light;
+  line-height: 1.6em;
   min-height: 100vh;
   padding-top: 70px;
 }
@@ -298,6 +299,8 @@ a, a:link, a:visted {
 table {
   border: 1px solid $secondary-color;
   border-collapse: collapse;
+  font-size: 16px;
+  font-weight: $font-reg;
   margin: 0 0 20px 0;
   padding: 0;
   width: 100%;
@@ -331,6 +334,7 @@ table th:first-child {
 	color: $inverse-type;
 	text-align: left;
 }
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
