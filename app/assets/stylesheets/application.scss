@@ -30,8 +30,9 @@ body {
   background-color: $secondary-color;
   color: $primary-type;
   font-family: $font;
-  font-size: 16px;
-  font-weight: $font-reg;
+  font-size: 18px;
+  font-weight: $font-light;
+  line-height: 1.6em;
   min-height: 100vh;
   padding-top: 70px;
 }
@@ -53,6 +54,7 @@ footer {
   font-size: 14px;
   min-height: 100px;
   padding:10px;
+  position: absolute;
   width: 100%;
 }
 h3 {
@@ -272,6 +274,10 @@ a, a:link, a:visted {
   margin: 0;
   list-style-type: none;
 }
+.card-location {
+  font-style: italic;
+  font-weight: $font-reg;
+}
 
 // **************** SCHOOL PAGES STYLES **********************
 
@@ -292,8 +298,10 @@ a, a:link, a:visted {
 // ****************** RESPONSIVE TABLES **************
 
 table {
-  // border: 1px solid $primary-type;
+  border: 1px solid $secondary-color;
   border-collapse: collapse;
+  font-size: 16px;
+  font-weight: $font-reg;
   margin: 0 0 20px 0;
   padding: 0;
   width: 100%;
@@ -301,29 +309,33 @@ table {
 }
 
 table tr {
-  // border: 1px solid $secondary-color;
 }
 tr:nth-of-type(even) {
   background: $lighter-bg-color;
 }
 
-table th {
-  background-color: $secondary-color;
-  color: $inverse-type;
-  font-weight: $font-bold;
-}
-table th,
 table td {
   padding: 5px;
   text-align: center;
   border: 1px solid $secondary-color;
-
+}
+table th {
+  background-color: $secondary-color;
+  border-left: 1px solid $primary-bg-color;
+  color: $inverse-type;
+  font-weight: $font-bold;
+  padding: 5px;
+  text-align: center;
+}
+table th:first-child {
+  border-left: $secondary-color;
 }
 .secondary-subject {
 	background-color: $secondary-color;
 	color: $inverse-type;
 	text-align: left;
 }
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -446,6 +458,8 @@ table td {
     column-count: 2;
     column-gap: 20px;
   }
+
+
   .information-page > .collapse
     {
         display: block;
