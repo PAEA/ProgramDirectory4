@@ -31,16 +31,16 @@
         </div>
       </div>
       <div class="header-nav">
-        <% if current_user %>
+        <% if $display_username %>
             <button class="btn navbar-btn btn-inverse ">
               <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
             </button>
-          
+
 
           <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
         <% end %>
       </div>
-          
+
     </header>
     <div class="main-img">
        <%= image_tag('dental-stock2.jpg') %>
@@ -78,12 +78,12 @@
         $(this).find('> span').toggleClass("arrowup");
         console.log("arrow up");
     });
-    
+
     if ($(window).width() < 768) {
         $("#collapseAllFilters").removeClass("in");
     } else {
         $("#collapseAllFilters").addClass("in");
     }
 
-   
+
 </script>

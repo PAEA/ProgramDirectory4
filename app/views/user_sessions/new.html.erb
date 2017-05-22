@@ -3,24 +3,18 @@
       <div class="block block-blue">
         <h1>Sign In</h1>
 
-        <%= form_for @user_session do |f| %>
-          <%= render 'shared/errors', object: @user_session %>
+        <%= form_tag('/authenticate') do %>
 
           <div class="form-group">
-            <%= f.label :login %>
-            <%= f.text_field :login, class: 'form-control' %>
+            <%= label_tag(:login, "Login") %>
+            <%= text_field_tag(:login, nil, class: "form-control") %>
           </div>
 
           <div class="form-group">
-            <%= f.label :password %>
-            <%= f.password_field :password, class: 'form-control' %>
+            <%= label_tag(:password, "Password") %>
+            <%= password_field_tag(:password, nil, class: "form-control") %>
           </div>
 
-          <div class="form-group">
-         
-            <%= f.check_box :remember_me %>
-            <%= f.label :remember_me %>
-          </div>
           <div>
           <!-- Button trigger modal -->
             You must agree to <a href="" data-toggle="modal" data-target="#myModal">the terms of use.</a>
@@ -48,15 +42,14 @@
                 </div>
               </div>
             </div>
-            
+
           </div>
           <div class="form-group">
             <input aria-describedby="usr-terms" type="checkbox" name="user-terms" id="user-terms" />
             <label for="user-terms">Yes, I agree to the terms.</label>
           </div>
-          <%= f.submit "LOG IN", class: 'btn btn-inverse btn-lg' %>
+          <%= submit_tag("LOG IN", class: 'btn btn-inverse btn-lg') %>
         <% end %>
       </div>
     </div>
   </div>
-

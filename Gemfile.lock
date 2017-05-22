@@ -59,6 +59,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.4)
+    curb (0.9.3)
     debug_inspector (0.0.2)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -174,10 +175,12 @@ DEPENDENCIES
   bootstrap-sass
   byebug
   coffee-rails (~> 4.2)
+  curb
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
   mysql2
+  nokogiri
   puma (~> 3.0)
   rails (~> 5.0.1)
   sass-rails (~> 5.0)

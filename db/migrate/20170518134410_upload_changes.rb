@@ -2,13 +2,12 @@ require "csv"
 
 class UploadChanges < ActiveRecord::Migration[5.0]
 
-  def change
+  def up
 
     # Table's metadata parameters in CSVs
     section_parameter = 'section'
     order_parameter = 'order'
-    field_old_name_parameter = 'old field name'
-    field_new_name_parameter = 'new field name'
+    field_name_parameter = 'field'
     field_type_parameter = 'type'
     field_content_parameter = 'content'
 
@@ -37,10 +36,8 @@ class UploadChanges < ActiveRecord::Migration[5.0]
             field_section = current_metadata_value.to_s.strip
           elsif ( current_metadata == order_parameter )
             field_order = current_metadata_value
-          elsif ( current_metadata == field_old_name_parameter )
-            field_old_name = current_metadata_value.to_s.strip
-          elsif ( current_metadata == field_new_name_parameter )
-            field_new_name = current_metadata_value.to_s.strip
+          elsif ( current_metadata == field_name_parameter )
+            field_name = current_metadata_value.to_s.strip
           elsif ( current_metadata == field_type_parameter )
             field_type = current_metadata_value
           end
@@ -61,22 +58,22 @@ class UploadChanges < ActiveRecord::Migration[5.0]
 
               display_field_name = array_from_csv[field_rows][field_columns].to_s.strip
 
-              if ( !field_old_name.blank? )
-                field_name = field_old_name
-                get_field_to_remove = FieldName.where(:field_name => field_old_name)
-                remove_records = FieldName.delete_all "field_name = '" + field_old_name + "'"
-                remove_records = DisplaySection.delete_all "section_to_link = '" + field_old_name + "'"
-              else
-                field_name = field_new_name
-                get_field_to_remove = FieldName.where(:field_name => field_new_name)
+              get_field = FieldName.select(:id).where(:field_name => field_name)
+
+              if ( !get_field.empty? )
+
+                if ( field_type == 'text' )
+                  remove_records = FieldsText.delete_all(["field_id = ?", get_field.id])
+                elsif ( field_type == 'string' )
+                  remove_records = FieldsString.delete_all "field_id = " + get_field.id
+                elsif ( field_type == 'integer' )
+                  remove_records = FieldsInteger.delete_all "field_id = " + get_field.id
+                elsif ( field_type == 'decimal' )
+                  remove_records = FieldsDecimal.delete_all "field_id = " + get_field.id
+                end
+
               end
-              if ( !get_field_to_remove.id.to_s.nil? )
-                remove_records = FieldsText.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsString.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsInteger.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsDecimal.delete_all "field_id = " + get_field_to_remove.id.to_s
-              end
-              
+
               current_field_name = FieldName.create(
                 field_name: field_name,
                 display_field_name: display_field_name
@@ -145,6 +142,10 @@ class UploadChanges < ActiveRecord::Migration[5.0]
       end
 
     end
+
+  end
+
+  def down
 
   end
 

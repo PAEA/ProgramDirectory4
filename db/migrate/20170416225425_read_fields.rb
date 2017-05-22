@@ -2,7 +2,7 @@ require "csv"
 
 class ReadFields < ActiveRecord::Migration[5.0]
 
-  def change
+  def up
 
     # Table's metadata parameters in CSVs
     section_parameter = 'section'
@@ -170,6 +170,20 @@ class ReadFields < ActiveRecord::Migration[5.0]
       end
 
     end
+
+  end
+
+  def down
+
+    drop_table :field_names
+
+    drop_table :fields_integers
+
+    drop_table :fields_strings
+
+    drop_table :fields_texts
+
+    drop_table :fields_decimals
 
   end
 

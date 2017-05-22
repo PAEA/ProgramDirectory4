@@ -2,7 +2,7 @@ require "csv"
 
 class ReadTables < ActiveRecord::Migration[5.0]
 
-  def change
+  def up
 
     # Table's metadata parameters in CSVs
     section_parameter = 'section'
@@ -382,6 +382,26 @@ class ReadTables < ActiveRecord::Migration[5.0]
     #    program: prog
     #  )
     #end
+
+  end
+
+  def down
+
+    drop_table :table_names
+
+    drop_table :display_sections
+
+    drop_table :categories
+
+    drop_table :main_headers
+
+    drop_table :sub_headers
+
+    drop_table :programs
+
+    drop_table :data_table_configs
+
+    drop_table :data_tables
 
   end
 

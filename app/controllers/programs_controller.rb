@@ -2,6 +2,10 @@ class ProgramsController < ApplicationController
 
   def index
 
+    if ( $display_username.nil? )
+      redirect_to root_path
+    end
+
     $programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
     $programs.each do |p|
@@ -32,6 +36,10 @@ class ProgramsController < ApplicationController
   end
 
   def search
+
+    if ( $display_username.nil? )
+      redirect_to root_path
+    end
 
     $programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
@@ -153,6 +161,10 @@ class ProgramsController < ApplicationController
   end
 
   def information
+
+    if ( $display_username.nil? )
+      redirect_to root_path
+    end
 
     @id = params[:id]
     @program = Program.find(@id)
