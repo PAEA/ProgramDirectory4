@@ -257,6 +257,11 @@ a:active, a:hover {
   border-color: $primary-color;
 }
 
+.btn-inverse:hover {
+  color: $inverse-type;
+  background-color: $accent-color;
+}
+
 .btn.disabled {
   opacity: 1;
 }

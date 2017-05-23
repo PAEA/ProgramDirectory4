@@ -32,12 +32,9 @@
       </div>
       <div class="header-nav">
         <% if current_user %>
-            <button class="btn navbar-btn btn-inverse ">
-              <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
-            </button>
-          
-
-          <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
+            
+              <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a>
+              <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %>
         <% end %>
       </div>
           
