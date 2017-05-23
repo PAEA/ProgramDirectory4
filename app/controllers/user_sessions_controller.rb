@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'curb'
 
 class UserSessionsController < ApplicationController
   def new
