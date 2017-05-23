@@ -65,8 +65,14 @@ label {
   font-weight: $font-light;
 }
 
-a, a:link, a:visted {
-  color: $accent-color;
+a:link, a:visted {
+  color: $secondary-color;
+}
+a {
+  color: $secondary-color;
+}
+a:active, a:hover {
+  color: $primary-type;
 }
 
 /////////////// layout ///////////////////////
@@ -161,7 +167,7 @@ a, a:link, a:visted {
 	font-family: $icon-font;
 	font-size: 30px;
 	/*absolutely positioned*/
-	position: absolute; top: -10px; left: 0;
+	position: absolute; top: 0px; left: 0;
 }
 .checkbox-label:before {
 	content: '\f096'; /*unchecked*/
