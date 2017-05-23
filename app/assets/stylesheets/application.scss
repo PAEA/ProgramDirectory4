@@ -65,8 +65,14 @@ label {
   font-weight: $font-light;
 }
 
-a, a:link, a:visted {
-  color: $accent-color;
+a:link, a:visted {
+  color: $secondary-color;
+}
+a {
+  color: $secondary-color;
+}
+a:active, a:hover {
+  color: $primary-type;
 }
 
 /////////////// layout ///////////////////////
@@ -132,7 +138,7 @@ a, a:link, a:visted {
 .main-img > img {
   object-fit: cover;
   height: 420px;
-  width: 100%;  
+  width: 100%;
 }
 
 ////////////////// form module //////////////////
@@ -161,7 +167,7 @@ a, a:link, a:visted {
 	font-family: $icon-font;
 	font-size: 30px;
 	/*absolutely positioned*/
-	position: absolute; top: -10px; left: 0;
+	position: absolute; top: 0px; left: 0;
 }
 .checkbox-label:before {
 	content: '\f096'; /*unchecked*/
@@ -236,7 +242,7 @@ a, a:link, a:visted {
 .btn-primary {
   background-color: $primary-color;
   border: none;
-  color: $inverse-type;  
+  color: $inverse-type;
 }
 .btn-header {
 	margin: 1px 0 1px 0;
@@ -425,10 +431,10 @@ table th:first-child {
     background-repeat: no-repeat;
     background-size: cover;
   }
-  
+
 
   header {
-    height: 70px;
+    height: 90px;
   }
   .header-nav {
     top:10px;
@@ -442,7 +448,7 @@ table th:first-child {
     top: 0px;
     left: 0px;
   }
-  
+
   .container {
     min-height: calc(100vh - 170px);
   }
@@ -459,7 +465,6 @@ table th:first-child {
     column-gap: 20px;
   }
 
-
   .information-page > .collapse
     {
         display: block;
@@ -471,6 +476,7 @@ table th:first-child {
   .infohed-shrink {
     padding-top: 20px;
     text-align: center;
+    top: 80px;
   }
   .information-page .btn-header {
     cursor:not-allowed;
@@ -481,4 +487,3 @@ table th:first-child {
 
 
 }
-
