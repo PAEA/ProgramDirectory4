@@ -70,13 +70,13 @@ class UploadChanges < ActiveRecord::Migration[5.0]
                 field_name = field_new_name
                 get_field_to_remove = FieldName.where(:field_name => field_new_name)
               end
-              if ( !get_field_to_remove.id.to_s.nil? )
-                remove_records = FieldsText.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsString.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsInteger.delete_all "field_id = " + get_field_to_remove.id.to_s
-                remove_records = FieldsDecimal.delete_all "field_id = " + get_field_to_remove.id.to_s
+              get_field_to_remove.each do |item|
+                remove_records = FieldsText.delete_all "field_id = " + item.id.to_s
+                remove_records = FieldsString.delete_all "field_id = " + item.id.to_s
+                remove_records = FieldsInteger.delete_all "field_id = " + item.id.to_s
+                remove_records = FieldsDecimal.delete_all "field_id = " + item.id.to_s
               end
-              
+
               current_field_name = FieldName.create(
                 field_name: field_name,
                 display_field_name: display_field_name
