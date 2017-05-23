@@ -428,7 +428,7 @@ table th:first-child {
   
 
   header {
-    height: 70px;
+    height: 90px;
   }
   .header-nav {
     top:10px;
@@ -459,7 +459,6 @@ table th:first-child {
     column-gap: 20px;
   }
 
-
   .information-page > .collapse
     {
         display: block;
@@ -471,6 +470,7 @@ table th:first-child {
   .infohed-shrink {
     padding-top: 20px;
     text-align: center;
+    top: 80px;
   }
   .information-page .btn-header {
     cursor:not-allowed;
