@@ -2,13 +2,16 @@ class ProgramsController < ApplicationController
 
   def index
 
-    if ( $display_username.nil? )
+    @display_username = session[:display_username]
+    @user_roles = session[:user_roles]
+
+    if ( @display_username.nil? )
       redirect_to root_path
     end
 
-    $programs = Program.select_all_programs_sorted_alphabetically
+    @programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
-    $programs.each do |p|
+    @programs.each do |p|
       get_programs << p.id
     end
 
@@ -37,13 +40,16 @@ class ProgramsController < ApplicationController
 
   def search
 
-    if ( $display_username.nil? )
+    @display_username = session[:display_username]
+    @user_roles = session[:user_roles]
+
+    if ( @display_username.nil? )
       redirect_to root_path
     end
 
-    $programs = Program.select_all_programs_sorted_alphabetically
+    @programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
-    $programs.each do |p|
+    @programs.each do |p|
       get_programs << p.id
     end
 
@@ -156,13 +162,16 @@ class ProgramsController < ApplicationController
 
     end
 
-    $programs = Program.select_programs_sorted_alphabetically( get_programs )
+    @programs = Program.select_programs_sorted_alphabetically( get_programs )
 
   end
 
   def information
 
-    if ( $display_username.nil? )
+    @display_username = session[:display_username]
+    @user_roles = session[:user_roles]
+
+    if ( @display_username.nil? )
       redirect_to root_path
     end
 

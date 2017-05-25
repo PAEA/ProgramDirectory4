@@ -35,7 +35,7 @@
 
       <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
 
-      <h2>Search result: <%= pluralize($programs.size, 'Dental School') %></h2>
+      <h2>Search result: <%= pluralize(@programs.size, 'Dental School') %></h2>
 
       <%= render 'show_programs' %>
 
