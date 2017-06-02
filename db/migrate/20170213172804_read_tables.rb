@@ -10,6 +10,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
     table_name_parameter = 'table_name'
     display_table_name_parameter = 'display_table_name'
     table_content_parameter = 'content'
+    table_has_categories_parameter = 'table_has_categories'
 
     # Creates Table Names table in the database
     create_table :table_names do |t|
@@ -67,6 +68,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
       t.integer :table_name_id
       t.integer :rows
       t.integer :columns
+      t.boolean :has_categories
 
       t.timestamps
     end
@@ -120,6 +122,12 @@ class ReadTables < ActiveRecord::Migration[5.0]
           table_name = current_metadata_value
         elsif ( current_metadata == display_table_name_parameter )
           display_table_name = current_metadata_value
+        elsif ( current_metadata == table_has_categories_parameter )
+          if ( current_metadata_value == "yes" )
+            table_has_categories = true
+          else
+            table_has_categories = false
+          end
         end
 
         metadata_line += 1
@@ -127,8 +135,11 @@ class ReadTables < ActiveRecord::Migration[5.0]
         current_metadata_value = array_from_csv[metadata_line][1].to_s.strip
 
       end
+
+      # Get first row where the table data starts in the csv file
       table_start_line = metadata_line + 1
 
+      # Store table name
       current_table = TableName.create(
         table_name: table_name,
         display_table_name: display_table_name
@@ -140,6 +151,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
         puts "--> Table title: (no title) (" + table_name + ")"
       end
 
+      # Store the information section and its order
       current_display_section = DisplaySection.create(
         section_name: table_section,
         section_order: table_order,
@@ -173,7 +185,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
       # Get first row number with data values
       data_start_row = dental_school_row + 1
-      final_table_amount_of_rows = ( rows - dental_school_row ) * ( columns - 2 )
+
+      final_table_amount_of_rows = ( rows - dental_school_row ) * ( columns - (table_has_categories ? 2 : 1) )
 
       # Declare array to store values in the DB
       final_table = Array.new( final_table_amount_of_rows ) { Array.new(9) }
@@ -257,49 +270,68 @@ class ReadTables < ActiveRecord::Migration[5.0]
       # Prepare normalized data table
       rows_counter = 0
       current_program_id = array_from_csv[ data_start_row ][ 0 ]
-      row_per_program_counter = 0
+      #row_per_program_counter = 0
 
       # Read how many rows of data for the first program in the CSV file
       # The rest of the programs will have the same amount of rows
-      for y in data_start_row..rows
-        if ( current_program_id == array_from_csv[ y ][ 0 ] )
-          row_per_program_counter += 1
-          current_program_id = array_from_csv[ y ][ 0 ]
-        end
-      end
+      #for y in data_start_row..rows
+      #  if ( current_program_id == array_from_csv[ y ][ 0 ] )
+      #    row_per_program_counter += 1
+          #current_program_id = array_from_csv[ y ][ 0 ]
+      #  end
+      #end
 
       current_program_id = 0
       matrix_row = @table_header_rows + 1
       for y in data_start_row..rows
+
+        row_per_program_counter = 0
         if ( current_program_id != array_from_csv[ y ][ 0 ] )
           current_program_id = array_from_csv[ y ][ 0 ]
+
+          for r in y..rows
+            if ( current_program_id == array_from_csv[ r ][ 0 ] )
+              row_per_program_counter += 1
+            else
+              break
+            end
+          end
 
           # Adds table configuration to the DB table Data Tables Config
           new_table = DataTableConfig.create(
             program_id: current_program_id,
             table_name_id: current_table.id,
             rows: row_per_program_counter + @table_header_rows,
-            columns: display_columns
+            columns: display_columns,
+            has_categories: table_has_categories
           )
           current_table_config_id = new_table.id
+          matrix_row = @table_header_rows + 1
         end
 
         # Store each category for each table for each program
-        if ( !array_from_csv[ y ][ 1 ].nil? )
-          new_category = Category.create(
-            data_table_config_id: current_table_config_id,
-            category: array_from_csv[ y ][ 1 ]
-          )
-          array_from_csv[ y ][ 1 ] = new_category.id
+
+        if ( table_has_categories )
+          if ( !array_from_csv[ y ][ 1 ].blank? )
+            new_category = Category.create(
+              data_table_config_id: current_table_config_id,
+              category: array_from_csv[ y ][ 1 ]
+            )
+            array_from_csv[ y ][ 1 ] = new_category.id
+          end
+          starting_column = 2
+        else
+          starting_column = 1
         end
 
-        for x in 2..columns
+        for x in starting_column..columns
           if ( !array_from_csv[ y ][ x ].nil? )
 
             # Adds headers
             column_counter = 0
             for header_row in table_start_line..dental_school_row
               final_table[ rows_counter ][ column_counter ] = array_from_csv[ header_row ][ x ]
+
               column_counter += 1
             end
 
@@ -319,10 +351,6 @@ class ReadTables < ActiveRecord::Migration[5.0]
           end
         end
         matrix_row += 1
-
-        if ( matrix_row > row_per_program_counter + @table_header_rows )
-          matrix_row = @table_header_rows + 1
-        end
 
       end
 

@@ -217,16 +217,18 @@ class ProgramsController < ApplicationController
 
       end
 
-      # Add categories to the table from the bottom up
-      categories = Category.select_categories_by_table_config_id( table_configuration.id )
-      categories.each do |category|
-        if ( category.category.to_s == "x" || ( category.category.to_s.include? "x " ) || ( category.category.to_s.include? "x\n") || ( category.category.to_s.include? "x\r") )
-          # ascii checkmark symbol
-          @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
-        else
-          @table[ this_row ][ 1 ] = category.category
+      # Add categories to the table from the bottom up, if exist
+      if ( table_configuration.has_categories )
+        categories = Category.select_categories_by_table_config_id( table_configuration.id )
+        categories.each do |category|
+          if ( category.category.to_s == "x" || ( category.category.to_s.include? "x " ) || ( category.category.to_s.include? "x\n") || ( category.category.to_s.include? "x\r") )
+            # ascii checkmark symbol
+            @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
+          else
+            @table[ this_row ][ 1 ] = category.category
+          end
+          this_row -= 1
         end
-        this_row -= 1
       end
 
       # Add subheaders to the table from right to left (if the table has subheaders)

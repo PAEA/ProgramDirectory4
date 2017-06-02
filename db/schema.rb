@@ -24,8 +24,9 @@ ActiveRecord::Schema.define(version: 20170518134410) do
     t.integer  "table_name_id"
     t.integer  "rows"
     t.integer  "columns"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.boolean  "has_categories"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "data_tables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

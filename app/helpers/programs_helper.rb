@@ -5,6 +5,11 @@ module ProgramsHelper
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
       ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + f.field_value.to_s.strip + "</p>").html_safe
     elsif ( f.content_type == 'table' )
+
+      # table_empty applies in most cases to single row tables with no content.
+      # If that is the case, thoe whole table gets hidden.
+      table_empty = true
+
       if ( !f.display_name.to_s.strip.blank? )
         html = "<h3>" + f.display_name.to_s.strip + "</h3>"
       else
@@ -12,6 +17,8 @@ module ProgramsHelper
       end
 
       data_table_config = @data_table_configs.find_by_table_name_id(f.id)
+
+      table_has_categories = data_table_config.has_categories
 
       html += "<table>"
       for y in 1..data_table_config.rows
@@ -40,7 +47,10 @@ module ProgramsHelper
         else
 
           # colspan for subsections within tables
-          html += "class='subject subject-solo' colspan='" + colspan.to_s.strip + "'>"
+          if ( table_has_categories )
+            html += "class='subject subject-solo' "
+          end
+          html += "colspan='" + colspan.to_s.strip + "'>"
         end
         if @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank?
           html += "&nbsp;"
@@ -70,6 +80,10 @@ module ProgramsHelper
             html += "&nbsp;"
           else
             html += @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
+
+            if ( y > 1 && !@table_types[ data_table_config.table_name_id ][ y ][ x ].blank? )
+              table_empty = false
+            end
           end
           x += colspan.to_i
           if ( y == 1 )
@@ -86,7 +100,11 @@ module ProgramsHelper
       end
       html += "</table>"
 
-      html.html_safe
+      if ( table_empty )
+        html = ""
+      else
+        html.html_safe
+      end
 
     end
 
