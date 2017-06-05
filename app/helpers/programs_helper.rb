@@ -24,7 +24,9 @@ module ProgramsHelper
       for y in 1..data_table_config.rows
         # Left-aligned text for categories, unless it's a checkmark
         if ( y == 1 )
-          html += "<thead><tr><th scope='row' "
+          html += "<thead><tr class='desktop-header'><th scope='row' "
+        elsif ( y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+            html += "<tr><th scope='row' "
         else
           header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ 1 ].to_s
           html += "<tr><td data-label='" + header_first_row + "' "
@@ -52,12 +54,12 @@ module ProgramsHelper
           end
           html += "colspan='" + colspan.to_s.strip + "'>"
         end
-        if @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank?
+        if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank? )
           html += "&nbsp;"
         else
           html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
         end
-        if ( y == 1 )
+        if ( y == 1 || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
           html += "</th>"
         else
           html += "</td>"
@@ -70,10 +72,23 @@ module ProgramsHelper
             length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
             @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
             html += "<th scope='row' "
+          elsif ( y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+            colspan = 1
+            html += "<th scope='row' "
           else
             colspan = 1
             header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
-            html += "<td data-label='" + header_first_row + "' "
+            if ( @table_has_subheaders[ data_table_config.table_name_id ] )
+              subheader = @table_types[ data_table_config.table_name_id ][ 2 ][ x ].to_s
+            else
+              subheader = ""
+            end
+            if ( header_first_row.blank? )
+              header_first_row = " > "
+            else
+              subheader = ": " + subheader
+            end
+            html += "<td data-label='" + header_first_row + subheader + "' "
           end
           html += "colspan='" + colspan.to_s.strip + "'>"
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
@@ -86,14 +101,16 @@ module ProgramsHelper
             end
           end
           x += colspan.to_i
-          if ( y == 1 )
+          if ( y == 1 || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
             html += "</th>"
           else
             html += "</td>"
           end
         end
-        if ( y == 1 )
+        if ( y == 1 && !@table_has_subheaders[ data_table_config.table_name_id ] || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
           html += "</tr></thead>"
+        elsif ( y == 1 && @table_has_subheaders[ data_table_config.table_name_id ] )
+          html += "</tr>"
         else
           html += "</tr>"
         end

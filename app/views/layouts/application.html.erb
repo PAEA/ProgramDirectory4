@@ -32,26 +32,17 @@
       </div>
       <div class="header-nav">
         <% if $display_username %>
-            <button class="btn navbar-btn btn-inverse ">
-              <a href="/index"><span class="glyphicon glyphicon-search"></span></a>
-            </button>
 
-
-          <button class="btn navbar-btn btn-inverse "><%= link_to 'Sign Out', sign_out_path, method: :delete %></button></p>
+              <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a>
+              <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %>
         <% end %>
       </div>
 
     </header>
-    <div class="main-img">
-       <%= image_tag('dental-stock2.jpg') %>
-    </div>
+
     <div class="container">
 
-      <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key %>">
-          <%= value %>
-        </div>
-      <% end %>
+
 
       <%= yield %>
       <p>&nbsp;</p>
@@ -59,15 +50,15 @@
 
     <footer>
         <div class="col-md-4">
-          <p>©2017 American Dental Education Association® (ADEA)<br />
+          <p><a href="http://www.adea.org/" target="_blank">©2017 American Dental Education Association® (ADEA)</a><br />
           655 K Street, NW, Suite 800<br />
           Washington, DC 20001  <br />
           202-289-7201</p>
         </div>
         <div class="col-md-8">
-          <p>ADEA homepage</p>
-          <p>Terms of use</p>
-          <p>Privacy Policy</p>
+          <p><a href="http://www.adea.org/GoDental/" target="_blank">ADEA: GoDental</a></p>
+          <p><a href="/terms">Terms of use</a></p>
+          <p><a href="">Privacy Policy</a></p>
         </div>
     </footer>
   </body>

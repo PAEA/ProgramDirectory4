@@ -188,6 +188,7 @@ class ProgramsController < ApplicationController
     table_types_amount = @data_table_configs.count
     @table_types = Array.new( table_types_amount + 1 )
     @table_names = Array.new( table_types_amount + 1 )
+    @table_has_subheaders = Array.new( table_types_amount + 1 )
 
     # Create array containing headers, subheaders, categories and data for each table
     @data_table_configs.each do |table_configuration|
@@ -242,6 +243,7 @@ class ProgramsController < ApplicationController
         amount_of_subheaders = subheaders.count - 1
 
         if ( amount_of_subheaders > 0 )
+          table_has_subheaders = true
 
           # If the amount of subheaders (minus the category subheader) mod 2 = 0 then
           # all the subheaders need to get duplicated as a comparison table
@@ -258,7 +260,8 @@ class ProgramsController < ApplicationController
             end
             this_column_subheader += 1
           end
-
+        else
+          table_has_subheaders = false
         end
       end
 
@@ -279,7 +282,7 @@ class ProgramsController < ApplicationController
 
         # Adds a column span number between hash symbols for column >= 2
         if ( this_column_header >= 2)
-          @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s
+          @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s + @table[ 1 ][ this_column_header ].to_s
         else
           @table[ 1 ][ this_column_header ] = header.header.to_s
         end
@@ -292,6 +295,7 @@ class ProgramsController < ApplicationController
 
       @table_types[ table_configuration.table_name_id ] = @table
       @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
+      @table_has_subheaders[ table_configuration.table_name_id ] = table_has_subheaders
     end
 
   end
