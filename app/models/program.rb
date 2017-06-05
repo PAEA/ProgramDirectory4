@@ -24,4 +24,8 @@ class Program < ApplicationRecord
           AND main_headers.header = 'Yes'" )
   end
 
+  def self.select_fields_by_keywords( search_query )
+    distinct.where( search_query )
+  end
+
 end

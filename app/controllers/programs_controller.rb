@@ -73,30 +73,57 @@ class ProgramsController < ApplicationController
         @values_to_search_5 << p
       elsif ( p == "q" && !params['q'].blank? )
 
-        keywords_array = params['q'].split(",").map{ |e| e.strip }
+        keywords_array = params['q'].split(",").map{ |e| e.downcase.strip }
         where_condition = ""
+        where_condition_for_programs = ""
+        where_condition_for_tables = ""
         where_values = Array.new
+
         keywords_array.each_with_index do |keyword, index|
           if ( index == 0 )
-            where_condition << "field_value LIKE ?"
+            where_condition << "lower(field_value) LIKE ?"
+            where_condition_for_programs << "lower(program) LIKE ?"
+            where_condition_for_tables << "lower(cell_value) LIKE ?"
             where_values << "%#{keyword}%"
           else
-            where_condition << " OR field_value LIKE ?"
+            where_condition << " OR lower(field_value) LIKE ?"
+            where_condition_for_programs << " OR lower(program) LIKE ?"
+            where_condition_for_tables << " OR lower(cell_value) LIKE ?"
             where_values << "%#{keyword}%"
           end
         end
 
         search_query = [ where_condition ] + where_values
+        search_query_programs = [ where_condition_for_programs ] + where_values
+        search_query_tables = [ where_condition_for_tables ] + where_values
 
-        programs_search = FieldsString.select_fields_by_keywords( search_query )
+        programs_search_string  = FieldsString.select_fields_by_keywords( search_query )
+        programs_search_text    = FieldsText.select_fields_by_keywords( search_query )
+        programs_search_integer = FieldsInteger.select_fields_by_keywords( search_query )
+        programs_search_decimal = FieldsDecimal.select_fields_by_keywords( search_query )
+        programs_search_tables  = DataTable.select_fields_by_keywords( search_query_tables )
+        programs_search_name    = Program.select_fields_by_keywords( search_query_programs )
 
         programs_array = Array.new
-        programs_search.each do |ps|
+        programs_search_string.each do |ps|
           programs_array << ps.program_id
         end
-        get_programs = get_programs & programs_array
-
-        puts get_programs
+        programs_search_text.each do |ps|
+          programs_array << ps.program_id
+        end
+        programs_search_integer.each do |ps|
+          programs_array << ps.program_id
+        end
+        programs_search_decimal.each do |ps|
+          programs_array << ps.program_id
+        end
+        programs_search_tables.each do |ps|
+          programs_array << ps.program_id
+        end
+        programs_search_name.each do |ps|
+          programs_array << ps.id
+        end
+        get_programs = get_programs & programs_array.uniq
 
       end
     end
