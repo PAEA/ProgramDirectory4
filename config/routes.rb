@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "/index" => "programs#index"
   get "/information/:id" => "programs#information"
   post "/search" => "programs#search"
+  get "/terms" => "programs#terms"
 
   resources :users, only: [:new, :create]
   resources :user_sessions, only: [:create, :destroy]

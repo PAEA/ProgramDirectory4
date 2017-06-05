@@ -28,6 +28,15 @@
 
 body {
   background-color: $secondary-color;
+    background: linear-gradient(
+      rgba(255,255,255, 0.65), 
+      rgba(255,255,255, 0.65)
+    ),
+    url($sign-in-bg);
+    background-attachment: fixed;
+    background-position: 30% 0%;
+    background-repeat: no-repeat;
+    background-size: cover;
   color: $primary-type;
   font-family: $font;
   font-size: 18px;
@@ -53,9 +62,13 @@ footer {
   color: $inverse-type;
   font-size: 14px;
   min-height: 100px;
-  padding:10px;
+  padding:20px 10px;
   position: absolute;
+  outline: 10px solid $accent-color;
   width: 100%;
+  > a, a:link, a:visited {
+    color: rgba($inverse-type, .4);
+  }
 }
 h3 {
 	margin-top: 1.5em;
@@ -89,16 +102,19 @@ a:active, a:hover {
 .container {
   background: none;
   margin: 0 auto;
-  padding-top: 70px;
 }
 
 .overlay{
   background: $primary-bg-color;
-  padding-top: 5px;
+  padding-top: 75px;
   padding-bottom: 5px;
 }
 
-
+.mobile-signin {
+  margin-top: 60vh;
+  margin-bottom: 20vh;
+  text-align: center;
+}
 ////////////// modules //////////////////////
 
 /// logo module //////////
@@ -108,7 +124,7 @@ a:active, a:hover {
   font-weight: $font-light;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-left: 20px;
+  margin: 0 20px;
   position: relative;
   top: 20px;
 }
@@ -130,16 +146,6 @@ a:active, a:hover {
   top:40px;
 }
 
-
-
-.main-img {
-  height: 30px;
-}
-.main-img > img {
-  object-fit: cover;
-  height: 420px;
-  width: 100%;  
-}
 
 ////////////////// form module //////////////////
 
@@ -196,7 +202,7 @@ a:active, a:hover {
 // ************** block module ***************************
 .block {
   border-radius: 25px;
-  margin-top:70px;
+  margin-top:120px;
   padding: 15px 45px 45px;
 }
 
@@ -204,8 +210,9 @@ a:active, a:hover {
   background-color: $primary-color;
   border: 5px solid $accent-color;
   color: $inverse-type;
-
 }
+
+
 
 /////////////// modal module /////////////
 .modal-content {
@@ -430,11 +437,16 @@ table th:first-child {
 //////////// DESKTOP /////////
 @media screen and (min-width: 768px) {
    body {
-    background-image: $sign-in-bg;
+    background: linear-gradient(
+      rgba(255,255,255, 0.65), 
+      rgba(255,255,255, 0.65)
+    ),
+    url($sign-in-bg);
     background-attachment: fixed;
-    background-position: center;
+    background-position: top left;
     background-repeat: no-repeat;
     background-size: cover;
+
   }
   
 
@@ -456,11 +468,11 @@ table th:first-child {
   
   .container {
     min-height: calc(100vh - 170px);
+    padding-top: 70px;
   }
-  .main-img {
+  .mobile-signin {
     display: none;
   }
-
   .card-summary {
     -moz-column-count: 2;
     -moz-column-gap: 20px;
