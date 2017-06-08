@@ -17,7 +17,7 @@ class UserSessionsController < ApplicationController
     end
     xml_response = Nokogiri::XML(c.body_str)
     authentication = xml_response.search('authentication').map do |user|
-      if ( user.at('authenticated').text == "true" )
+      if ( user.at('authenticated').text == "true" && user.at('roles').text.downcase.include?("og_read") )
         session[:display_username] = user.at('display-name').text
         session[:user_roles] = user.at('roles').text
         flash[:success] = "Welcome!"

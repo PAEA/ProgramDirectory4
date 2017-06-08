@@ -2,6 +2,14 @@ require "csv"
 
 class ReadTables < ActiveRecord::Migration[5.0]
 
+  def truefalse( yes_no_variable )
+    if ( yes_no_variable == 'yes' )
+      return true
+    else
+      return false
+    end
+  end
+
   def up
 
     # Table's metadata parameters in CSVs
@@ -11,10 +19,21 @@ class ReadTables < ActiveRecord::Migration[5.0]
     display_table_name_parameter = 'display_table_name'
     table_content_parameter = 'content'
     table_has_categories_parameter = 'table_has_categories'
+    filter_by_parameter = 'filter_by'
+    filter_display_order_parameter = 'filter_display_order'
+
+    # Creates a table for preselected filters either in fields or table categories
+    create_table :custom_filters do |t|
+      t.string :custom_filter, :limit => 70
+      t.string :source, :limit => 5
+      t.integer :display_order, :limit => 2, :default => 99
+
+      t.timestamps
+    end
 
     # Creates Table Names table in the database
     create_table :table_names do |t|
-      t.string :table_name
+      t.string :table_name, :limit => 70
       t.string :display_table_name
 
       t.timestamps
@@ -122,12 +141,12 @@ class ReadTables < ActiveRecord::Migration[5.0]
           table_name = current_metadata_value
         elsif ( current_metadata == display_table_name_parameter )
           display_table_name = current_metadata_value
+        elsif ( current_metadata == filter_by_parameter )
+          filter_by = truefalse(current_metadata_value)
+        elsif ( current_metadata == filter_display_order_parameter )
+          filter_display_order = current_metadata_value
         elsif ( current_metadata == table_has_categories_parameter )
-          if ( current_metadata_value == "yes" )
-            table_has_categories = true
-          else
-            table_has_categories = false
-          end
+          table_has_categories = truefalse(current_metadata_value)
         end
 
         metadata_line += 1
@@ -161,6 +180,15 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
       display_rows = rows + 1 # Starting from 1 (instead of 0)
       display_columns = columns - 1 # Removing program's column
+
+      # If the table categories are labeled as filters...
+      if ( filter_by )
+        new_filter = CustomFilter.create(
+          custom_filter: table_name,
+          source: 'table',
+          display_order: filter_display_order
+        )
+      end
 
       # Get row number for cell 'Dental School' starting from the next line after 'content'
       # in the CSV file
@@ -306,6 +334,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
             has_categories: table_has_categories
           )
           current_table_config_id = new_table.id
+
           matrix_row = @table_header_rows + 1
         end
 
@@ -430,6 +459,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
     drop_table :data_table_configs
 
     drop_table :data_tables
+
+    drop_table :custom_filters
 
   end
 

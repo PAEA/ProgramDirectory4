@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get "/index" => "programs#index"
   get "/information/:id" => "programs#information"
-  post "/search" => "programs#search"
+  get "/search" => "programs#search"
   post "/authenticate" => "user_sessions#authenticate"
 
   #resources :users, only: [:new, :create]
