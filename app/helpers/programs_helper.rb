@@ -50,7 +50,11 @@ module ProgramsHelper
 
           # colspan for subsections within tables
           if ( table_has_categories )
-            html += "class='subject subject-solo' "
+            if ( colspan.to_i != 1 )
+              html += "class='subject subject-solo' "
+            else
+              html += "class='subject subject-solo text-left' "
+            end
           end
           html += "colspan='" + colspan.to_s.strip + "'>"
         end
