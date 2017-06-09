@@ -21,10 +21,12 @@ $(document).on("scroll", function(){
         if ($(window).width() < 768) {
             $("header").addClass("header-shrink");
             $(".logo-text").addClass("logotext-shrink");
-            $(".desktop-header").remove();
         } else {
             $("header").removeClass("header-shrink");
             $(".logo-text").removeClass("logotext-shrink");
+        }
+        if ($(window).width() < 600) {
+            $(".desktop-header").remove();
         }
     }
     else

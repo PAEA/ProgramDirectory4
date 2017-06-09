@@ -11,7 +11,7 @@ module ProgramsHelper
       table_empty = true
 
       if ( !f.display_name.to_s.strip.blank? )
-        html = "<h3>" + f.display_name.to_s.strip + "</h3>"
+        html = "<h4>" + f.display_name.to_s.strip + "</h4>"
       else
         html = ""
       end
