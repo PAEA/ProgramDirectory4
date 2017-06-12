@@ -16,6 +16,17 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+.DS_Store
 
 # Ignore Byebug command history file.
 .byebug_history
+
+# Ignore config files
+/config/*
+
+# Source files
+/fields_*
+/table_*
+*.sql
+p_input*
+/info_*
