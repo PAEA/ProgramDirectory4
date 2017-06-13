@@ -74,6 +74,11 @@ h3 {
 	margin-top: 1.5em;
 }
 
+h4 {
+	margin-top: 2em;
+  text-transform: uppercase;
+}
+
 label {
   font-weight: $font-light;
 }
@@ -146,6 +151,15 @@ a:active, a:hover {
   top:40px;
 }
 
+
+.main-img {
+  height: 30px;
+}
+.main-img > img {
+  object-fit: cover;
+  height: 420px;
+  width: 100%;
+}
 
 ////////////////// form module //////////////////
 
@@ -249,7 +263,7 @@ a:active, a:hover {
 .btn-primary {
   background-color: $primary-color;
   border: none;
-  color: $inverse-type;  
+  color: $inverse-type;
 }
 .btn-header {
 	margin: 1px 0 1px 0;
@@ -448,7 +462,7 @@ table th:first-child {
     background-size: cover;
 
   }
-  
+
 
   header {
     height: 90px;
@@ -465,7 +479,7 @@ table th:first-child {
     top: 0px;
     left: 0px;
   }
-  
+
   .container {
     min-height: calc(100vh - 170px);
     padding-top: 70px;
@@ -500,8 +514,8 @@ table th:first-child {
     margin-top: 20px;
     pointer-events:none;
     text-transform: uppercase;
+    font-size: 20px;
   }
 
 
 }
-

@@ -19,13 +19,22 @@ ActiveRecord::Schema.define(version: 20170518134410) do
     t.datetime "updated_at",                       null: false
   end
 
+  create_table "custom_filters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string   "custom_filter", limit: 70
+    t.string   "source",        limit: 5
+    t.integer  "display_order", limit: 2,  default: 99
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
   create_table "data_table_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "table_name_id"
     t.integer  "rows"
     t.integer  "columns"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.boolean  "has_categories"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "data_tables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -52,10 +61,10 @@ ActiveRecord::Schema.define(version: 20170518134410) do
   end
 
   create_table "field_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string   "field_name"
+    t.string   "field_name",         limit: 70
     t.string   "display_field_name"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   create_table "fields_decimals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -112,10 +121,10 @@ ActiveRecord::Schema.define(version: 20170518134410) do
   end
 
   create_table "table_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string   "table_name"
+    t.string   "table_name",         limit: 70
     t.string   "display_table_name"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

@@ -18,4 +18,8 @@ class DataTable < ApplicationRecord
     where( :program_id => id ).where( :data_table_config_id => table_configuration_id )
   end
 
+  def self.select_fields_by_keywords( search_query )
+    distinct.where( search_query )
+  end
+
 end

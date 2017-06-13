@@ -2,7 +2,15 @@ require "csv"
 
 class ReadFields < ActiveRecord::Migration[5.0]
 
-  def change
+  def truefalse( yes_no_variable )
+    if ( yes_no_variable == 'yes' )
+      return true
+    else
+      return false
+    end
+  end
+
+  def up
 
     # Table's metadata parameters in CSVs
     section_parameter = 'section'
@@ -10,10 +18,12 @@ class ReadFields < ActiveRecord::Migration[5.0]
     field_name_parameter = 'field'
     field_type_parameter = 'type'
     field_content_parameter = 'content'
+    filter_by_parameter = 'filter_by'
+    filter_display_order_parameter = 'filter_display_order'
 
     # Creates Field Names table in the database
     create_table :field_names do |t|
-      t.string :field_name
+      t.string :field_name, :limit => 70
       t.string :display_field_name
 
       t.timestamps
@@ -84,6 +94,10 @@ class ReadFields < ActiveRecord::Migration[5.0]
             field_name = current_metadata_value
           elsif ( current_metadata == field_type_parameter )
             field_type = current_metadata_value
+          elsif ( current_metadata == filter_by_parameter )
+            filter_by = truefalse(current_metadata_value)
+          elsif ( current_metadata == filter_display_order_parameter )
+            filter_display_order = current_metadata_value
           end
 
           metadata_line += 1
@@ -113,6 +127,15 @@ class ReadFields < ActiveRecord::Migration[5.0]
                 section_to_link: field_name,
                 section_type: 'field'
               )
+
+              # If the field is labeled as a filter...
+              if ( filter_by )
+                new_filter = CustomFilter.create(
+                  custom_filter: field_name,
+                  source: 'field',
+                  display_order: filter_display_order
+                )
+              end
 
               puts "--> Field name: " + display_field_name + "(" + field_name + ")"
 
@@ -170,6 +193,20 @@ class ReadFields < ActiveRecord::Migration[5.0]
       end
 
     end
+
+  end
+
+  def down
+
+    drop_table :field_names
+
+    drop_table :fields_integers
+
+    drop_table :fields_strings
+
+    drop_table :fields_texts
+
+    drop_table :fields_decimals
 
   end
 

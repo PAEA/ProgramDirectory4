@@ -31,18 +31,18 @@
         </div>
       </div>
       <div class="header-nav">
-        <% if current_user %>
+        <% # if current_user %>
             
+        <% if $display_username %>
+
               <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a>
               <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %>
         <% end %>
       </div>
-          
-    </header>
-    
-    <div class="container">
 
-      
+    </header>
+
+    <div class="container">
 
       <%= yield %>
       <p>&nbsp;</p>
@@ -69,12 +69,12 @@
         $(this).find('> span').toggleClass("arrowup");
         console.log("arrow up");
     });
-    
+
     if ($(window).width() < 768) {
         $("#collapseAllFilters").removeClass("in");
     } else {
         $("#collapseAllFilters").addClass("in");
     }
 
-   
+
 </script>

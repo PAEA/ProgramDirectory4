@@ -13,29 +13,22 @@
       <br />
       <h4>Filtered by:</h4>
 
-      <% if ( !params['q'].blank? ) %>
-        <p>Keywords: <%= params['q'] %></p>
-      <% end %>
-      <% if ( !@values_to_search_1.empty? ) %>
-        <p>Type of institution: <%= @values_to_search_1.join(', ') %></p>
-      <% end %>
-      <% if ( !@values_to_search_2.empty? ) %>
-        <p>Residency requirements: <%= @values_to_search_2.join(', ') %></p>
-      <% end %>
-      <% if ( !@values_to_search_3.empty? ) %>
-        <p>Predental programs offered: <%= @values_to_search_3.join(', ') %></p>
-      <% end %>
-      <% if ( !@values_to_search_4.empty? ) %>
-        <p>State/Territory/Province: <%= @values_to_search_4.join(', ') %></p>
-      <% end %>
-      <% if ( !@values_to_search_5.empty? ) %>
-        <p>Degree offered: <%= @values_to_search_5.join(', ') %></p>
+      <% if ( !params['keywords'].blank? ) %>
+        <p><span class="info-subhed">Keywords:</span> <%= params['keywords'] %></p>
       <% end %>
 
+      <% @values_to_search.each do |these_values|
+        if ( !these_values.nil? )
+
+          index = @values_to_search.index(these_values) %>
+          <p><span class="info-subhed"><%= @filters[index].display_name %>:</span> <%= these_values.tr("'","") %></p>
+
+        <% end
+      end %>
 
       <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
 
-      <h2>Search result: <%= pluralize($programs.size, 'Dental School') %></h2>
+      <h2>Search result: <%= pluralize(@programs.size, 'Dental School') %></h2>
 
       <%= render 'show_programs' %>
 

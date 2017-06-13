@@ -1,75 +1,31 @@
-<%= form_tag('/search') do %>
-<h3><%= label_tag(:q, "Enter one or more keywords (separated by commas)") %></h3>
-<%= text_field_tag(:q, nil, class: "form-control") %>
-<h3>Or use the filters below</h3>
+<%= form_tag( '/search', :method => 'get' ) do %>
+  <h3><%= label_tag(:keywords, "Enter one or more keywords (separated by commas)") %></h3>
+  <%= text_field_tag(:keywords, params[:keywords], class: "form-control") %>
+  <h3>Or use the filters below</h3>
   <div>
-    <div>
-      <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType">
-      <span class="glyphicon glyphicon-menu-down"></span> Type of Institution</a>
-      <div class="collapse" id="collapseFilterType">
-      <% $filter_1_values.each do |item| %>
-        <p class="filter-option">
-        <input value="1" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
-        <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value %></label>
-        </p>
-        <% end %>
-      </div>
-    </div>
-    <div>
-      <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilterResidence" aria-expanded="false" aria-controls="collapseFilterResidence"><span class="glyphicon glyphicon-menu-down"></span> Residential requirements</a>
-      <div class="collapse" id="collapseFilterResidence">
-        <% $filter_2_values.each do |item| %>
-          <p class="filter-option">
-          <input value="2" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
-          <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
 
-          </p>
-        <% end %>
-      </div>
-    </div>
-    <div>
-      <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilterPrograms" aria-expanded="false" aria-controls="collapseFilterPrograms">
-      <span class="glyphicon glyphicon-menu-down"></span> Predental programs</a>
-      <div class="collapse filter-options" id="collapseFilterPrograms">
-        <% $filter_3_values.each do |item| %>
-          <p class="filter-option">
-          <input value="3" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
-          <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
-          </p>
-        <% end %>
-      </div>
-    </div>
-    <div>
-    <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilterLocation" aria-expanded="false" aria-controls="collapseFilterLocation"><span class="glyphicon glyphicon-menu-down"></span> State/Territory/Province</a>
-      <div class="collapse" id="collapseFilterLocation">
-        <div style="height:150px; overflow-y:scroll;">
-          <% $filter_4_values.each do |item| %>
-            <p class="filter-option">
-            <input value="4" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
-            <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
-            </p>
-          <% end %>
-
+    <% @filters.each do |this_filter|
+      this_index = @filters.index(this_filter) %>
+      <div>
+        <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilter<%= this_index %>" aria-expanded="false" aria-controls="collapseFilter<%= this_index %>">
+        <span class="glyphicon glyphicon-menu-down"></span>&nbsp;<%= this_filter.display_name %></a>
+        <div class="collapse" id="collapseFilter<%= this_index %>">
+          <div style="max-height:400px; overflow-y:scroll;">
+            <% $filter_values[this_index].each do |item| %>
+              <p class="filter-option">
+                <input value="<%= item.field_value %>" class="checkbox-input" type="checkbox" name="<%= this_filter.custom_filter %>[]" id="<%= item.field_value %>"
+                  <% if ( params[this_filter.custom_filter].present? && params[this_filter.custom_filter].include?(item.field_value) ) %> checked <% end %> />
+                <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value %></label>
+              </p>
+            <% end %>
+          </div>
         </div>
-      <!--  <%= select_tag 'location', options_for_select($filter_4_values.collect{ |item| [item.field_value, 4, name: item.field_value] }), multiple: true, class: "input" %> -->
-       <p>&nbsp;</p>
       </div>
-    </div>
-    <div>
-      <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapseFilterDegrees" aria-expanded="false" aria-controls="collapseFilterDegrees"><span class="glyphicon glyphicon-menu-down"></span> Degree offered</a>
-      <div class="collapse" id="collapseFilterDegrees">
-        <% $filter_5_values.each do |item| %>
-        <p class="filter-option">
+    <% end %>
 
-        <input value="5" class="checkbox-input" type="checkbox" name="<%= item.field_value %>" id="<%= item.field_value %>" />
-        <label class="checkbox-label" for="<%= item.field_value %>"><%= item.field_value.gsub("?","") %></label>
-        </p>
-        <% end %>
-      </div>
-
-    </div>
     &nbsp;
-    <%= submit_tag("Filter Results", class: 'btn btn-primary btn-lg input-wide') %>
+    <!-- :name => nil prevents the submit button to get passed as an URL parameter -->
+    <%= submit_tag("Filter Results", class: 'btn btn-primary btn-lg input-wide', :name => nil ) %>
     &nbsp;
   </div>
 

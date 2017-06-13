@@ -10,7 +10,7 @@ class Program < ApplicationRecord
 
   def self.select_programs_by_filter_value( field_name, these_values )
     find_by_sql( "
-      SELECT DISTINCT programs.id
+      SELECT DISTINCT programs.id as program_id
         FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
         WHERE table_names.table_name = '" + field_name + "'
           AND data_table_configs.table_name_id = table_names.id
@@ -22,6 +22,10 @@ class Program < ApplicationRecord
           AND data_tables.program_id = programs.id
           AND categories.category in (" + these_values + ")
           AND main_headers.header = 'Yes'" )
+  end
+
+  def self.select_fields_by_keywords( search_query )
+    distinct.where( search_query )
   end
 
 end

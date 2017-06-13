@@ -25,10 +25,12 @@ $(document).on("scroll", function(){
             $("header").removeClass("header-shrink");
             $(".logo-text").removeClass("logotext-shrink");
         }
+        if ($(window).width() < 600) {
+            $(".desktop-header").remove();
+        }
     }
     else
     {
         $(".info-hed").removeClass("infohed-shrink");
     }
 });
-
