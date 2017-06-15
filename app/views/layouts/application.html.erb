@@ -26,16 +26,16 @@
     <header>
       <div data-role="toolbar" data-position="fixed" class="navbar-header">
         <div class="logo">
-        <a class="logo-link" href="/index"><%= image_tag("adealogo.png", class: "logo-img") %>
-        <p class="logo-text">2017-2018 ADEA Official Guide to Dental Schools</p></a>
+          <a class="logo-link" href="/index"><%= image_tag("adealogo.png", class: "logo-img") %></a>
+          <p class="logo-text">ADEA Dental Schools Explorer</p>
         </div>
       </div>
       <div class="header-nav">
         <% # if current_user %>
-            
-        <% if $display_username %>
 
-              <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a>
+        <% if @display_username %>
+
+              <!-- <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a> -->
               <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %>
         <% end %>
       </div>

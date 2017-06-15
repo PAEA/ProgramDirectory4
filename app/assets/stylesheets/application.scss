@@ -29,7 +29,7 @@
 body {
   background-color: $secondary-color;
     background: linear-gradient(
-      rgba(255,255,255, 0.65), 
+      rgba(255,255,255, 0.65),
       rgba(255,255,255, 0.65)
     ),
     url($sign-in-bg);
@@ -48,8 +48,11 @@ body {
 
 header {
   background-color: $primary-color;
-  height: 120px;
-  outline: 20px solid $secondary-color;
+  background-image: url($header-bg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 80px;
+  outline: 30px solid $accent-color;
   position: fixed;
   left: 0;
   right: 0;
@@ -81,6 +84,7 @@ h4 {
 
 label {
   font-weight: $font-light;
+  color: $primary-type;
 }
 
 a:link, a:visted {
@@ -111,7 +115,7 @@ a:active, a:hover {
 
 .overlay{
   background: $primary-bg-color;
-  padding-top: 75px;
+  padding-top: 40px;
   padding-bottom: 5px;
 }
 
@@ -122,12 +126,17 @@ a:active, a:hover {
 }
 ////////////// modules //////////////////////
 
+.beneath-logo {
+  background-color: $accent-color;
+  color: $inverse-type;
+}
+
 /// logo module //////////
 .logo {
   color: $inverse-type;
   font-size:20px;
   font-weight: $font-light;
-  text-transform: uppercase;
+  //text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0 20px;
   position: relative;
@@ -143,12 +152,13 @@ a:active, a:hover {
 }
 .logo-img {
   padding-right: 15px;
-  width: 200px;
+  width: 250px;
 }
 .logo-text {
   position: absolute;
   left: 0px;
-  top:40px;
+  top: 60px;
+  // font-weight: bold;
 }
 
 
@@ -425,7 +435,7 @@ table th:first-child {
 // ****************** STATES ******************************
 
 .header-shrink {
-  height: 60px;
+  height: 80px;
 }
 
 .logo-shrink {
@@ -433,17 +443,17 @@ table th:first-child {
 }
 
 .logotext-shrink {
-  display: none;
+  font-size: 14px;
 }
 
 .infohed-shrink {
-  background-color: $accent-color;
+  background-color: $secondary-color;
   color: $inverse-type;
-  font-size: 20px;
+  font-size: 14px;
   margin-bottom: 60px;
-  padding:10px;
+  padding: 10px 10px 10px 20px;
   position: fixed;
-  top:60px;
+  top:90px;
   left: 0;
   width: 100%;
   z-index: 1000;
@@ -452,7 +462,7 @@ table th:first-child {
 @media screen and (min-width: 768px) {
    body {
     background: linear-gradient(
-      rgba(255,255,255, 0.65), 
+      rgba(255,255,255, 0.65),
       rgba(255,255,255, 0.65)
     ),
     url($sign-in-bg);
@@ -471,12 +481,12 @@ table th:first-child {
     top:10px;
   }
   .logo-img {
-    width: 250px;
+    width: 350px;
   }
 
   .logo-text {
     position: inherit;
-    top: 0px;
+    top: 14px;
     left: 0px;
   }
 
@@ -507,7 +517,8 @@ table th:first-child {
   .infohed-shrink {
     padding-top: 20px;
     text-align: center;
-    top: 80px;
+    top: 90px;
+    font-size: 20px;
   }
   .information-page .btn-header {
     cursor:not-allowed;
