@@ -2,7 +2,7 @@ class DataTable < ApplicationRecord
 
   def self.select_tables_by_filter( filter_field )
     find_by_sql("
-      SELECT distinct categories.category as field_value
+      SELECT distinct categories.category as field_value, programs.program
         FROM data_tables, main_headers, categories, data_table_configs, table_names, programs
         WHERE table_names.table_name = '" + filter_field + "'
           AND data_table_configs.table_name_id = table_names.id
