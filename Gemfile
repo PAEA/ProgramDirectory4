@@ -36,6 +36,7 @@ gem 'bootstrap-sass'
 gem 'bcrypt'
 gem 'curb'
 gem 'nokogiri'
+gem 'passenger'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
