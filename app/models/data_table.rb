@@ -11,7 +11,7 @@ class DataTable < ApplicationRecord
           AND data_tables.header_id = main_headers.id
           AND main_headers.table_name_id = table_names.id
           AND data_table_configs.id = data_tables.data_table_config_id
-          AND data_tables.program_id = programs.id order by program")
+          AND data_tables.program_id = programs.id order by programs.program")
   end
 
   def self.select_table_config_by_program_id( id, table_configuration_id )
