@@ -23,6 +23,7 @@
 
 # Ignore config files
 /config/*
+/lib/special_access.rb
 
 # Source files
 /fields_*

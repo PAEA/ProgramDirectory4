@@ -4,7 +4,7 @@ module AuthenticateMe
 
   def authenticate
 
-    url = 'https://access.adea.org/paea/CENSSAWEBSVCLIB.AUTHENTICATION'
+    url = 'https://access.adea.org/paeadev/CENSSAWEBSVCLIB.AUTHENTICATION'
     login = params['login'].to_s.strip
     passw = params['password'].to_s.strip
     c = Curl::Easy.http_post(url, 'p_input_xml_doc=<?xml version="1.0"?><authentication-request><integratorUsername>paea</integratorUsername><integratorPassword>Authnt1c8n</integratorPassword><cust-id></cust-id><last-nm></last-nm><alias></alias><username>' + login + '</username><password>' + passw + '</password><session-id></session-id></authentication-request>') do |curl|
