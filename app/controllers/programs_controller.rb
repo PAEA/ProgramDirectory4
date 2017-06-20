@@ -162,7 +162,7 @@ class ProgramsController < ApplicationController
       redirect_to root_path
     end
 
-    @id = params[:id]
+    @id = params[:id].to_i
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
 
