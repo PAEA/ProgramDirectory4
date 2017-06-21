@@ -1,13 +1,13 @@
 module AuthenticateMe
 
-  def new
-    @user_session = UserSession.new
-  end
+  #def new
+    #@user_session = UserSession.new
+  #end
 
   def authenticate
 
     @user = User.find_by_login(params[:login])
-    if @user.password == params[:password]
+    if ( @user.password != BCrypt::Password.create( params[:password] ) )
       flash[:success] = "Wrong username or password"
     else
       flash[:success] = "Welcome back!"

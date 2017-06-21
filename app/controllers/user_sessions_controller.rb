@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'curb'
+require 'bcrypt'
 
 if ( File.file?("lib/special_access.rb") )
   load 'lib/special_access.rb'

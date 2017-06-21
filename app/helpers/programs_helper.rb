@@ -89,8 +89,8 @@ module ProgramsHelper
             end
             if ( header_first_row.blank? )
               header_first_row = " > "
-            else
-              subheader = ": " + subheader
+            #else
+              #subheader = ": " + subheader
             end
             html += "<td data-label='" + header_first_row + subheader + "' "
           end

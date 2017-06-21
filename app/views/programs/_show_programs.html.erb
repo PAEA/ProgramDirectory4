@@ -6,9 +6,9 @@
   <ul class="card-summary">
 
     <% program_card.drop(1).each do |gcf| %>
-      <li><span class="info-subhed"><%= gcf.display_field_name %>:</span> <%= gcf.field_value %></li>
+      <li><span class="info-subhed"><%= gcf.display_field_name %></span> <%= gcf.field_value %></li>
     <% end %>
   </ul>
-  <p><a class="btn btn-primary" href="information/<%=p.id%>">VIEW SCHOOL</a></p>
+  <p><a class="btn btn-primary" href="information/<%=[p.id, p.program.parameterize].join("-")%>">VIEW SCHOOL</a></p>
   <hr />
 <% end %>
