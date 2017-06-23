@@ -211,6 +211,10 @@ a:active, a:hover {
   top: 20px;
 }
 
+.logo-description {
+  display: block;
+}
+
 .logo-link {
   color: $inverse-type;
   &:hover, &:active, &:visited {
@@ -228,10 +232,6 @@ a:active, a:hover {
   left: 0px;
   top: 60px;
   font-weight: bold;
-}
-
-.logo-description {
-  padding-top: 30px;
 }
 
 .main-img {
@@ -535,6 +535,12 @@ table th:first-child {
   z-index: 1000;
 }
 //////////// DESKTOP /////////
+@media screen and (max-width: 820px) {
+.logo-description {
+  display: none;
+}
+}
+
 @media screen and (min-width: 768px) {
    body {
     background: linear-gradient(
@@ -555,6 +561,7 @@ table th:first-child {
   }
   .header-nav {
     top:10px;
+    text-align: right;
   }
   .logo-img {
     width: 350px;

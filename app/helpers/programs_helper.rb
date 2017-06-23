@@ -69,7 +69,7 @@ module ProgramsHelper
         if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank? )
           html += "&nbsp;"
         else
-          html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip
+          html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.gsub("#1#","")
         end
         if ( y == 1 || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
           html += "</th>"

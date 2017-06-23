@@ -30,9 +30,9 @@
             <a class="logo-link" href="/index"><%= image_tag("adealogo.png", class: "logo-img") %></a>
             <p class="logo-text"><a class="logo-link" href="/index">ADEA Dental School Explorer</a></p>
           </div>
-          <div class="right">
+          <!-- <div class="right">
             <a class="logo-description" href="http://adea.org" target="_blank"><%= image_tag("logo-description.png", class: "logo-description") %></a>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="header-nav">
@@ -41,7 +41,8 @@
         <% if @display_username %>
 
               <!-- <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a> -->
-              <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %>
+              <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %><br/>
+              <a class="logo-description" href="http://adea.org" target="_blank"><%= image_tag("logo-description.png") %></a>
         <% end %>
       </div>
 
