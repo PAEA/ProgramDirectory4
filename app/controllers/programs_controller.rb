@@ -285,10 +285,8 @@ class ProgramsController < ApplicationController
         # or for tables without categories
         if ( ( this_column_header >= 2 and table_configuration.has_categories ) or ( this_column_header >= 1 and !table_configuration.has_categories ) )
           @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s + @table[ 1 ][ this_column_header ].to_s
-          puts @table[ 1 ][ this_column_header ]
         else
           @table[ 1 ][ this_column_header ] = header.header.to_s
-          puts @table[ 1 ][ this_column_header ]
         end
         this_column_header += column_increment
 
@@ -301,8 +299,6 @@ class ProgramsController < ApplicationController
       @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
       @table_has_subheaders[ table_configuration.table_name_id ] = table_has_subheaders
     end
-
-    puts @table
 
   end
 

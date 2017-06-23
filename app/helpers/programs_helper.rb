@@ -1,13 +1,17 @@
-require 'uri'
-
 module ProgramsHelper
 
   def display_fields_and_tables(f)
 
-    puts f.display_name.to_s.strip
-
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
-      ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + f.field_value.to_s.strip + "</p>").html_safe
+      str = f.field_value.to_s.strip
+      if ( str.include? "http" )
+        urls = str.split(/\s+/).find_all { |u| u =~ /^https?:/ }
+        urls.each do |u|
+          str = str.sub( u, '<a href="' + u + '" target="_blank">' + u + '</a>' )
+        end
+      end
+
+      ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p>").html_safe
     elsif ( f.content_type == 'table' )
 
       # table_empty applies in most cases to single row tables with no content.
@@ -103,8 +107,9 @@ module ProgramsHelper
             html += "&nbsp;"
           else
             str = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
-            if ( str.include?("http") )
+            if ( str.include? "http" )
               url = str.slice(URI.regexp(['http']))
+              puts url
               @table_types[ data_table_config.table_name_id ][ y ][ x ] = str.gsub( url, '<a href="' + url + '">' + url + '</a>' )
             end
             html += @table_types[ data_table_config.table_name_id ][ y ][ x ]
