@@ -252,7 +252,7 @@ class ProgramsController < ApplicationController
             @table[ 2 ][ this_column_subheader ] = subheader.subheader
 
             # Subheaders duplication will happen at current column number + amount_of_subheaders
-            if ( duplicate_subheaders && this_column_subheader >= 2 )
+            if ( duplicate_subheaders && this_column_subheader >= 2 || duplicate_subheaders && this_column_subheader >= 1 && !table_configuration.has_categories )
               @table[ 2 ][ this_column_subheader + amount_of_subheaders ] = subheader.subheader
             end
             this_column_subheader += 1
