@@ -227,15 +227,25 @@ class ProgramsController < ApplicationController
         subheaders = SubHeader.select_subheaders_by_table_name_id( table_configuration.table_name_id )
 
         # -1 because it needs to exclude the categories subheader
-        amount_of_subheaders = subheaders.count - 1
+        if ( table_configuration.has_categories )
+          amount_of_subheaders = subheaders.count - 1
+        else
+          amount_of_subheaders = subheaders.count
+        end
 
         if ( amount_of_subheaders > 0 )
           table_has_subheaders = true
 
           # If the amount of subheaders (minus the category subheader) mod 2 = 0 then
           # all the subheaders need to get duplicated as a comparison table
-          if ( ( table_configuration.columns - 1 ) % 2 == 0 )
-            duplicate_subheaders = true
+          if ( table_configuration.has_categories )
+            if ( ( table_configuration.columns - 1 ) % 2 == 0 )
+              duplicate_subheaders = true
+            end
+          else
+            if ( table_configuration.columns % 2 == 0 )
+              duplicate_subheaders = true
+            end
           end
 
           subheaders.each do |subheader|
@@ -259,7 +269,11 @@ class ProgramsController < ApplicationController
       # if subheaders exist, then headers start at column 2
       if ( duplicate_subheaders )
         column_increment = amount_of_subheaders
-        this_column_header = 2
+        if ( table_configuration.has_categories )
+          this_column_header = 2
+        else
+          this_column_header = 1
+        end
       else
         column_increment = 1
         this_column_header = 1
@@ -267,11 +281,14 @@ class ProgramsController < ApplicationController
 
       headers.each do |header|
 
-        # Adds a column span number between hash symbols for column >= 2
-        if ( this_column_header >= 2)
+        # Adds a column span number between hash symbols for column >= 2 when categories are present
+        # or for tables without categories
+        if ( ( this_column_header >= 2 and table_configuration.has_categories ) or ( this_column_header >= 1 and !table_configuration.has_categories ) )
           @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s + @table[ 1 ][ this_column_header ].to_s
+          puts @table[ 1 ][ this_column_header ]
         else
           @table[ 1 ][ this_column_header ] = header.header.to_s
+          puts @table[ 1 ][ this_column_header ]
         end
         this_column_header += column_increment
 
@@ -284,6 +301,8 @@ class ProgramsController < ApplicationController
       @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
       @table_has_subheaders[ table_configuration.table_name_id ] = table_has_subheaders
     end
+
+    puts @table
 
   end
 

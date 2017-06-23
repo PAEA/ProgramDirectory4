@@ -1,6 +1,10 @@
+require 'uri'
+
 module ProgramsHelper
 
   def display_fields_and_tables(f)
+
+    puts f.display_name.to_s.strip
 
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
       ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + f.field_value.to_s.strip + "</p>").html_safe
@@ -98,7 +102,12 @@ module ProgramsHelper
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else
-            html += @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
+            str = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
+            if ( str.include?("http") )
+              url = str.slice(URI.regexp(['http']))
+              @table_types[ data_table_config.table_name_id ][ y ][ x ] = str.gsub( url, '<a href="' + url + '">' + url + '</a>' )
+            end
+            html += @table_types[ data_table_config.table_name_id ][ y ][ x ]
 
             if ( y > 1 && !@table_types[ data_table_config.table_name_id ][ y ][ x ].blank? )
               table_empty = false
