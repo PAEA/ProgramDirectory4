@@ -247,6 +247,10 @@ a:active, a:hover {
   display: none;
 }
 
+.not-visible {
+  visibility: hidden;
+}
+
 ////////////////// form module //////////////////
 
 .form-control {

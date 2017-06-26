@@ -39,11 +39,12 @@
         <% # if current_user %>
 
         <% if @display_username %>
-
-              <!-- <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a> -->
-              <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %><br/>
-              <a class="logo-description" href="http://adea.org" target="_blank"><%= image_tag("logo-description.png") %></a>
+          <!-- <a class="btn navbar-btn btn-inverse" href="/index"><span class="glyphicon glyphicon-search"></span></a> -->
+          <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse" %><br/>
+        <% else %>
+          <%= link_to 'SIGN OUT', sign_out_path, method: :delete, class: "btn navbar-btn btn-inverse not-visible" %><br/>
         <% end %>
+        <a class="logo-description" href="http://adea.org" target="_blank"><%= image_tag("logo-description.png") %></a>
       </div>
 
     </header>
@@ -77,7 +78,7 @@
             <li class="youtube"><a href="http://www.youtube.com/user/AADSASAnswers" target="_blank"><img src="http://www.adea.org/uploadedImages/GoDental/Icons/youtube.png" alt=""></a></li>
             <li class="instagram"><a href="http://instagram.com/adeagodental/" target="_blank"><img src="http://www.adea.org/uploadedImages/GoDental/Icons/Instagram ICON FOR WEBSITE.png" alt=""></a></li>
           </ul>
-          <a id="ctl00_ctlSignupNewsletter_HyperLink1" class="btn btn-red btn-block btn-large signup-button" href="https://access.adea.org/adeassa/censsacustmast.insert_page?p_return_page=Login_Page&amp;p_varname=p_val_arr%5b0%5d&amp;p_colname=p_last_nm&amp;p_varname=p_val_arr%5b1%5d&amp;p_colname=p_alias&amp;p_varname=p_val_arr%5b2%5d&amp;p_colname=p_login_id&amp;p_varname=p_val_arr%5b3%5d&amp;p_colname=p_passwd&amp;p_context=GODENT" target="_blank">Sign Up For Our Newsletter!</a>
+          <a id="ctl00_ctlSignupNewsletter_HyperLink1" class="btn btn-red btn-block btn-large signup-button" href="https://access.adea.org/adeassa/censsacustmast.insert_page?p_return_page=Login_Page&amp;p_varname=p_val_arr%5b0%5d&amp;p_colname=p_last_nm&amp;p_varname=p_val_arr%5b1%5d&amp;p_colname=p_alias&amp;p_varname=p_val_arr%5b2%5d&amp;p_colname=p_login_id&amp;p_varname=p_val_arr%5b3%5d&amp;p_colname=p_passwd&amp;p_context=GODENT" target="_blank">Sign Up for the ADEA GoDental Newsletter!</a>
         </div>
 
         <div class="col-sm-8 col-md-9 col-sm-pull-4 col-md-pull-3">
@@ -100,7 +101,7 @@
 
       </div>
       <div class="copyright">
-        ©2017 American Dental Education Association, 655 K Street, NW, Suite 800, Washington, DC 20001. Phone (202) 289-7201.
+        ©2017 American Dental Education Association, 655 K Street, NW, Suite 800, Washington, DC 20001. Phone <a href="tel:2022897201">202-289-7201</a>.
       </div>
     </footer>
 
