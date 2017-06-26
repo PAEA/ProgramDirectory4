@@ -37,7 +37,7 @@ module ProgramsHelper
             html += "<tr><th scope='row' "
         else
           header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ 1 ].to_s
-          html += "<tr><td data-label='" + header_first_row + "' "
+          html += "<tr><td data-label='" + header_first_row.gsub("#1#","") + "' "
         end
         if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0] == "#")
           colspan = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0..2].gsub("#","")
