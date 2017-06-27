@@ -109,8 +109,7 @@ module ProgramsHelper
             str = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
             if ( str.include? "http" )
               url = str.slice(URI.regexp(['http']))
-              puts url
-              @table_types[ data_table_config.table_name_id ][ y ][ x ] = str.gsub( url, '<a href="' + url + '">' + url + '</a>' )
+              @table_types[ data_table_config.table_name_id ][ y ][ x ] = str.gsub( url.to_s, '<a href="' + url.to_s + '">' + url.to_s + '</a>' )
             end
             html += @table_types[ data_table_config.table_name_id ][ y ][ x ]
 
