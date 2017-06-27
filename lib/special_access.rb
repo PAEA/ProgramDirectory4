@@ -8,7 +8,9 @@ module AuthenticateMe
     login = params['login'].to_s.strip
     passw = params['password'].to_s
     data = 'p_input_xml_doc=<?xml version="1.0" encoding="UTF-8" ?><authentication-request><integratorUsername>paea</integratorUsername><integratorPassword>Authnt1c8n</integratorPassword><cust-id></cust-id><last-nm></last-nm><alias></alias><username>' + login + '</username><password><![CDATA[' + passw + ']]></password><session-id></session-id></authentication-request>'
-    c = Curl::Easy.http_post(url, data)
+    c = Curl::Easy.http_post(url, data) do |curl|
+      curl.headers['Content-Type'] = 'multipart/form-data'
+    end
     xml_response = Nokogiri::XML(c.body_str)
     authentication = xml_response.search('authentication').map do |user|
       if ( user.at('authenticated').text == "true" && user.at('roles').text.downcase.include?("og_read") )

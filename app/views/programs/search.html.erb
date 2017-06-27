@@ -21,7 +21,7 @@
         if ( !these_values.nil? )
 
           index = @values_to_search.index(these_values) %>
-          <p><span class="info-subhed"><%= @filters[index].display_name %>:</span> <%= these_values.tr("'","") %></p>
+          <p><span class="info-subhed"><%= @filters[index].display_name %></span> <%= these_values.tr("'","") %></p>
 
         <% end
       end %>
