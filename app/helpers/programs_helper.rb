@@ -19,7 +19,7 @@ module ProgramsHelper
       table_empty = true
 
       if ( !f.display_name.to_s.strip.blank? )
-        html = "<h4>" + f.display_name.to_s.strip + "</h4>"
+        html = "<p>&nbsp;</p><h4>" + f.display_name.to_s.strip + "</h4>"
       else
         html = ""
       end
@@ -88,7 +88,14 @@ module ProgramsHelper
             colspan = 1
             html += "<th scope='row' "
           else
-            colspan = 1
+            if ( @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0] != "#" || @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[2] != "#")
+              colspan = 1
+            else
+              colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
+              length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
+              @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
+            end
+
             header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
             if ( @table_has_subheaders[ data_table_config.table_name_id ] )
               subheader = @table_types[ data_table_config.table_name_id ][ 2 ][ x ].to_s
@@ -102,7 +109,13 @@ module ProgramsHelper
             end
             html += "<td data-label='" + header_first_row + subheader + "' "
           end
-          html += "colspan='" + colspan.to_s.strip + "'>"
+
+          if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.include? "Notes" )
+            alignment = "text-left"
+          else
+            alignment = "text-center"
+          end
+          html += "colspan='" + colspan.to_s.strip + "' class='" + alignment + "'>"
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else

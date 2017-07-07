@@ -22,6 +22,14 @@ class ReadTables < ActiveRecord::Migration[5.0]
     filter_by_parameter = 'filter_by'
     filter_display_order_parameter = 'filter_display_order'
 
+    # Creates Programs table in the database
+    create_table :programs do |t|
+      t.string :program, :limit => 100
+      t.string :program_string, :limit => 90
+
+      t.timestamps
+    end
+
     # Creates a table for preselected filters either in fields or table categories
     create_table :custom_filters do |t|
       t.string :custom_filter, :limit => 70
@@ -34,75 +42,71 @@ class ReadTables < ActiveRecord::Migration[5.0]
     # Creates Table Names table in the database
     create_table :table_names do |t|
       t.string :table_name, :limit => 70
-      t.string :display_table_name
+      t.string :display_table_name, :limit => 100
 
       t.timestamps
     end
 
     # Creates Sections table in the database
     create_table :display_sections do |t|
-      t.string :section_name
-      t.integer :section_order
-      t.string :section_to_link
-      t.string :section_type
-
-      t.timestamps
-    end
-
-    # Creates Categories table in the database
-    create_table :categories do |t|
-      t.integer :data_table_config_id
-      t.string :category, :limit => 500
-
-      t.timestamps
-    end
-
-    # Creates Main Headers table in the database
-    create_table :main_headers do |t|
-      t.integer :table_name_id
-      t.string :header
-
-      t.timestamps
-    end
-
-    # Creates Sub Headers table in the database
-    create_table :sub_headers do |t|
-      t.integer :table_name_id
-      t.string :subheader
-
-      t.timestamps
-    end
-
-    # Creates Programs table in the database
-    create_table :programs do |t|
-      t.string :program
-      t.string :program_string
+      t.string :section_name, :limit => 60
+      t.integer :section_order, :limit => 2
+      t.string :section_to_link, :limit => 80
+      t.string :section_type, :limit => 5
 
       t.timestamps
     end
 
     # Creates Data Tables Config table in the database
     create_table :data_table_configs do |t|
-      t.integer :program_id
-      t.integer :table_name_id
-      t.integer :rows
-      t.integer :columns
+      t.references :program, index: true
+      t.references :table_name, index: true
+      t.integer :rows, :limit => 2
+      t.integer :columns, :limit => 2
       t.boolean :has_categories
+
+      t.timestamps
+    end
+
+    # Creates Categories table in the database
+    create_table :categories do |t|
+      t.references :data_table_config, index: true
+      t.string :category, :limit => 100
+
+      t.timestamps
+    end
+
+    # Creates Main Headers table in the database
+    create_table :main_headers do |t|
+      t.references :table_name, index: true
+      t.string :header, :limit => 90
+
+      t.timestamps
+    end
+
+    # Creates Sub Headers table in the database
+    create_table :sub_headers do |t|
+      t.references :table_name, index: true
+      t.string :subheader, :limit => 50
 
       t.timestamps
     end
 
     # Creates DataTables table in the database
     create_table :data_tables do |t|
-      t.integer :data_table_config_id
-      t.integer :header_id
-      t.integer :subheader_id
-      t.integer :extraheader_id
-      t.integer :category_id
-      t.string  :cell_value, :limit => 400
-      t.integer :program_id
-      t.integer :cell_row
-      t.integer :cell_column
+      t.references :data_table_config, index: true
+      t.references :main_header, index: true
+      t.references :sub_header, index: true
+      t.references :category, index: true
+      #t.integer :data_table_config_id
+      #t.integer :main_header_id
+      #t.integer :sub_header_id
+      #t.integer :category_id
+      t.text  :cell_value
+      #t.integer :program_id
+      t.references :program, index: true
+      t.integer :cell_row, :limit => 2
+      t.integer :cell_column, :limit => 2
 
       t.timestamps
     end
@@ -383,34 +387,6 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
       end
 
-      #def print_2d_array(a, cs=12)
-      #  report = []
-      #  report << " " * 5 + a[0].enum_for(:each_with_index).map { |e, i|
-      #    "%#{cs}s" % [i+1, " "]}.join("   ")
-      #  report << a.enum_for(:each_with_index).map { |ia, i|
-      #    "%2i [ %s ]" % [i+1, ia.map{|e| "%#{cs}s" % e}.join(" | ") ] }
-      #  puts report.join("\n")
-      #end
-      #if ( table_order == "75" )
-      #  print_2d_array(final_table)
-      #end
-
-      # Stores main_headers array in the DB table Main Headers
-      #main_headers.each do |head|
-      #  new_header = MainHeader.create(
-      #    table_name_id: current_table.id,
-      #    header: head
-      #  )
-      #end
-
-      # Stores sub_headers array in the DB table Sub Headers
-      #sub_headers.each do |subhead|
-      #  new_header = SubHeader.create(
-      #    table_name_id: current_table.id,
-      #    subheader: subhead
-      #  )
-      #end
-
       # Stores final_table bidimensional array in the DB table DataTables
       final_table.each do |row|
 
@@ -418,9 +394,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
         # so there are no blank records in the DB table
         if ( !row[6].nil? && !row[7].nil? )
           new_row = DataTable.create(
-            header_id: row[0],
-            subheader_id: row[1],
-            extraheader_id: row[2],
+            main_header_id: row[0],
+            sub_header_id: row[1],
             category_id: row[3],
             cell_value: row[4],
             program_id: row[5],
@@ -429,16 +404,10 @@ class ReadTables < ActiveRecord::Migration[5.0]
             data_table_config_id: row[8]
           )
         end
+
       end
 
-    end # Dir.glob
-
-    # Stores programs array in the DB table Programs
-    #programs.each do |prog|
-    #  new_program = Program.create(
-    #    program: prog
-    #  )
-    #end
+    end
 
   end
 

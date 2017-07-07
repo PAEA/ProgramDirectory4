@@ -16,7 +16,7 @@ class Program < ApplicationRecord
           AND data_table_configs.table_name_id = table_names.id
           AND categories.data_table_config_id = data_table_configs.id
           AND data_tables.category_id = categories.id
-          AND data_tables.header_id = main_headers.id
+          AND data_tables.main_header_id = main_headers.id
           AND main_headers.table_name_id = table_names.id
           AND data_table_configs.id = data_tables.data_table_config_id
           AND data_tables.program_id = programs.id

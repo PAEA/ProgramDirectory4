@@ -14,9 +14,10 @@ ActiveRecord::Schema.define(version: 20170518134410) do
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
-    t.string   "category",             limit: 500
+    t.string   "category",             limit: 100
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.index ["data_table_config_id"], name: "index_categories_on_data_table_config_id", using: :btree
   end
 
   create_table "custom_filters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -30,34 +31,40 @@ ActiveRecord::Schema.define(version: 20170518134410) do
   create_table "data_table_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "table_name_id"
-    t.integer  "rows"
-    t.integer  "columns"
+    t.integer  "rows",           limit: 2
+    t.integer  "columns",        limit: 2
     t.boolean  "has_categories"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["program_id"], name: "index_data_table_configs_on_program_id", using: :btree
+    t.index ["table_name_id"], name: "index_data_table_configs_on_table_name_id", using: :btree
   end
 
   create_table "data_tables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
-    t.integer  "header_id"
-    t.integer  "subheader_id"
-    t.integer  "extraheader_id"
+    t.integer  "main_header_id"
+    t.integer  "sub_header_id"
     t.integer  "category_id"
-    t.string   "cell_value",           limit: 400
+    t.text     "cell_value",           limit: 65535
     t.integer  "program_id"
-    t.integer  "cell_row"
-    t.integer  "cell_column"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.integer  "cell_row",             limit: 2
+    t.integer  "cell_column",          limit: 2
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.index ["category_id"], name: "index_data_tables_on_category_id", using: :btree
+    t.index ["data_table_config_id"], name: "index_data_tables_on_data_table_config_id", using: :btree
+    t.index ["main_header_id"], name: "index_data_tables_on_main_header_id", using: :btree
+    t.index ["program_id"], name: "index_data_tables_on_program_id", using: :btree
+    t.index ["sub_header_id"], name: "index_data_tables_on_sub_header_id", using: :btree
   end
 
   create_table "display_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string   "section_name"
-    t.integer  "section_order"
-    t.string   "section_to_link"
-    t.string   "section_type"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "section_name",    limit: 60
+    t.integer  "section_order",   limit: 2
+    t.string   "section_to_link", limit: 80
+    t.string   "section_type",    limit: 5
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "field_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -101,30 +108,32 @@ ActiveRecord::Schema.define(version: 20170518134410) do
 
   create_table "main_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "table_name_id"
-    t.string   "header"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "header",        limit: 90
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["table_name_id"], name: "index_main_headers_on_table_name_id", using: :btree
   end
 
   create_table "programs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string   "program"
-    t.string   "program_string"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.string   "program",        limit: 100
+    t.string   "program_string", limit: 90
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "sub_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "table_name_id"
-    t.string   "subheader"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "subheader",     limit: 50
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["table_name_id"], name: "index_sub_headers_on_table_name_id", using: :btree
   end
 
   create_table "table_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string   "table_name",         limit: 70
-    t.string   "display_table_name"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "display_table_name", limit: 100
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

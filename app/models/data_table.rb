@@ -1,5 +1,10 @@
 class DataTable < ApplicationRecord
 
+  belongs_to :data_table_config
+  belongs_to :main_header
+  has_many :sub_header
+  has_many :category
+
   def self.select_tables_by_filter( filter_field )
     find_by_sql("
       SELECT distinct categories.category as field_value
@@ -8,7 +13,7 @@ class DataTable < ApplicationRecord
           AND data_table_configs.table_name_id = table_names.id
           AND categories.data_table_config_id = data_table_configs.id
           AND data_tables.category_id = categories.id
-          AND data_tables.header_id = main_headers.id
+          AND data_tables.main_header_id = main_headers.id
           AND main_headers.table_name_id = table_names.id
           AND data_table_configs.id = data_tables.data_table_config_id
           AND data_tables.program_id = programs.id
