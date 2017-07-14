@@ -118,6 +118,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
 
     Dir.glob("csv/table_*.csv") do |csvfile|
 
+      puts "\nFILE: " + csvfile
+
       categories = Array.new
       main_headers = Array.new
       sub_headers = Array.new

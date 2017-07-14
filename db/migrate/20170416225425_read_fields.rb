@@ -67,6 +67,8 @@ class ReadFields < ActiveRecord::Migration[5.0]
 
     Dir.glob("csv/fields_*.csv") do |csvfile|
 
+      puts "\nFILE: " + csvfile
+
       array_from_csv = CSV.read( csvfile ).reject { |row| row.all?(&:nil?) }
 
       # Get how many rows and columns for this table
