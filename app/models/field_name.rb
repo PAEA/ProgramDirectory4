@@ -11,6 +11,7 @@ class FieldName < ApplicationRecord
           FROM field_names, fields_strings, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
             AND fields_strings.field_id = field_names.id
+            AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_strings.program_id = " + id.to_s + "
         UNION
         SELECT display_sections.section_name, display_sections.section_order,
@@ -20,6 +21,7 @@ class FieldName < ApplicationRecord
           FROM field_names, fields_texts, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
             AND fields_texts.field_id = field_names.id
+            AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_texts.program_id = " + id.to_s + "
         UNION
         SELECT display_sections.section_name, display_sections.section_order,
@@ -29,6 +31,7 @@ class FieldName < ApplicationRecord
           FROM field_names, fields_decimals, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
             AND fields_decimals.field_id = field_names.id
+            AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_decimals.program_id = " + id.to_s + "
         UNION
         SELECT display_sections.section_name, display_sections.section_order,
@@ -38,6 +41,7 @@ class FieldName < ApplicationRecord
           FROM field_names, fields_integers, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
             AND fields_integers.field_id = field_names.id
+            AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_integers.program_id = " + id.to_s + "
         UNION
         SELECT display_sections.section_name, display_sections.section_order,
