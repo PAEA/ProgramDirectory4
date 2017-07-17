@@ -30,7 +30,7 @@
             You must agree to <a href="" data-toggle="modal" data-target="#myModal">the terms of use.</a>
           -->
             <!-- Modal -->
-
+<!--
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -53,16 +53,16 @@
                 </div>
               </div>
             </div>
-
+-->
           </div>
           <div class="form-group">
-            <!--
-            <input aria-describedby="user_terms" type="checkbox" name="user_terms" id="user_terms" />
-            <label for="user_terms">Yes, I agree to the terms.</label>
-          -->
+            <% if cookies[:adea_terms_accept].nil? %>
+              <input aria-describedby="user_terms" type="checkbox" name="user_terms" id="user_terms" />
+              <label for="user_terms">Yes, I accept the <%= link_to "Terms and Conditions", '/terms-and-conditions', target: '_blank' %>.</label>
+            <% end %>
             <p><a href="https://access.adea.org/adeassa/ssaauthmain.forget_password?p_referrer=&p_context=EC" target="_blank">Forgot password?</a></p>
           </div>
-          <%= submit_tag("LOG IN", class: 'btn btn-inverse btn-lg') %>
+          <%= submit_tag("LOG IN", class: 'btn btn-inverse btn-lg', id: 'login-button') %>
         <% end %>
       </div>
     </div>
@@ -71,5 +71,16 @@
   <script>
 
     $("footer").css({"position": "fixed", "left": "0", "bottom": "0"});
+
+    <% if cookies[:adea_terms_accept].nil? %>
+    $('#login-button').attr('disabled', 'disabled');
+    $('#user_terms').click(function() {
+        if ($(this).is(':checked')) {
+            $('#login-button').removeAttr('disabled');
+        } else {
+            $('#login-button').attr('disabled', 'disabled');
+        }
+    });
+    <% end %>
 
   </script>

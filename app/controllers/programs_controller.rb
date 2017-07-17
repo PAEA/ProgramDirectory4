@@ -2,6 +2,8 @@ class ProgramsController < ApplicationController
 
   def index
 
+    cookies[:adea_terms_accept] = Date.today
+
     @display_username = session[:display_username]
     @user_roles = session[:user_roles]
 
