@@ -1,7 +1,7 @@
 class FieldsString < ApplicationRecord
 
   def self.select_fields_by_filter( filter_field )
-    select(:field_value).distinct.where( field_id: filter_field )
+    select(:field_value).distinct.where( field_id: filter_field ).sort_by { |item| item.field_value.to_i }
   end
 
   def self.select_fields_by_keywords( search_query )
