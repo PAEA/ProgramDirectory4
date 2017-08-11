@@ -1,15 +1,24 @@
 module ProgramsHelper
 
+  def check_for_live_links(this_string, this_is_a_table_cell)
+    if ( this_string.include? "http" )
+      urls = this_string.split(/\s+/).find_all { |u| u =~ /^https?:/ }
+      urls.each do |u|
+        if ( this_is_a_table_cell )
+          adding_linebreak = '<span class="small">' + u + '</span>'
+        else
+          adding_linebreak = u
+        end
+        this_string = this_string.sub( u, '<a href="' + u + '" target="_blank">' + adding_linebreak + '</a>' )
+      end
+    end
+    return this_string
+  end
+
   def display_fields_and_tables(f)
 
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
-      str = f.field_value.to_s.strip
-      if ( str.include? "http" )
-        urls = str.split(/\s+/).find_all { |u| u =~ /^https?:/ }
-        urls.each do |u|
-          str = str.sub( u, '<a href="' + u + '" target="_blank">' + u + '</a>' )
-        end
-      end
+      str = check_for_live_links( f.field_value.to_s.strip, false )
 
       ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p>").html_safe
     elsif ( f.content_type == 'table' )
@@ -113,18 +122,13 @@ module ProgramsHelper
           if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.include? "Notes" )
             alignment = "text-left"
           else
-            alignment = "text-center"
+            alignment = "text-to-align"
           end
           html += "colspan='" + colspan.to_s.strip + "' class='" + alignment + "'>"
           if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else
-            str = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip
-            if ( str.include? "http" )
-              url = str.slice(URI.regexp(['http']))
-              @table_types[ data_table_config.table_name_id ][ y ][ x ] = str.gsub( url.to_s, '<a href="' + url.to_s + '">' + url.to_s + '</a>' )
-            end
-            html += @table_types[ data_table_config.table_name_id ][ y ][ x ]
+            html += check_for_live_links( @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip, true )
 
             if ( y > 1 && !@table_types[ data_table_config.table_name_id ][ y ][ x ].blank? )
               table_empty = false

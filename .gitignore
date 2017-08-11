@@ -22,7 +22,8 @@
 .byebug_history
 
 # Ignore config files
-/config/*
+/config/secrets.yml
+/config/database.yml
 /lib/special_access.rb
 
 # Source files

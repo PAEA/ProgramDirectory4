@@ -15,7 +15,7 @@ module AuthenticateMe
     end
     xml_response = Nokogiri::XML(c.body_str)
     authentication = xml_response.search('authentication').map do |user|
-      if ( user.at('authenticated').text == "true" && user.at('roles').text.downcase.include?("og_read") )
+      if ( user.at('authenticated').text == "true" && ( user.at('roles').text.downcase.include?("og_read") || user.at('roles').text.downcase.include?("og_company_admin") ) )
         session[:display_username] = user.at('first-name').text + " " + user.at('last-name').text
         session[:user_roles] = user.at('roles').text
         flash[:success] = "Welcome!"

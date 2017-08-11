@@ -251,6 +251,10 @@ a:active, a:hover {
   visibility: hidden;
 }
 
+.small {
+  font-size: x-small;
+}
+
 ////////////////// form module //////////////////
 
 .form-control {
@@ -458,6 +462,10 @@ table th:first-child {
 	text-align: left;
 }
 
+.text-to-align {
+  text-align: center;
+}
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -509,6 +517,10 @@ table th:first-child {
   }
   table td:last-child {
     border-bottom: 0;
+  }
+
+  .text-to-align {
+    text-align: right;
   }
 }
 

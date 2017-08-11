@@ -18,6 +18,9 @@ class UserSessionsController < ApplicationController
     send_file "#{Rails.root}/public/files/ADEA Dental School Explorer Terms and Conditions 7-7-17.pdf", type: "application/pdf", x_sendfile: true
   end
 
+  def maintenance
+  end
+
   #private
 
   #def user_session_params
