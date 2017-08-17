@@ -252,7 +252,9 @@ a:active, a:hover {
 }
 
 .small {
-  font-size: x-small;
+  font-size: small;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 ////////////////// form module //////////////////
