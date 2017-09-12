@@ -2,6 +2,7 @@ class ProgramsController < ApplicationController
 
   def index
 
+    # Save today's date in a cookie so it won't show
     cookies[:adea_terms_accept] = Date.today
 
     @display_username = session[:display_username]
@@ -17,7 +18,7 @@ class ProgramsController < ApplicationController
       get_programs << p.id
     end
 
-    # Get preselected filters
+    # Get preselected filters - This comes from the metadata in the spreadsheets
     @filters = CustomFilter.select_all_filters_sorted_by_display_order
 
     $filter_values = Array.new

@@ -1,0 +1,79 @@
+<div class="row">
+
+    <div class="block block-blue">
+      <h2>Settings</h2>
+
+      <%= form_tag('/save_settings') do %>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>School editing:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
+            <div class="form-group">
+              <%= label_tag(:sf_edit_from, "From:") %>
+              <%= date_field_tag(:sf_edit_from, @editing_from, class: "form-control") %>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
+            <div class="form-group">
+              <%= label_tag(:sf_edit_to, "To:") %>
+              <%= date_field_tag(:sf_edit_to, @editing_to, class: "form-control") %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>Role:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+            <div class="form-group">
+              <%= select_tag(:sf_roles, options_from_collection_for_select(@roles, 'id', 'role') , class: 'info-subhed') %>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-offset-4 col-md-8 col-lg-offset-2 col-lg-10">
+            <div class="form-group">
+              <p>allowed to edit the following fields:</p>
+              <% section_name = "" %>
+              <% @fields_per_role.each do |field| %>
+                <% checked = false %>
+                <% if ( section_name != field.section_name ) %>
+                  <h4><%= field.section_name %></h4>
+                  <% section_name = field.section_name %>
+                <% end %>
+                <% if ( !field.display_sections_id.nil? ) %>
+                  <% checked = true %>
+                <% end %>
+                <%= check_box_tag(field.section_type + "_" + field.section_to_link, 1, checked) %>
+                <%= label_tag(field.section_type + "_" + field.section_to_link,"(" + field.section_type + ") " + field.section_to_link) %>
+                <br/>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>Notifications:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+            <div class="form-group">
+              <%= label_tag(:sf_emails, "Email addresses (separated by ;) :") %>
+              <%= text_field_tag(:sf_emails, @email_notifications, class: "form-control") %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="text-center">
+              <%= submit_tag("SAVE", class: 'btn btn-inverse btn-lg', id: 'sf_save-settings') %>
+            </div>
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+
+</div>

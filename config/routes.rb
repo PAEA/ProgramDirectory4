@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get "/information/:id" => "programs#information"
   get "/search" => "programs#search"
   post "/authenticate" => "user_sessions#authenticate"
+  get "settings" => "settings#index"
+  post "/save_settings" => "settings#save_settings"
 
   #resources :users, only: [:new, :create]
   resources :user_sessions, only: [:new, :authenticate, :destroy]

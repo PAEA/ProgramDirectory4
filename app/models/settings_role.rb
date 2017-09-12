@@ -1,0 +1,3 @@
+class SettingsRole < ApplicationRecord
+
+end

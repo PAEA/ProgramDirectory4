@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518134410) do
+ActiveRecord::Schema.define(version: 20170908132244) do
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
@@ -119,6 +119,29 @@ ActiveRecord::Schema.define(version: 20170518134410) do
     t.string   "program_string", limit: 90
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+  end
+
+  create_table "settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.date     "editing_from"
+    t.date     "editing_to"
+    t.string   "email_notifications"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  create_table "settings_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "settings_roles_id"
+    t.integer  "display_sections_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.index ["display_sections_id"], name: "index_settings_fields_on_display_sections_id", using: :btree
+    t.index ["settings_roles_id"], name: "index_settings_fields_on_settings_roles_id", using: :btree
+  end
+
+  create_table "settings_roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string   "role",       limit: 50
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
   create_table "sub_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
