@@ -2,6 +2,8 @@ class SettingsController < ApplicationController
 
   def index
 
+    @display_username = session[:display_username]
+    
     settings = Setting.first
 
     @settings_id = settings.id
