@@ -79,7 +79,7 @@ class ReadTables < ActiveRecord::Migration[5.0]
     # Creates Main Headers table in the database
     create_table :main_headers do |t|
       t.references :table_name, index: true
-      t.string :header, :limit => 90
+      t.string :header, :limit => 95
 
       t.timestamps
     end

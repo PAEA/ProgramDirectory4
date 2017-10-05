@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(version: 20170908132244) do
 
   create_table "main_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "table_name_id"
-    t.string   "header",        limit: 90
+    t.string   "header",        limit: 95
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.index ["table_name_id"], name: "index_main_headers_on_table_name_id", using: :btree
