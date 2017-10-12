@@ -172,6 +172,12 @@ class ProgramsController < ApplicationController
     end
 
     @id = params[:id].to_i
+    edit = params[:edit].to_s
+    if ( edit == "true" )
+      @edit = true
+    else
+      @edit = false
+    end
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
 

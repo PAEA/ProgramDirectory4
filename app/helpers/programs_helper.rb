@@ -15,12 +15,17 @@ module ProgramsHelper
     return this_string
   end
 
-  def display_fields_and_tables(f)
+  def display_fields_and_tables(f,can_edit)
 
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
-      str = check_for_live_links( f.field_value.to_s.strip, false )
 
-      ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p>").html_safe
+      if ( can_edit )
+        str = f.field_value.to_s.strip
+        ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><input name='" + f.field_name + "' id='" + f.field_name + "' value='" + str + "' type='text' maxlength='" + f.field_size + "' style='width:100%;'><br/>").html_safe
+      else
+        str = check_for_live_links( f.field_value.to_s.strip, false )
+        ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p>").html_safe
+      end
     elsif ( f.content_type == 'table' )
 
       # table_empty applies in most cases to single row tables with no content.

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get "/index" => "programs#index"
   get "/information/:id" => "programs#information"
+  get "/information/:id/:edit" => "programs#information_edit"
   get "/search" => "programs#search"
   post "/authenticate" => "user_sessions#authenticate"
   get "settings" => "settings#index"
