@@ -211,7 +211,7 @@ class ProgramsController < ApplicationController
         end
 
         # Fills each table type with its cell values per row and column
-        if ( cell.cell_value.to_s == "x" || ( cell.cell_value.to_s.include? "x ") || ( cell.cell_value.to_s.include? "x\n") || ( cell.cell_value.to_s.include? "x\r") )
+        if ( cell.cell_value.to_s == "x" || ( cell.cell_value.to_s[0..1].include? "x ") || ( cell.cell_value.to_s[0..1].include? "x\n") || ( cell.cell_value.to_s[0..1].include? "x\r") )
           # ascii checkmark symbol
           @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s.gsub("x","\u2713")
         else
@@ -224,7 +224,7 @@ class ProgramsController < ApplicationController
       if ( table_configuration.has_categories )
         categories = Category.select_categories_by_table_config_id( table_configuration.id )
         categories.each do |category|
-          if ( category.category.to_s == "x" || ( category.category.to_s.include? "x " ) || ( category.category.to_s.include? "x\n") || ( category.category.to_s.include? "x\r") )
+          if ( category.category.to_s == "x" || ( category.category.to_s[0..1].include? "x " ) || ( category.category.to_s[0..1].include? "x\n") || ( category.category.to_s[0..1].include? "x\r") )
             # ascii checkmark symbol
             @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
           else
