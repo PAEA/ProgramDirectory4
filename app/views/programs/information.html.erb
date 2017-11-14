@@ -14,16 +14,26 @@
             </div>
           <% end %>
           <% section_name_trimmed = f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>
-          <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= section_name_trimmed %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-            <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
-          </a>
+          <div style="display: table;">
+            <div style="display: table-cell; width: 100%;">
+            <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= section_name_trimmed %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+              <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
+            </a>
+            </div>
+            <div style="display: table-cell; width: 5%; padding-left: 10px;">
+            <% if @edit %>
+              <form name="<%= section_name_trimmed %>" action="/save_changes">
+              <%= submit_tag("SAVE", class: 'btn btn-lg btn-inverse', id: 'save-button', style: "padding: 10px 16px 10px 16px; margin-top: 20px; font-size: 20px;") %>
+            <% end %>
+            </div>
+          </div>
           <br />
           <!-- opening divs -->
           <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
             <div class="info-well">
               <% this_section = f.section_name %>
-              <form name="<%= section_name_trimmed %>">
         <% end %>
+
         <%= display_fields_and_tables(f, @edit) %>
 
       <% end %>
@@ -38,3 +48,21 @@
     <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
   </div>
 </div>
+
+<script>
+$(document).ready(function(){
+
+  <% @fields_to_display.each do |f| %>
+    $("#new-<%= f.id %>").hide();
+    $("#success-<%= f.id %>").click(function(){
+        $("#current-<%= f.id %>").hide();
+        $("#proposal-<%= f.id %>").hide();
+        $("#new-<%= f.id %>").fadeIn('slow');
+    });
+    $("#reject-<%= f.id %>").click(function(){
+        $("#current-<%= f.id %>").fadeIn('slow');
+        $("#proposal-<%= f.id %>").fadeOut('slow');
+    });
+  <% end %>
+});
+</script>

@@ -20,11 +20,29 @@ module ProgramsHelper
     if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
 
       if ( can_edit )
-        str = f.field_value.to_s.strip
-        ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><input name='" + f.field_name + "' id='" + f.field_name + "' value='" + str + "' type='text' maxlength='" + f.field_size + "' style='width:100%;'><br/>").html_safe
+        if ( !f.field_value_temp.to_s.blank? )
+          str = f.field_value_temp.to_s.strip
+        else
+          str = f.field_value.to_s.strip
+        end
+
+        if ( str.length < 100 )
+          ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><input name='" + f.field_name + "' id='" + f.field_name + "' value='" + str + "' type='text' maxlength='" + f.field_size + "' style='width:100%;'><br/>").html_safe
+        else
+          # For display purposes, calculate how many rows the textarea should show based on the field's max length
+          textarea_rows = [(f.field_size.to_i / 114).round, [(str.length / 114).round + 1, str.count(13.chr) + 1].max ].min
+          ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><textarea name='" + f.field_name + "' id='" + f.field_name + "' rows=" + textarea_rows.to_s + " maxlength='" + f.field_size + "' style='width:100%;'>" + str + "</textarea><br/>").html_safe
+        end
       else
         str = check_for_live_links( f.field_value.to_s.strip, false )
-        ("<p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p>").html_safe
+        str_temp = check_for_live_links( f.field_value_temp.to_s.strip, false )
+        html = "<div id='current-" + f.id.to_s + "'><p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p></div>"
+
+        if ( !f.field_value_temp.to_s.blank? )
+          html += "<div id='new-" + f.id.to_s + "'><p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str_temp + "</p></div>"
+          html += "<div id='proposal-" + f.id.to_s + "'><div style='display: table; margin-bottom: 15px; width: 99%;'><div style='display: table-cell; width: 80%; background-color: gold; color: black; padding: 5px; border-radius: 5px;'>" + f.field_value_temp.to_s + "</div><div style='display: table-cell; width: 15%; text-align: right;'><button id='success-" + f.id.to_s + "' type='button' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span></button> <button id='reject-" + f.id.to_s + "' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></button></div></div></div>"
+        end
+        html.html_safe
       end
     elsif ( f.content_type == 'table' )
 

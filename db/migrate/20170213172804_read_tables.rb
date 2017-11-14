@@ -98,12 +98,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
       t.references :main_header, index: true
       t.references :sub_header, index: true
       t.references :category, index: true
-      #t.integer :data_table_config_id
-      #t.integer :main_header_id
-      #t.integer :sub_header_id
-      #t.integer :category_id
       t.text  :cell_value
-      #t.integer :program_id
+      t.text  :cell_value_temp
       t.references :program, index: true
       t.integer :cell_row, :limit => 2
       t.integer :cell_column, :limit => 2

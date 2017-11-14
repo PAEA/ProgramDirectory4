@@ -1,4 +1,6 @@
 class ProgramsController < ApplicationController
+  @@form_fields = Array.new
+  @@school = ""
 
   def index
 
@@ -162,17 +164,38 @@ class ProgramsController < ApplicationController
 
   end
 
+  def save_changes
+
+    puts params.inspect
+    @@form_fields.each do |field|
+
+      if ( field[3].to_s != params[field[2].to_sym].to_s && !params[field[2].to_sym].to_s.blank? )
+        puts field.inspect
+        puts "--> " + params[field[2].to_sym].to_s
+        FieldsString.where(program_id: field[0], field_id: field[1]).update(:field_value_temp => params[field[2].to_sym].to_s)
+      end
+    end
+
+    redirect_to "/information/"+@@school+"?edit=false"
+
+  end
+
   def information
 
     @display_username = session[:display_username]
     @user_roles = session[:user_roles]
+    this_field = Array.new
 
     if ( @display_username.nil? )
       redirect_to root_path
     end
 
     @id = params[:id].to_i
+    @@school = params[:id].to_s
     edit = params[:edit].to_s
+
+    puts params
+
     if ( edit == "true" )
       @edit = true
     else
@@ -182,6 +205,20 @@ class ProgramsController < ApplicationController
     @field_string = FieldsString.find_by_program_id(@id)
 
     @fields_to_display = FieldName.select_fields_to_display( @id )
+
+    @fields_to_display.each do |f|
+      this_field = Array.new
+
+      # Save current values for all fields. This value will be compared against the form
+      # values after saving. If they are different, they get saved as "temp" values in each
+      # table. These new values need to get approved before displaying on the webpage.
+      this_field[3] = f.field_value.to_s.strip # field original value
+      this_field[2] = f.field_name # field name
+      this_field[1] = f.id         # field id
+      this_field[0] = @id          # field program id
+
+      @@form_fields << this_field
+    end
 
     # Get all of the table configurations (title, number of rows and columns)
     @data_table_configs = DataTableConfig.select_tables_by_program_id( @id )

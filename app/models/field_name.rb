@@ -17,7 +17,7 @@ class FieldName < ApplicationRecord
         (SELECT display_sections.section_name, display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
-          fields_strings.field_value, 'field' as content_type,
+          fields_strings.field_value, fields_strings.field_value_temp, 'field' as content_type,
           '" + @field_string_length + "' as field_size, '" + @field_string_type + "' as field_type
           FROM field_names, fields_strings, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
@@ -28,7 +28,7 @@ class FieldName < ApplicationRecord
         SELECT display_sections.section_name, display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
-          fields_texts.field_value, 'field' as content_type,
+          fields_texts.field_value, fields_texts.field_value_temp, 'field' as content_type,
           '" + @field_text_length + "' as field_size, '" + @field_text_type + "' as field_type
           FROM field_names, fields_texts, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
@@ -39,7 +39,7 @@ class FieldName < ApplicationRecord
         SELECT display_sections.section_name, display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
-          fields_decimals.field_value, 'field' as content_type,
+          fields_decimals.field_value, fields_decimals.field_value_temp, 'field' as content_type,
           '" + @field_decimal_length + "' as field_size, '" + @field_decimal_type + "' as field_type
           FROM field_names, fields_decimals, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
@@ -50,7 +50,7 @@ class FieldName < ApplicationRecord
         SELECT display_sections.section_name, display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
-          fields_integers.field_value, 'field' as content_type,
+          fields_integers.field_value, fields_integers.field_value_temp, 'field' as content_type,
           '" + @field_integer_length + "' as field_size, '" + @field_integer_type + "' as field_type
           FROM field_names, fields_integers, display_sections
           WHERE display_sections.section_to_link = field_names.field_name
@@ -61,7 +61,7 @@ class FieldName < ApplicationRecord
         SELECT display_sections.section_name, display_sections.section_order,
           table_names.id as id, table_names.table_name as field_name,
           table_names.display_table_name as display_name,
-          0, 'table' as content_type,
+          0, 0, 'table' as content_type,
           '' as field_size, '' as field_type
           FROM display_sections, table_names, data_table_configs
           WHERE display_sections.section_to_link = table_names.table_name

@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20170908132244) do
     t.integer  "sub_header_id"
     t.integer  "category_id"
     t.text     "cell_value",           limit: 65535
+    t.text     "cell_value_temp",      limit: 65535
     t.integer  "program_id"
     t.integer  "cell_row",             limit: 2
     t.integer  "cell_column",          limit: 2
@@ -77,33 +78,37 @@ ActiveRecord::Schema.define(version: 20170908132244) do
   create_table "fields_decimals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
-    t.decimal  "field_value", precision: 10
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.decimal  "field_value",      precision: 10
+    t.decimal  "field_value_temp", precision: 10
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "fields_integers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
     t.integer  "field_value"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "field_value_temp"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "fields_strings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
     t.string   "field_value"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "field_value_temp"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "fields_texts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
-    t.text     "field_value", limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.text     "field_value",      limit: 65535
+    t.text     "field_value_temp", limit: 65535
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   create_table "main_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
