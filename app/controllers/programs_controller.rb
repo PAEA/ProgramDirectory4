@@ -166,17 +166,44 @@ class ProgramsController < ApplicationController
 
   def save_changes
 
-    puts params.inspect
     @@form_fields.each do |field|
+      program_id = field[0]
+      field_id = field[1]
+      field_new_value = params[field[2].to_sym].to_s.strip
+      field_old_value = field[3].to_s.strip
+      content_type = field[4]
 
-      if ( field[3].to_s != params[field[2].to_sym].to_s && !params[field[2].to_sym].to_s.blank? )
-        puts field.inspect
-        puts "--> " + params[field[2].to_sym].to_s
-        FieldsString.where(program_id: field[0], field_id: field[1]).update(:field_value_temp => params[field[2].to_sym].to_s)
+      if ( content_type == 'field' && field[3].to_s != params[field[2].to_sym].to_s && !params[field[2].to_sym].to_s.blank? )
+        FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+        new_log_entry = Log.create(
+          program_id: program_id,
+          field_id: field_id,
+          old_value: field_old_value,
+          new_value: field_new_value,
+          user_id: 1
+        )
       end
     end
 
-    redirect_to "/information/"+@@school+"?edit=false"
+    redirect_to "/information/"+@@school
+
+  end
+
+  def approve_change
+
+    program_id = params[:program_id].to_s
+    field_id =  params[:field_id].to_s
+
+    FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+
+  end
+
+  def reject_change
+
+    program_id = params[:program_id].to_s
+    field_id =  params[:field_id].to_s
+
+    FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
 
   end
 
@@ -193,14 +220,20 @@ class ProgramsController < ApplicationController
     @id = params[:id].to_i
     @@school = params[:id].to_s
     edit = params[:edit].to_s
+    approve = params[:approve].to_s
 
-    puts params
-
-    if ( edit == "true" )
+    if ( edit == "true")
       @edit = true
     else
       @edit = false
     end
+
+    #if ( approve == "true")
+      @approve = true
+    #else
+    #  @approve = false
+    #end
+
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
 
@@ -212,6 +245,7 @@ class ProgramsController < ApplicationController
       # Save current values for all fields. This value will be compared against the form
       # values after saving. If they are different, they get saved as "temp" values in each
       # table. These new values need to get approved before displaying on the webpage.
+      this_field[4] = f.content_type # field or table cell
       this_field[3] = f.field_value.to_s.strip # field original value
       this_field[2] = f.field_name # field name
       this_field[1] = f.id         # field id

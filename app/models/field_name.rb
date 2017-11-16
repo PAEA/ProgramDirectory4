@@ -3,13 +3,13 @@ class FieldName < ApplicationRecord
   def self.select_fields_to_display( id )
 
     @field_string_length = '255'
-    @field_string_type = 'text'
+    @field_string_type = 'string'
     @field_text_length = '1000'
     @field_text_type = 'text'
     @field_decimal_length = '10'
-    @field_decimal_type = 'text'
+    @field_decimal_type = 'decimal'
     @field_integer_length = '10'
-    @field_integer_type = 'text'
+    @field_integer_type = 'integer'
 
     find_by_sql("
       SELECT *

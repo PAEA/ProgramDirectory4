@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170908132244) do
+ActiveRecord::Schema.define(version: 20171116150105) do
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
@@ -109,6 +109,19 @@ ActiveRecord::Schema.define(version: 20170908132244) do
     t.text     "field_value_temp", limit: 65535
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+  end
+
+  create_table "logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "program_id"
+    t.integer  "field_id"
+    t.text     "old_value",  limit: 65535
+    t.text     "new_value",  limit: 65535
+    t.integer  "user_id"
+    t.string   "action"
+    t.integer  "action_by"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["program_id", "field_id", "created_at"], name: "index_logs_on_program_id_and_field_id_and_created_at", using: :btree
   end
 
   create_table "main_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

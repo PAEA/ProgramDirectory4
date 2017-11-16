@@ -1,7 +1,12 @@
+<% if @edit || @approve%>
+  <form action="/save_changes">
+<% end %>
+
 <div class="row">
   <div class="overlay col-md-10 col-md-offset-1">
     <div class="information-page" id="<%= @program.id %>">
-      <h1 class="info-hed"><%= @program.program %></h1> <%= link_to( "VIEW" , {:controller => 'programs', :action => 'information', :id => params[:id] , :edit => false }, :class => "btn navbar-btn btn-inverse" ) %> <%= link_to( "EDIT" , {:controller => 'programs', :action => 'information', :id => params[:id] , :edit => true }, :class => "btn navbar-btn btn-inverse" ) %>
+
+      <h1 class="info-hed"><%= @program.program %></h1> <%= link_to( "VIEW" , {:controller => 'programs', :action => 'information', :id => params[:id] }, :class => "btn navbar-btn btn-inverse" ) %> <%= link_to( "EDIT" , {:controller => 'programs', :action => 'information', :id => params[:id] , :edit => true }, :class => "btn navbar-btn btn-inverse" ) %>
 
       <% this_section = "" %>
 
@@ -9,7 +14,6 @@
 
         <% if ( this_section != f.section_name ) %>
           <% if ( this_section != "" ) %>
-            </form>
             </div>
             </div>
           <% end %>
@@ -22,12 +26,10 @@
             </div>
             <div style="display: table-cell; width: 5%; padding-left: 10px;">
             <% if @edit %>
-              <form name="<%= section_name_trimmed %>" action="/save_changes">
               <%= submit_tag("SAVE", class: 'btn btn-lg btn-inverse', id: 'save-button', style: "padding: 10px 16px 10px 16px; margin-top: 20px; font-size: 20px;") %>
             <% end %>
             </div>
           </div>
-          <br />
           <!-- opening divs -->
           <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
             <div class="info-well">
@@ -49,20 +51,28 @@
   </div>
 </div>
 
+<% if @edit || @approve %>
+  </form>
+<% end %>
+
 <script>
 $(document).ready(function(){
 
   <% @fields_to_display.each do |f| %>
-    $("#new-<%= f.id %>").hide();
-    $("#success-<%= f.id %>").click(function(){
-        $("#current-<%= f.id %>").hide();
-        $("#proposal-<%= f.id %>").hide();
-        $("#new-<%= f.id %>").fadeIn('slow');
-    });
-    $("#reject-<%= f.id %>").click(function(){
-        $("#current-<%= f.id %>").fadeIn('slow');
-        $("#proposal-<%= f.id %>").fadeOut('slow');
-    });
+    <% if ( f.content_type == 'field' ) %>
+      $("#new-<%= f.id %>").hide();
+      $("#success-<%= f.id %>").click(function(){
+          $("#current-<%= f.id %>").hide();
+          $("#proposal-<%= f.id %>").hide();
+          $("#new-<%= f.id %>").fadeIn('slow');
+          $.ajax("/approve_change/<%= @id %>/<%= f.id %>");
+      });
+      $("#reject-<%= f.id %>").click(function(){
+          $("#current-<%= f.id %>").fadeIn('slow');
+          $("#proposal-<%= f.id %>").fadeOut('slow');
+          $.ajax("/reject_change/<%= @id %>/<%= f.id %>");
+      });
+    <% end %>
   <% end %>
 });
 </script>

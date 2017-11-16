@@ -13,9 +13,15 @@ Rails.application.routes.draw do
   post "/save_settings" => "settings#save_settings"
   get "/terms-and-conditions" => "user_sessions#terms_and_conditions_pdf"
   get "/save_changes" => "programs#save_changes"
+  get "/approve_change/:program_id/:field_id" => "programs#approve_change"
+  get "/reject_change/:program_id/:field_id" => "programs#reject_change"
 
   #resources :users, only: [:new, :create]
   resources :user_sessions, only: [:new, :authenticate, :destroy]
+
+  #resources :programs do
+  #  get :approve_change, on: :member
+  #end
 
   delete '/sign_out', to: 'user_sessions#destroy', as: :sign_out
   get '/sign_in', to: 'user_sessions#new', as: :sign_in

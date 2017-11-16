@@ -163,6 +163,15 @@ a:active, a:hover {
   color: $primary-type;
 }
 
+.pre {
+  display: block;
+  white-space: pre-wrap;
+  font-family: 'AvenirMedium', sans-serif;
+  font-size: 18px;
+  width: 99%;
+  overflow: auto;
+}
+
 /////////////// layout ///////////////////////
 
 
@@ -255,6 +264,10 @@ a:active, a:hover {
   font-size: small;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+.add-bottom-margin {
+  margin-bottom: 8px;
 }
 
 ////////////////// form module //////////////////

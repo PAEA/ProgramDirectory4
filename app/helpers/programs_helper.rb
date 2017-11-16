@@ -17,7 +17,7 @@ module ProgramsHelper
 
   def display_fields_and_tables(f,can_edit)
 
-    if ( f.content_type == 'field' && !f.field_value.to_s.strip.blank? )
+    if (f.content_type == 'field' && !f.field_value.to_s.strip.blank? && !can_edit) || (f.content_type == 'field' && can_edit) || (f.content_type == 'field' && !can_edit && !f.field_value_temp.blank?)
 
       if ( can_edit )
         if ( !f.field_value_temp.to_s.blank? )
@@ -36,14 +36,23 @@ module ProgramsHelper
       else
         str = check_for_live_links( f.field_value.to_s.strip, false )
         str_temp = check_for_live_links( f.field_value_temp.to_s.strip, false )
-        html = "<div id='current-" + f.id.to_s + "'><p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str + "</p></div>"
+        html = "<div id='current-" + f.id.to_s + "' class='add-bottom-margin'><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> "
+
+        # if the field value is less than 100 chars, display it together with its field label
+        # otherwise, use a <pre>-like display
+        if ( str.length < 100 )
+          html += str + "</div>"
+        else
+          html += "<span class='pre'>" + str + "</span></div>"
+        end
 
         if ( !f.field_value_temp.to_s.blank? )
           html += "<div id='new-" + f.id.to_s + "'><p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str_temp + "</p></div>"
-          html += "<div id='proposal-" + f.id.to_s + "'><div style='display: table; margin-bottom: 15px; width: 99%;'><div style='display: table-cell; width: 80%; background-color: gold; color: black; padding: 5px; border-radius: 5px;'>" + f.field_value_temp.to_s + "</div><div style='display: table-cell; width: 15%; text-align: right;'><button id='success-" + f.id.to_s + "' type='button' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span></button> <button id='reject-" + f.id.to_s + "' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></button></div></div></div>"
+          html += "<div id='proposal-" + f.id.to_s + "'><div style='display: table; margin-bottom: 15px; width: 99%;'><div style='display: table-cell; width: 80%; background-color: gold; color: black; padding: 5px; border-radius: 5px;'>" + f.field_value_temp.to_s + "</div><div style='display: table-cell; width: 15%; text-align: right;'><button id='success-" + f.id.to_s + "' type='button' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span></button> <button id='reject-" + f.id.to_s + "' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span></button></div></div></div>"
         end
         html.html_safe
       end
+
     elsif ( f.content_type == 'table' )
 
       # table_empty applies in most cases to single row tables with no content.
