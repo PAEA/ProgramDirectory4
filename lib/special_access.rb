@@ -6,10 +6,10 @@ module AuthenticateMe
 
   def authenticate
 
-    url = 'https://access.adea.org/paeadev/CENSSAWEBSVCLIB.AUTHENTICATION'
+    url = 'https://access.adea.org/paea/CENSSAWEBSVCLIB.AUTHENTICATION'
     login = params['login'].to_s.strip
     passw = CGI.escape(params['password'].to_s)
-    data = 'p_input_xml_doc=<?xml version="1.0" encoding="UTF-8" ?><authentication-request><integratorUsername>paeadev</integratorUsername><integratorPassword>Authnt1c8n</integratorPassword><cust-id></cust-id><last-nm></last-nm><alias></alias><username>' + login + '</username><password><![CDATA[' + passw + ']]></password><session-id></session-id></authentication-request>'
+    data = 'p_input_xml_doc=<?xml version="1.0" encoding="UTF-8" ?><authentication-request><integratorUsername>paea</integratorUsername><integratorPassword>Authnt1c8n</integratorPassword><cust-id></cust-id><last-nm></last-nm><alias></alias><username>' + login + '</username><password><![CDATA[' + passw + ']]></password><session-id></session-id></authentication-request>'
     c = Curl::Easy.http_post(url, data) do |curl|
       curl.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     end
