@@ -167,14 +167,25 @@ class ProgramsController < ApplicationController
   def save_changes
 
     @@form_fields.each do |field|
+      puts field.inspect
       program_id = field[0]
       field_id = field[1]
       field_new_value = params[field[2].to_sym].to_s.strip
       field_old_value = field[3].to_s.strip
       content_type = field[4]
+      field_type = field[5]
 
-      if ( content_type == 'field' && field[3].to_s != params[field[2].to_sym].to_s && !params[field[2].to_sym].to_s.blank? )
-        FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+      if ( content_type == 'field' && field_old_value != field_new_value )
+
+        if field_new_value.blank?
+          field_new_value = "(((DELETED)))"
+        end
+
+        if field_type == "string"
+          FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+        elsif field_type == "text"
+          FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+        end
         new_log_entry = Log.create(
           program_id: program_id,
           field_id: field_id,
@@ -193,8 +204,15 @@ class ProgramsController < ApplicationController
 
     program_id = params[:program_id].to_s
     field_id =  params[:field_id].to_s
+    field_type = params[:field_type].to_s
 
-    FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    if field_type == "string"
+      FieldsString.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "text"
+      FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    end
 
   end
 
@@ -202,8 +220,19 @@ class ProgramsController < ApplicationController
 
     program_id = params[:program_id].to_s
     field_id =  params[:field_id].to_s
+    field_type = params[:field_type].to_s
 
-    FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    if field_type == "string"
+      FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "text"
+      FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    end
+
+  end
+
+  def to_boolean(this_var)
+
+    this_var == "true"
 
   end
 
@@ -221,12 +250,7 @@ class ProgramsController < ApplicationController
     @@school = params[:id].to_s
     edit = params[:edit].to_s
     approve = params[:approve].to_s
-
-    if ( edit == "true")
-      @edit = true
-    else
-      @edit = false
-    end
+    @edit = to_boolean(edit.to_s)
 
     #if ( approve == "true")
       @approve = true
@@ -245,11 +269,12 @@ class ProgramsController < ApplicationController
       # Save current values for all fields. This value will be compared against the form
       # values after saving. If they are different, they get saved as "temp" values in each
       # table. These new values need to get approved before displaying on the webpage.
-      this_field[4] = f.content_type # field or table cell
-      this_field[3] = f.field_value.to_s.strip # field original value
-      this_field[2] = f.field_name # field name
-      this_field[1] = f.id         # field id
-      this_field[0] = @id          # field program id
+      this_field[5] = f.field_type              # string, text, decimal or integer
+      this_field[4] = f.content_type            # field or table cell
+      this_field[3] = f.field_value.to_s.strip  # field original value
+      this_field[2] = f.field_name              # field name
+      this_field[1] = f.id                      # field id
+      this_field[0] = @id                       # field program id
 
       @@form_fields << this_field
     end

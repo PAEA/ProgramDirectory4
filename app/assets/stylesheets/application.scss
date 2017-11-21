@@ -151,6 +151,8 @@ h4 {
 label {
   font-weight: $font-light;
   color: $primary-type;
+  margin-bottom:0;
+  margin-top: 8px;
 }
 
 a:link, a:visted {
@@ -161,15 +163,6 @@ a {
 }
 a:active, a:hover {
   color: $primary-type;
-}
-
-.pre {
-  display: block;
-  white-space: pre-wrap;
-  font-family: 'AvenirMedium', sans-serif;
-  font-size: 18px;
-  width: 99%;
-  overflow: auto;
 }
 
 /////////////// layout ///////////////////////
@@ -202,6 +195,10 @@ a:active, a:hover {
   text-align: center;
 }
 ////////////// modules //////////////////////
+
+.add-bottom-margin {
+  margin-bottom: 8px;
+}
 
 .beneath-logo {
   background-color: $accent-color;
@@ -252,12 +249,21 @@ a:active, a:hover {
   width: 100%;
 }
 
-.right {
-  display: none;
-}
-
 .not-visible {
   visibility: hidden;
+}
+
+.pre {
+  display: block;
+  white-space: pre-wrap;
+  font-family: 'AvenirMedium', sans-serif;
+  font-size: 18px;
+  width: 99%;
+  overflow: auto;
+}
+
+.right {
+  display: none;
 }
 
 .small {
@@ -266,8 +272,25 @@ a:active, a:hover {
   word-wrap: break-word;
 }
 
-.add-bottom-margin {
-  margin-bottom: 8px;
+.table-proposal {
+  display: table;
+  margin-bottom: 15px;
+  width: 99%;
+}
+
+.table-proposal-value {
+  display: table-cell;
+  width: 80%;
+  background-color: gold;
+  color: black;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.table-proposal-buttons {
+  display: table-cell;
+  width: 15%;
+  text-align: right;
 }
 
 ////////////////// form module //////////////////

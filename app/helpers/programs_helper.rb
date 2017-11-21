@@ -16,72 +16,88 @@ module ProgramsHelper
   end
 
   def display_fields_and_tables(f,can_edit)
+    old_value = f.field_value.to_s.strip
+    new_value = f.field_value_temp.to_s.strip
+    field_name = f.field_name
+    display_name = f.display_name.to_s.strip
+    field_size = f.field_size.to_s
+    id = f.id.to_s
+    first_row = first_column = 1
+    second_row = 2
+    this_is_a = f.content_type
 
-    if (f.content_type == 'field' && !f.field_value.to_s.strip.blank? && !can_edit) || (f.content_type == 'field' && can_edit) || (f.content_type == 'field' && !can_edit && !f.field_value_temp.blank?)
+    # Form fields will be displayed if the user has edit role, or has approval role for changes submitted
+    if this_is_a == 'field'
 
+      # Field's default value = new value
       if ( can_edit )
-        if ( !f.field_value_temp.to_s.blank? )
-          str = f.field_value_temp.to_s.strip
+        if ( !new_value.blank? )
+          str = new_value
         else
-          str = f.field_value.to_s.strip
+          str = old_value
         end
 
-        if ( str.length < 100 )
-          ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><input name='" + f.field_name + "' id='" + f.field_name + "' value='" + str + "' type='text' maxlength='" + f.field_size + "' style='width:100%;'><br/>").html_safe
-        else
-          # For display purposes, calculate how many rows the textarea should show based on the field's max length
-          textarea_rows = [(f.field_size.to_i / 114).round, [(str.length / 114).round + 1, str.count(13.chr) + 1].max ].min
-          ("<label for='" + f.field_name + "' class='info-subhed' style='margin-bottom:0; margin-top: 8px;'>" + f.display_name.to_s.strip + "</label><textarea name='" + f.field_name + "' id='" + f.field_name + "' rows=" + textarea_rows.to_s + " maxlength='" + f.field_size + "' style='width:100%;'>" + str + "</textarea><br/>").html_safe
-        end
+        #if ( str.length < 100 )
+        #  ("<label for='" + field_name + "' class='info-subhed'>" + display_name + "</label><input name='" + field_name + "' id='" + field_name + "' value='" + str + "' type='text' maxlength='" + field_size + "' style='width:100%;'><br/>").html_safe
+      #  else
+          # For display purposes, calculate how many rows the textarea should show based on the field's max length or the amount of line feeds it has
+          textarea_rows = [(field_size.to_i / 114).round, [(str.length / 114).round + 1, str.count(13.chr) + 1].max ].min
+          ("<label for='" + field_name + "' class='info-subhed'>" + display_name + "</label><textarea name='" + field_name + "' id='" + field_name + "' rows=" + textarea_rows.to_s + " maxlength='" + field_size + "' style='width:100%;'>" + str + "</textarea><br/>").html_safe
+      #  end
       else
-        str = check_for_live_links( f.field_value.to_s.strip, false )
-        str_temp = check_for_live_links( f.field_value_temp.to_s.strip, false )
-        html = "<div id='current-" + f.id.to_s + "' class='add-bottom-margin'><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> "
+        if !old_value.blank? || !new_value.blank?
+          str = check_for_live_links( old_value, false )
+          str_temp = check_for_live_links( new_value, false )
+          html = "<div id='current-" + id + "' class='add-bottom-margin'><span class='info-subhed'>" + display_name + "</span> "
 
-        # if the field value is less than 100 chars, display it together with its field label
-        # otherwise, use a <pre>-like display
-        if ( str.length < 100 )
-          html += str + "</div>"
-        else
-          html += "<span class='pre'>" + str + "</span></div>"
-        end
+          # if the field value is less than 100 chars, display it together with its field label
+          # otherwise, use a <pre>-like display
+          if ( str.length < 100 && str.count(13.chr).zero? )
+            html += str + "</div>"
+          else
+            html += "<span class='pre'>" + str + "</span></div>"
+          end
 
-        if ( !f.field_value_temp.to_s.blank? )
-          html += "<div id='new-" + f.id.to_s + "'><p><span class='info-subhed'>" + f.display_name.to_s.strip + "</span> " + str_temp + "</p></div>"
-          html += "<div id='proposal-" + f.id.to_s + "'><div style='display: table; margin-bottom: 15px; width: 99%;'><div style='display: table-cell; width: 80%; background-color: gold; color: black; padding: 5px; border-radius: 5px;'>" + f.field_value_temp.to_s + "</div><div style='display: table-cell; width: 15%; text-align: right;'><button id='success-" + f.id.to_s + "' type='button' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span></button> <button id='reject-" + f.id.to_s + "' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span></button></div></div></div>"
+          if ( !new_value.blank? )
+            html += "<div id='new-" + id + "'><span class='info-subhed'>" + display_name + "</span><span class='pre add-bottom-margin'>" + str_temp + "</span></div>"
+            html += "<div id='proposal-" + id + "' class='table-proposal pre'><div class='table-proposal-value'>" + new_value + "</div><div class='table-proposal-buttons'><button id='success-" + id + "' type='button' class='btn btn-success'><span class='glyphicon glyphicon-ok'></span></button> <button id='reject-" + id + "' type='button' class='btn btn-danger'><span class='glyphicon glyphicon-remove'></span></button></div></div>"
+          end
+          html.html_safe
         end
-        html.html_safe
       end
 
-    elsif ( f.content_type == 'table' )
+    elsif ( this_is_a == 'table' )
 
       # table_empty applies in most cases to single row tables with no content.
       # If that is the case, thoe whole table gets hidden.
       table_empty = true
 
-      if ( !f.display_name.to_s.strip.blank? )
-        html = "<p>&nbsp;</p><h4>" + f.display_name.to_s.strip + "</h4>"
+      if ( !display_name.blank? )
+        html = "<p>&nbsp;</p><h4>" + display_name + "</h4>"
       else
         html = ""
       end
 
-      data_table_config = @data_table_configs.find_by_table_name_id(f.id)
+      data_table_config = @data_table_configs.find_by_table_name_id( id )
 
       table_has_categories = data_table_config.has_categories
+      total_rows = data_table_config.rows
+      table_name_id = data_table_config.table_name_id
 
       html += "<table>"
-      for y in 1..data_table_config.rows
+      for this_row in first_row..total_rows
+
         # Left-aligned text for categories, unless it's a checkmark
-        if ( y == 1 )
+        if ( this_row == first_row )
           html += "<thead><tr class='desktop-header'><th scope='row' "
-        elsif ( y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+        elsif ( this_row == second_row && @table_has_subheaders[ table_name_id ] )
             html += "<tr><th scope='row' "
         else
-          header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ 1 ].to_s
+          header_first_row = @table_types[ table_name_id ][ first_row ][ first_column ].to_s
           html += "<tr><td data-label='" + header_first_row.gsub("#1#","") + "' "
         end
-        if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0] == "#")
-          colspan = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[0..2].gsub("#","")
+        if ( @table_types[ table_name_id ][ this_row ][ first_column ].to_s[0] == "#")
+          colspan = @table_types[ table_name_id ][ this_row ][ first_column ].to_s[0..2].gsub("#","")
         else
           colspan = "1"
         end
@@ -90,10 +106,10 @@ module ProgramsHelper
           colspan = "1"
         else
           x = colspan.to_i + 1
-          length = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.length
-          @table_types[ data_table_config.table_name_id ][ y ][ 1 ] = @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s[3..length]
+          length = @table_types[ table_name_id ][ this_row ][ first_column ].to_s.length
+          @table_types[ table_name_id ][ this_row ][ first_column ] = @table_types[ table_name_id ][ this_row ][ first_column ].to_s[3..length]
         end
-        if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.length == 1 || ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.include? "\u2713" ) )
+        if ( @table_types[ table_name_id ][ this_row ][ first_column ].to_s.strip.length == 1 || ( @table_types[ table_name_id ][ this_row ][ first_column ].to_s.strip.include? "\u2713" ) )
           html += ">"
         else
 
@@ -105,14 +121,14 @@ module ProgramsHelper
               html += "class='subject subject-solo text-left' "
             end
           end
-          html += "colspan='" + colspan.to_s.strip + "'>"
+          html += "colspan='" + colspan.to_s + "'>"
         end
-        if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.blank? )
+        if ( @table_types[ table_name_id ][ this_row ][ first_column ].to_s.strip.blank? )
           html += "&nbsp;"
         else
-          html += @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.strip.gsub("#1#","")
+          html += @table_types[ table_name_id ][ this_row ][ first_column ].to_s.strip.gsub("#1#","")
         end
-        if ( y == 1 || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+        if ( this_row == first_row || this_row == second_row && @table_has_subheaders[ table_name_id ] )
           html += "</th>"
         else
           html += "</td>"
@@ -120,26 +136,26 @@ module ProgramsHelper
 
         # Everything else center-aligned
         while (x <= data_table_config.columns)
-          if ( y == 1 )
-            colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
-            length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
-            @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
+          if ( this_row == first_row )
+            colspan = @table_types[ table_name_id ][ this_row ][ x ].to_s[0..2].gsub("#","")
+            length = @table_types[ table_name_id ][ this_row ][ x ].to_s.length
+            @table_types[ table_name_id ][ this_row ][ x ] = @table_types[ table_name_id ][ this_row ][ x ].to_s[3..length]
             html += "<th scope='row' "
-          elsif ( y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+          elsif ( this_row == second_row && @table_has_subheaders[ table_name_id ] )
             colspan = 1
             html += "<th scope='row' "
           else
-            if ( @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0] != "#" || @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[2] != "#")
+            if ( @table_types[ table_name_id ][ this_row ][ x ].to_s[0] != "#" || @table_types[ table_name_id ][ this_row ][ x ].to_s[2] != "#")
               colspan = 1
             else
-              colspan = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[0..2].gsub("#","")
-              length = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.length
-              @table_types[ data_table_config.table_name_id ][ y ][ x ] = @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s[3..length]
+              colspan = @table_types[ table_name_id ][ this_row ][ x ].to_s[0..2].gsub("#","")
+              length = @table_types[ table_name_id ][ this_row ][ x ].to_s.length
+              @table_types[ table_name_id ][ this_row ][ x ] = @table_types[ table_name_id ][ this_row ][ x ].to_s[3..length]
             end
 
-            header_first_row = @table_types[ data_table_config.table_name_id ][ 1 ][ x ].to_s
-            if ( @table_has_subheaders[ data_table_config.table_name_id ] )
-              subheader = @table_types[ data_table_config.table_name_id ][ 2 ][ x ].to_s
+            header_first_row = @table_types[ table_name_id ][ first_row ][ x ].to_s
+            if ( @table_has_subheaders[ table_name_id ] )
+              subheader = @table_types[ table_name_id ][ second_row ][ x ].to_s
             else
               subheader = ""
             end
@@ -149,31 +165,31 @@ module ProgramsHelper
             html += "<td data-label='" + header_first_row + subheader + "' "
           end
 
-          if ( @table_types[ data_table_config.table_name_id ][ y ][ 1 ].to_s.include? "Notes" )
+          if ( @table_types[ table_name_id ][ this_row ][ first_column ].to_s.include? "Notes" )
             alignment = "text-left"
           else
             alignment = "text-to-align"
           end
           html += "colspan='" + colspan.to_s.strip + "' class='" + alignment + "'>"
-          if @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip.blank?
+          if @table_types[ table_name_id ][ this_row ][ x ].to_s.strip.blank?
             html += "&nbsp;"
           else
-            html += check_for_live_links( @table_types[ data_table_config.table_name_id ][ y ][ x ].to_s.strip, true )
+            html += check_for_live_links( @table_types[ table_name_id ][ this_row ][ x ].to_s.strip, true )
 
-            if ( y > 1 && !@table_types[ data_table_config.table_name_id ][ y ][ x ].blank? )
+            if ( this_row > first_row && !@table_types[ table_name_id ][ this_row ][ x ].blank? )
               table_empty = false
             end
           end
           x += colspan.to_i
-          if ( y == 1 || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+          if ( this_row == first_row || this_row == second_row && @table_has_subheaders[ table_name_id ] )
             html += "</th>"
           else
             html += "</td>"
           end
         end
-        if ( y == 1 && !@table_has_subheaders[ data_table_config.table_name_id ] || y == 2 && @table_has_subheaders[ data_table_config.table_name_id ] )
+        if ( this_row == first_row && !@table_has_subheaders[ table_name_id ] || this_row == second_row && @table_has_subheaders[ table_name_id ] )
           html += "</tr></thead>"
-        elsif ( y == 1 && @table_has_subheaders[ data_table_config.table_name_id ] )
+        elsif ( this_row == first_row && @table_has_subheaders[ table_name_id ] )
           html += "</tr>"
         else
           html += "</tr>"
