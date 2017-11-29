@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get "/information/:id" => "programs#information"
   get "/search" => "programs#search"
   post "/authenticate" => "user_sessions#authenticate"
+  get "/terms-and-conditions" => "user_sessions#terms_and_conditions_pdf"
 
   #resources :users, only: [:new, :create]
   resources :user_sessions, only: [:new, :authenticate, :destroy]
