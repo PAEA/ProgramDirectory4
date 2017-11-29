@@ -52,7 +52,7 @@ module ProgramsHelper
 
           # if the field value is less than 100 chars, display it together with its field label
           # otherwise, use a <pre>-like display
-          if ( str.length < 100 && str.count(13.chr).zero? )
+          if ( str.length < 100 && str.count(13.chr) <= 1 )
             html += str + "</div>"
           else
             html += "<span class='pre'>" + str + "</span></div>"
