@@ -15,9 +15,25 @@ module AuthenticateMe
     end
     xml_response = Nokogiri::XML(c.body_str)
     authentication = xml_response.search('authentication').map do |user|
-      if ( user.at('authenticated').text == "true" && ( user.at('roles').text.downcase.include?("og_read") || user.at('roles').text.downcase.include?("og_company_admin") ) )
+      #puts user.inspect
+      #puts user.at('company-name').text
+      if user.at('authenticated').text == "true"
+        session[:school] = user.at('company-name').text.gsub(" ","-")
         session[:display_username] = user.at('first-name').text + " " + user.at('last-name').text
-        session[:user_roles] = user.at('roles').text
+
+        if user.at('roles').text.downcase.include?("og_editor01")
+          # Regular user with read-only access
+          session[:user_roles] = "editor01"
+        elsif user.at('roles').text.downcase.include?("og_company_admin")
+          # School administrator - can edit school information for their school only
+          session[:user_roles] = "admin"
+        elsif user.at('roles').text.downcase.include?("og_read")
+          # Editor - can edit school information for any school plus approve or reject changes made by School administrators
+          session[:user_roles] = "read"
+        else
+          # No access
+          redirect_to root_path
+        end
         flash[:success] = "Welcome!"
         redirect_to '/index'
       else

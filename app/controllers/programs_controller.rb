@@ -1,6 +1,17 @@
 class ProgramsController < ApplicationController
   @@form_fields = Array.new
-  @@school = ""
+  @@form_cells = Array.new
+  @@school = @@edit = @@approve = @@show_buttons = ""
+
+  #helper_method :edit, :approve
+
+  #def edit
+  #  @@edit
+  #end
+
+  #def approve
+  #  @@approve
+  #end
 
   def index
 
@@ -8,6 +19,22 @@ class ProgramsController < ApplicationController
     cookies[:adea_terms_accept] = Date.today
 
     @display_username = session[:display_username]
+
+    # Set permissions
+    if session[:user_roles] == "read"
+      @@edit = false
+      @@approve = false
+      @@show_buttons = false
+    elsif session[:user_roles] == "admin"
+      @@edit = true
+      @@approve = false
+      @@show_buttons = true
+    elsif session[:user_roles] == "editor01"
+      @@edit = true
+      @@approve = true
+      @@show_buttons = true
+    end
+
     @user_roles = session[:user_roles]
 
     if ( @display_username.nil? )
@@ -91,8 +118,6 @@ class ProgramsController < ApplicationController
       where_condition_for_tables = ""
       where_values = Array.new
 
-      puts keywords_array
-
       keywords_array.each_with_index do |keyword, index|
         if ( index == 0 )
           where_condition << "lower(field_value) LIKE ?"
@@ -166,34 +191,76 @@ class ProgramsController < ApplicationController
 
   def save_changes
 
+    # For each field that has been changed, save the new value as a temporary value.
+    # The comparisson process is done between the field's current value vs the submitted form field value
     @@form_fields.each do |field|
-      puts field.inspect
+
       program_id = field[0]
       field_id = field[1]
-      field_new_value = params[field[2].to_sym].to_s.strip
-      field_old_value = field[3].to_s.strip
+      field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
+      field_old_value = field[3].to_s.strip.delete("\u000A")
       content_type = field[4]
       field_type = field[5]
 
       if ( content_type == 'field' && field_old_value != field_new_value )
 
+        # In case the new value is blank, meaning it was removed
         if field_new_value.blank?
           field_new_value = "(((DELETED)))"
         end
 
+        # Save the new value as a temporary value depending on the data type of the field
         if field_type == "string"
           FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
         elsif field_type == "text"
           FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
         end
+
+        # Add a log entry
+        #new_log_entry = Log.create(
+        #  program_id: program_id,
+        #  field_id: field_id,
+        #  old_value: field_old_value,
+        #  new_value: field_new_value,
+        #  user_id: 1
+        #  )
+
+      end
+
+    end
+
+    # For each table cell that has been changed, save the new value as a temporary value.
+    # The comparisson process is done between the cell's current value vs the submitted form field value
+
+    @@form_cells.each do |cell|
+
+      cell_id = cell[0]
+      cell_old_value = cell[1].to_s.strip.delete("\u000A")
+      cell_new_value = params[("c"+cell[0].to_s).to_sym].to_s.strip.delete("\u000A")
+
+      program_id = cell[3]
+
+      if cell_old_value != cell_new_value
+
+        # In case the new value is blank, meaning it was removed
+        #if cell_new_value.blank?
+        #  cell_new_value = "(((DELETED)))"
+        #end
+
+        # Save the new value as a temporary value
+        DataTable.where(id: cell_id).update(:cell_value_temp => cell_new_value)
+
+        # Add a log entry
         new_log_entry = Log.create(
           program_id: program_id,
-          field_id: field_id,
-          old_value: field_old_value,
-          new_value: field_new_value,
+          field_id: cell_id,
+          old_value: cell_old_value,
+          new_value: cell_new_value,
           user_id: 1
         )
+
       end
+
     end
 
     redirect_to "/information/"+@@school
@@ -212,6 +279,9 @@ class ProgramsController < ApplicationController
     elsif field_type == "text"
       FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "cell"
+      DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
+      DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
     end
 
   end
@@ -226,10 +296,13 @@ class ProgramsController < ApplicationController
       FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "text"
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "cell"
+      DataTable.where(id: field_id).update_all("cell_value_temp = null")
     end
 
   end
 
+  # Returns boolean value for this_var
   def to_boolean(this_var)
 
     this_var == "true"
@@ -239,24 +312,42 @@ class ProgramsController < ApplicationController
   def information
 
     @display_username = session[:display_username]
-    @user_roles = session[:user_roles]
-    this_field = Array.new
-
+    # If the user has not logged in...
     if ( @display_username.nil? )
       redirect_to root_path
     end
 
-    @id = params[:id].to_i
-    @@school = params[:id].to_s
-    edit = params[:edit].to_s
-    approve = params[:approve].to_s
-    @edit = to_boolean(edit.to_s)
+    @user_roles = session[:user_roles]
+    this_field = Array.new
 
-    #if ( approve == "true")
-      @approve = true
-    #else
-    #  @approve = false
-    #end
+    @id = params[:id].to_i
+    @@school = @school = params[:id].to_s
+
+    # Display View and Edit buttons on the school information page top
+    @show_buttons = @@show_buttons
+
+    # If the user's school = school page to view
+    if session[:user_roles] == "admin"
+      if @school == [@id.to_s, session[:school].parameterize].join("-")
+        if @@edit && params.has_key?(:edit)
+          @edit = to_boolean(params[:edit].to_s)
+        else
+          @edit = @@edit
+        end
+        @approve = @@approve
+      else
+        @edit = false
+        @approve = false
+        @show_buttons = false
+      end
+    elsif session[:user_roles] == "editor01"
+      if @@edit && params.has_key?(:edit)
+        @edit = to_boolean(params[:edit].to_s)
+      else
+        @edit = @@edit
+      end
+      @approve = @@approve
+    end
 
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
@@ -269,12 +360,12 @@ class ProgramsController < ApplicationController
       # Save current values for all fields. This value will be compared against the form
       # values after saving. If they are different, they get saved as "temp" values in each
       # table. These new values need to get approved before displaying on the webpage.
-      this_field[5] = f.field_type              # string, text, decimal or integer
-      this_field[4] = f.content_type            # field or table cell
-      this_field[3] = f.field_value.to_s.strip  # field original value
-      this_field[2] = f.field_name              # field name
-      this_field[1] = f.id                      # field id
       this_field[0] = @id                       # field program id
+      this_field[1] = f.id                      # field id
+      this_field[2] = f.field_name              # field name
+      this_field[3] = f.field_value.to_s.strip  # field original value
+      this_field[4] = f.content_type            # field or table cell
+      this_field[5] = f.field_type              # string, text, decimal or integer
 
       @@form_fields << this_field
     end
@@ -300,6 +391,17 @@ class ProgramsController < ApplicationController
 
       data_table = DataTable.select_table_config_by_program_id( @id, table_configuration.id )
       data_table.each do |cell|
+        this_cell = Array.new
+
+        # Save current values for all table cells. This value will be compared against the form
+        # values after saving. If they are different, they get saved as "temp" values in each
+        # table. These new values need to get approved before displaying on the webpage.
+        this_cell[0] = cell.id                         # table cell id
+        this_cell[1] = cell.cell_value.to_s.strip      # table cell original value
+        this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
+        this_cell[3] = cell.program_id                 # program_id
+
+        @@form_cells << this_cell
 
         # Get the number of the first data row
         if (first_data_row == 0)
@@ -307,11 +409,11 @@ class ProgramsController < ApplicationController
         end
 
         # Fills each table type with its cell values per row and column
-        if ( cell.cell_value.to_s == "x" || ( cell.cell_value.to_s[0..1].include? "x ") || ( cell.cell_value.to_s[0..1].include? "x\n") || ( cell.cell_value.to_s[0..1].include? "x\r") )
+        if ( this_cell[1] == "x" || ( this_cell[1][0..1].include? "x ") || ( this_cell[1][0..1].include? "x\n") || ( this_cell[1][0..1].include? "x\r") )
           # ascii checkmark symbol
-          @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s.gsub("x","\u2713")
+          @table[ cell.cell_row ][ cell.cell_column ] = { :value => this_cell[1].gsub("x","\u2713"), :temp_value => this_cell[2], :id => this_cell[0] }
         else
-          @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s
+          @table[ cell.cell_row ][ cell.cell_column ] = { :value => this_cell[1], :temp_value => this_cell[2], :id => this_cell[0] }
         end
 
       end
@@ -322,9 +424,9 @@ class ProgramsController < ApplicationController
         categories.each do |category|
           if ( category.category.to_s == "x" || ( category.category.to_s[0..1].include? "x " ) || ( category.category.to_s[0..1].include? "x\n") || ( category.category.to_s[0..1].include? "x\r") )
             # ascii checkmark symbol
-            @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
+            @table[ this_row ][ 1 ] = { :value => category.category.to_s.gsub("x","\u2713"), :temp_value => nil, :id => category.id }
           else
-            @table[ this_row ][ 1 ] = category.category
+            @table[ this_row ][ 1 ] = { :value => category.category, :temp_value => nil, :id => category.id }
           end
           this_row -= 1
         end
@@ -360,11 +462,11 @@ class ProgramsController < ApplicationController
           end
 
           subheaders.each do |subheader|
-            @table[ 2 ][ this_column_subheader ] = subheader.subheader
+            @table[ 2 ][ this_column_subheader ] = { :value => subheader.subheader, :temp_value => nil, :id => subheader.id }
 
             # Subheaders duplication will happen at current column number + amount_of_subheaders
             if ( duplicate_subheaders && this_column_subheader >= 2 || duplicate_subheaders && this_column_subheader >= 1 && !table_configuration.has_categories )
-              @table[ 2 ][ this_column_subheader + amount_of_subheaders ] = subheader.subheader
+              @table[ 2 ][ this_column_subheader + amount_of_subheaders ] = { :value => subheader.subheader, :temp_value => nil, :id => subheader.id }
             end
             this_column_subheader += 1
           end
@@ -392,13 +494,23 @@ class ProgramsController < ApplicationController
 
       headers.each do |header|
 
-        # Adds a column span number between hash symbols for column >= 2 when categories are present
+        # Adds a column span number between hashes for column >= 2 when categories are present
         # or for tables without categories
-        if ( ( this_column_header >= 2 and table_configuration.has_categories ) or ( this_column_header >= 1 and !table_configuration.has_categories ) )
-          @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s + @table[ 1 ][ this_column_header ].to_s
+        if ( this_column_header >= 2 && table_configuration.has_categories ) || ( this_column_header >= 1 && !table_configuration.has_categories )
+
+          #if @table[ 1 ][ this_column_header ].has_key?("value")
+            new_value = "#" + column_increment.to_s + "#" + header.header.to_s.strip
+          #else
+            #new_value = ""
+          #end
+          @table[ 1 ][ this_column_header ] = { :value => new_value, :temp_value => nil, :id => header.id }
+
         else
-          @table[ 1 ][ this_column_header ] = header.header.to_s
+
+          @table[ 1 ][ this_column_header ] = { :value => header.header.to_s, :temp_value => nil, :id => header.id }
+
         end
+
         this_column_header += column_increment
 
       end

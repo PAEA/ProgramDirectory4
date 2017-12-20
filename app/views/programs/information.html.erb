@@ -1,12 +1,17 @@
-<% if @edit || @approve%>
-  <form action="/save_changes">
+<% if @show_buttons %>
+  <form action="/save_changes" method="post">
 <% end %>
 
 <div class="row">
   <div class="overlay col-md-10 col-md-offset-1">
     <div class="information-page" id="<%= @program.id %>">
 
-      <h1 class="info-hed"><%= @program.program %></h1> <%= link_to( "VIEW" , {:controller => 'programs', :action => 'information', :id => params[:id] }, :class => "btn navbar-btn btn-inverse" ) %> <%= link_to( "EDIT" , {:controller => 'programs', :action => 'information', :id => params[:id] , :edit => true }, :class => "btn navbar-btn btn-inverse" ) %>
+      <h1 class="info-hed"><%= @program.program %></h1>
+
+      <% if @show_buttons %>
+        <%= link_to( "VIEW" , {:controller => 'programs', :action => 'information', :id => params[:id], :edit => false }, :class => "btn navbar-btn btn-inverse" ) %>
+        <%= link_to( "EDIT" , {:controller => 'programs', :action => 'information', :id => params[:id], :edit => true }, :class => "btn navbar-btn btn-inverse" ) %>
+      <% end %>
 
       <% this_section = "" %>
 
@@ -18,17 +23,17 @@
             </div>
           <% end %>
           <% section_name_trimmed = f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>
-          <div style="display: table;">
-            <div style="display: table-cell; width: 100%;">
+          <div class="subsection-table">
+            <div class="subsection-table-cell">
             <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= section_name_trimmed %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
               <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
             </a>
             </div>
-            <div style="display: table-cell; width: 5%; padding-left: 10px;">
             <% if @edit %>
-              <%= submit_tag("SAVE", class: 'btn btn-lg btn-inverse', id: 'save-button', style: "padding: 10px 16px 10px 16px; margin-top: 20px; font-size: 20px;") %>
+              <div class="save-button-area">
+                <%= submit_tag("SAVE", class: 'btn btn-lg btn-inverse save-button', id: 'save-button') %>
+              </div>
             <% end %>
-            </div>
           </div>
           <!-- opening divs -->
           <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
@@ -36,7 +41,7 @@
               <% this_section = f.section_name %>
         <% end %>
 
-        <%= display_fields_and_tables(f, @edit) %>
+        <%= display_fields_and_tables(f, @edit, @approve, @show_buttons) %>
 
       <% end %>
 
@@ -51,7 +56,7 @@
   </div>
 </div>
 
-<% if @edit || @approve %>
+<% if @show_buttons %>
   </form>
 <% end %>
 

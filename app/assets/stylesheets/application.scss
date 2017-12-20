@@ -82,7 +82,7 @@ footer .footer-links {
 }
 
 footer .footer-links > li {
-	font-family: 'AvenirMedium', sans-serif;
+	font-family: $font;
 	color: #ffffff;
 	position: relative;
 	float: left;
@@ -253,23 +253,52 @@ a:active, a:hover {
   visibility: hidden;
 }
 
-.pre {
+.pre, .pre-cell {
   display: block;
   white-space: pre-wrap;
-  font-family: 'AvenirMedium', sans-serif;
-  font-size: 18px;
+  font-family: $font;
   width: 99%;
   overflow: auto;
+}
+
+.pre {
+  font-size: 18px;
+}
+
+.pre-cell {
+  font-size: 16px;
 }
 
 .right {
   display: none;
 }
 
+.save-button {
+  padding: 10px 16px 10px 16px;
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+.save-button-area {
+  display: table-cell;
+  width: 5%;
+  padding-left: 10px;
+}
+
 .small {
   font-size: small;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+.subsection-table {
+  display: table;
+  width: 100%;
+}
+
+.subsection-table-cell {
+  display: table-cell;
+  width: 100%;
 }
 
 .table-proposal {
@@ -291,6 +320,8 @@ a:active, a:hover {
   display: table-cell;
   width: 15%;
   text-align: right;
+  padding: 1px;
+  vertical-align: top;
 }
 
 ////////////////// form module //////////////////
