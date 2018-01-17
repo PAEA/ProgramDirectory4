@@ -361,7 +361,7 @@ module ProgramsHelper
               textarea_rows = [(str.length / (114 / data_table_config.columns) ).round + 1, str.count(13.chr) + 1].max
               html += "<textarea name='" + field_name + "' id='" + field_name + "' rows=" + textarea_rows.to_s + " maxlength='" + field_size.to_s + "' style='width:100%;'>" + str + "</textarea><br/>"
 
-            elsif can_approve && ( this_row >= 2 && !table_has_subheaders || this_row >= 3 && table_has_subheaders )
+            elsif this_row >= 2 && !table_has_subheaders || this_row >= 3 && table_has_subheaders
 
               #html += cell_value.gsub("#1#","")
               html += "<div id='current-" + field_name + "'><span class='pre-cell'>" + check_for_live_links( cell_value, true ) + "</span></div>"

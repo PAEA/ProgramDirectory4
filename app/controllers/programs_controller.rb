@@ -182,13 +182,11 @@ class ProgramsController < ApplicationController
   end
 
   def save_changes
+    fields_allowed_to_edit = Array.new
 
     # For each field that has been changed, save the new value as a temporary value.
     # The comparisson process is done between the field's current value vs the submitted form field value
     fields_allowed_to_edit = @@fields_allowed_to_edit
-
-    puts @@fields_allowed_to_edit.inspect
-    puts @@form_fields.inspect
 
     @@form_fields.each do |field|
 
@@ -200,7 +198,7 @@ class ProgramsController < ApplicationController
         content_type = field[4]
         field_type = field[5]
 
-        if content_type == 'field' && field_old_value != field_new_value
+        if content_type == 'field' && field_old_value != field_new_value && !field_new_value.nil?
 
           # In case the new value is blank, meaning it was removed
           if field_new_value.blank?
@@ -239,7 +237,7 @@ class ProgramsController < ApplicationController
 
       program_id = cell[3]
 
-      if cell_old_value != cell_new_value
+      if cell_old_value != cell_new_value && !cell_new_value.nil?
 
         # In case the new value is blank, meaning it was removed
         #if cell_new_value.blank?
@@ -257,6 +255,10 @@ class ProgramsController < ApplicationController
         #  new_value: cell_new_value,
         #  user_id: 1
         #)
+
+      elsif cell_old_value == cell_new_value
+
+        DataTable.where(id: cell_id).update(:cell_value_temp => nil)
 
       end
 
@@ -309,6 +311,8 @@ class ProgramsController < ApplicationController
   #end
 
   def information
+    form_fields = Array.new
+    form_cells = Array.new
 
     @display_username = session[:display_username]
     # If the user has not logged in...
@@ -383,8 +387,10 @@ class ProgramsController < ApplicationController
       this_field[5] = f.field_type              # string, text, decimal or integer
       this_field[6] = f.display_sections_id     # Display Section id (table)
 
-      @@form_fields << this_field
+      form_fields << this_field
     end
+
+    @@form_fields = form_fields
 
     # Get all of the table configurations (title, number of rows and columns)
     @data_table_configs = DataTableConfig.select_tables_by_program_id( @id )
@@ -401,7 +407,7 @@ class ProgramsController < ApplicationController
       first_data_row = 0
       this_row = table_configuration.rows
       this_column_subheader = 1
-      table_name_id = table_configuration.table_name_id
+      table_name = table_configuration.table_name_id
 
       # +1 since arrays start in 0
       @table = Array.new( table_configuration.rows + 1 ) { Array.new( table_configuration.columns + 1) }
@@ -418,7 +424,7 @@ class ProgramsController < ApplicationController
         this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
         this_cell[3] = cell.program_id                 # program_id
 
-        @@form_cells << this_cell
+        form_cells << this_cell
 
         # Get the number of the first data row
         if (first_data_row == 0)
@@ -434,6 +440,8 @@ class ProgramsController < ApplicationController
         end
 
       end
+
+      @@form_cells = form_cells
 
       # Add categories to the table from the bottom up, if exist
       if ( table_configuration.has_categories )
