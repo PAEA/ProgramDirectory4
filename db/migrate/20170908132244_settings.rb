@@ -12,6 +12,7 @@ class Settings < ActiveRecord::Migration[5.0]
 
     create_table :settings_roles do |t|
       t.string :role, :limit => 50
+      t.string :type, :limit => 10
 
       t.timestamps
     end

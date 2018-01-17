@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   post "/save_changes" => "programs#save_changes"
   get "/approve_change/:program_id/:field_id/:field_type" => "programs#approve_change"
   get "/reject_change/:program_id/:field_id/:field_type" => "programs#reject_change"
+  post "/role_x_fields/:role_id" => "settings#role_x_fields"
 
   #resources :users, only: [:new, :create]
   resources :user_sessions, only: [:new, :authenticate, :destroy]

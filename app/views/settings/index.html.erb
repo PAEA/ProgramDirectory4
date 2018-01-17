@@ -3,7 +3,7 @@
     <div class="block block-blue">
       <h2>Settings</h2>
 
-      <%= form_tag('/save_settings') do %>
+      <%= form_tag('/save_settings', :method => "post", :remote => true) do %>
 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
@@ -32,25 +32,12 @@
               <%= select_tag(:sf_roles, options_from_collection_for_select(@roles, 'id', 'role') , class: 'info-subhed') %>
             </div>
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-offset-4 col-md-8 col-lg-offset-2 col-lg-10">
-            <div class="form-group">
-              <p>allowed to edit the following fields:</p>
-              <% section_name = "" %>
-              <% @fields_per_role.each do |field| %>
-                <% checked = false %>
-                <% if ( section_name != field.section_name ) %>
-                  <h4><%= field.section_name %></h4>
-                  <% section_name = field.section_name %>
-                <% end %>
-                <% if ( !field.display_sections_id.nil? ) %>
-                  <% checked = true %>
-                <% end %>
-                <%= check_box_tag(field.section_type + "_" + field.section_to_link, 1, checked) %>
-                <%= label_tag(field.section_type + "_" + field.section_to_link,"(" + field.section_type + ") " + field.section_to_link) %>
-                <br/>
-              <% end %>
-            </div>
+
+          <!-- Ajax section. Updates the display depending on the role selected. -->
+          <div id="list_of_fields">
+            <%= render partial: 'role_x_fields' %>
           </div>
+
         </div>
 
         <div class="row">
@@ -91,11 +78,17 @@
         $("#collapseAllFilters").addClass("in");
     }
 
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    $("#sf_roles").change(function() {
+      $.ajax({
+        url: "/role_x_fields/" + $(this).val(),
+        type: "POST"});
+    });
 
-    ga('create', 'UA-25560883-14', 'auto');
-    ga('send', 'pageview');
+    //(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    //(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    //m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    //})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    //ga('create', 'UA-25560883-14', 'auto');
+    //ga('send', 'pageview');
 </script>

@@ -10,4 +10,8 @@ class SettingsField < ApplicationRecord
     destroy = SettingsField.where( :settings_roles_id => roles_id ).destroy_all
   end
 
+  def self.get_editing_fields( user_role_id )
+    where( :settings_roles_id => user_role_id )
+  end
+
 end

@@ -14,7 +14,8 @@ class FieldName < ApplicationRecord
     find_by_sql("
       SELECT *
         FROM
-        (SELECT display_sections.section_name, display_sections.section_order,
+        (SELECT display_sections.id as display_sections_id, display_sections.section_name,
+          display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
           fields_strings.field_value, fields_strings.field_value_temp, 'field' as content_type,
@@ -25,7 +26,8 @@ class FieldName < ApplicationRecord
             AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_strings.program_id = " + id.to_s + "
         UNION
-        SELECT display_sections.section_name, display_sections.section_order,
+        SELECT display_sections.id as display_sections_id, display_sections.section_name,
+          display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
           fields_texts.field_value, fields_texts.field_value_temp, 'field' as content_type,
@@ -36,7 +38,8 @@ class FieldName < ApplicationRecord
             AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_texts.program_id = " + id.to_s + "
         UNION
-        SELECT display_sections.section_name, display_sections.section_order,
+        SELECT display_sections.id as display_sections_id, display_sections.section_name,
+          display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
           fields_decimals.field_value, fields_decimals.field_value_temp, 'field' as content_type,
@@ -47,7 +50,8 @@ class FieldName < ApplicationRecord
             AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_decimals.program_id = " + id.to_s + "
         UNION
-        SELECT display_sections.section_name, display_sections.section_order,
+        SELECT display_sections.id as display_sections_id, display_sections.section_name,
+          display_sections.section_order,
           field_names.id as id, field_names.field_name as field_name,
           field_names.display_field_name as display_name,
           fields_integers.field_value, fields_integers.field_value_temp, 'field' as content_type,
@@ -58,7 +62,8 @@ class FieldName < ApplicationRecord
             AND field_names.field_name NOT LIKE 'filter_only_%'
             AND fields_integers.program_id = " + id.to_s + "
         UNION
-        SELECT display_sections.section_name, display_sections.section_order,
+        SELECT display_sections.id as display_sections_id, display_sections.section_name,
+          display_sections.section_order,
           table_names.id as id, table_names.table_name as field_name,
           table_names.display_table_name as display_name,
           0, 0, 'table' as content_type,

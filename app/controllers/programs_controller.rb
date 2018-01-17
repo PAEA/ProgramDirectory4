@@ -2,16 +2,7 @@ class ProgramsController < ApplicationController
   @@form_fields = Array.new
   @@form_cells = Array.new
   @@school = @@edit = @@approve = @@show_buttons = ""
-
-  #helper_method :edit, :approve
-
-  #def edit
-  #  @@edit
-  #end
-
-  #def approve
-  #  @@approve
-  #end
+  @@fields_allowed_to_edit = Array.new
 
   def index
 
@@ -21,21 +12,22 @@ class ProgramsController < ApplicationController
     @display_username = session[:display_username]
 
     # Set permissions
-    if session[:user_roles] == "read"
+    if session[:user_role] == 'read'
       @@edit = false
       @@approve = false
       @@show_buttons = false
-    elsif session[:user_roles] == "admin"
+    elsif session[:user_role] == 'admin'
       @@edit = true
       @@approve = false
       @@show_buttons = true
-    elsif session[:user_roles] == "editor01"
+      @id = (Program.find_by! program: session[:school_display]).id.to_s
+    elsif session[:user_role] == 'editor'
       @@edit = true
       @@approve = true
       @@show_buttons = true
     end
 
-    @user_roles = session[:user_roles]
+    @user_roles = session[:user_role]
 
     if ( @display_username.nil? )
       redirect_to root_path
@@ -83,7 +75,7 @@ class ProgramsController < ApplicationController
     @filters = CustomFilter.select_all_filters_sorted_by_display_order
 
     @display_username = session[:display_username]
-    @user_roles = session[:user_roles]
+    @user_roles = session[:user_role]
 
     if ( @display_username.nil? )
       redirect_to root_path
@@ -193,37 +185,44 @@ class ProgramsController < ApplicationController
 
     # For each field that has been changed, save the new value as a temporary value.
     # The comparisson process is done between the field's current value vs the submitted form field value
+    fields_allowed_to_edit = @@fields_allowed_to_edit
+
+    puts @@fields_allowed_to_edit.inspect
+    puts @@form_fields.inspect
+
     @@form_fields.each do |field|
 
-      program_id = field[0]
-      field_id = field[1]
-      field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
-      field_old_value = field[3].to_s.strip.delete("\u000A")
-      content_type = field[4]
-      field_type = field[5]
+      if ( fields_allowed_to_edit.include? field[6] )
+        program_id = field[0]
+        field_id = field[1]
+        field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
+        field_old_value = field[3].to_s.strip.delete("\u000A")
+        content_type = field[4]
+        field_type = field[5]
 
-      if ( content_type == 'field' && field_old_value != field_new_value )
+        if content_type == 'field' && field_old_value != field_new_value
 
-        # In case the new value is blank, meaning it was removed
-        if field_new_value.blank?
-          field_new_value = "(((DELETED)))"
+          # In case the new value is blank, meaning it was removed
+          if field_new_value.blank?
+            field_new_value = "(((DELETED)))"
+          end
+
+          # Save the new value as a temporary value depending on the data type of the field
+          if field_type == "string"
+            FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+          elsif field_type == "text"
+            FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+          end
+
+        elsif content_type == 'field' && field_old_value == field_new_value
+
+          if field_type == "string"
+            FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+          elsif field_type == "text"
+            FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+          end
+
         end
-
-        # Save the new value as a temporary value depending on the data type of the field
-        if field_type == "string"
-          FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
-        elsif field_type == "text"
-          FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
-        end
-
-        # Add a log entry
-        #new_log_entry = Log.create(
-        #  program_id: program_id,
-        #  field_id: field_id,
-        #  old_value: field_old_value,
-        #  new_value: field_new_value,
-        #  user_id: 1
-        #  )
 
       end
 
@@ -251,13 +250,13 @@ class ProgramsController < ApplicationController
         DataTable.where(id: cell_id).update(:cell_value_temp => cell_new_value)
 
         # Add a log entry
-        new_log_entry = Log.create(
-          program_id: program_id,
-          field_id: cell_id,
-          old_value: cell_old_value,
-          new_value: cell_new_value,
-          user_id: 1
-        )
+        #new_log_entry = Log.create(
+        #  program_id: program_id,
+        #  field_id: cell_id,
+        #  old_value: cell_old_value,
+        #  new_value: cell_new_value,
+        #  user_id: 1
+        #)
 
       end
 
@@ -303,11 +302,11 @@ class ProgramsController < ApplicationController
   end
 
   # Returns boolean value for this_var
-  def to_boolean(this_var)
+  #def to_boolean(this_var)
 
-    this_var == "true"
+    #this_var == "true"
 
-  end
+  #end
 
   def information
 
@@ -316,8 +315,8 @@ class ProgramsController < ApplicationController
     if ( @display_username.nil? )
       redirect_to root_path
     end
-
-    @user_roles = session[:user_roles]
+    @fields_allowed_to_edit = Array.new
+    @user_roles = session[:user_role]
     this_field = Array.new
 
     @id = params[:id].to_i
@@ -327,22 +326,38 @@ class ProgramsController < ApplicationController
     @show_buttons = @@show_buttons
 
     # If the user's school = school page to view
-    if session[:user_roles] == "admin"
+    if session[:user_role] == 'admin'
       if @school == [@id.to_s, session[:school].parameterize].join("-")
-        if @@edit && params.has_key?(:edit)
-          @edit = to_boolean(params[:edit].to_s)
+        if @@edit && params.has_key?(:mode)
+          # Editing conditional to URL parameter ("edit" or "view" values)
+          @edit = (params[:mode] == "edit")
+          @mode = params[:mode]
+        elsif @@edit
+          # Edit by role default
+          @edit = true
+          @mode = "edit"
         else
-          @edit = @@edit
+          # Not allowed to edit
+          @edit = false
+          @mode = "view"
         end
         @approve = @@approve
       else
         @edit = false
         @approve = false
         @show_buttons = false
+        @mode = "view"
       end
-    elsif session[:user_roles] == "editor01"
-      if @@edit && params.has_key?(:edit)
-        @edit = to_boolean(params[:edit].to_s)
+
+      if !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
+        @fields.each do |this_field|
+          @fields_allowed_to_edit << this_field.display_sections_id
+        end
+        @@fields_allowed_to_edit = @fields_allowed_to_edit
+      end
+    elsif session[:user_role] == 'editor'
+      if @@edit && params.has_key?(:mode)
+        @edit = (params[:mode] == "edit")
       else
         @edit = @@edit
       end
@@ -366,6 +381,7 @@ class ProgramsController < ApplicationController
       this_field[3] = f.field_value.to_s.strip  # field original value
       this_field[4] = f.content_type            # field or table cell
       this_field[5] = f.field_type              # string, text, decimal or integer
+      this_field[6] = f.display_sections_id     # Display Section id (table)
 
       @@form_fields << this_field
     end
@@ -385,6 +401,7 @@ class ProgramsController < ApplicationController
       first_data_row = 0
       this_row = table_configuration.rows
       this_column_subheader = 1
+      table_name_id = table_configuration.table_name_id
 
       # +1 since arrays start in 0
       @table = Array.new( table_configuration.rows + 1 ) { Array.new( table_configuration.columns + 1) }

@@ -1,0 +1,26 @@
+<div class="col-xs-12 col-sm-12 col-md-offset-4 col-md-8 col-lg-offset-2 col-lg-10">
+  <div class="form-group">
+    <p>allowed to edit the following fields:</p>
+    <% section_name = "" %>
+    <% @fields_per_role.each do |field| %>
+      <% checked = false %>
+      <% if ( section_name != field.section_name ) %>
+        <div class="subsection-table">
+          <div class="subsection-table-cell">
+            <h4><%= field.section_name %></h4>
+          </div>
+          <div class="save-button-area">
+            <%= submit_tag("SAVE", class: 'btn btn-inverse btn-lg') %>
+          </div>
+        </div>
+        <% section_name = field.section_name %>
+      <% end %>
+      <% if ( !field.display_sections_id.nil? ) %>
+        <% checked = true %>
+      <% end %>
+      <%= check_box_tag(field.section_type + "_" + field.section_to_link, 1, checked) %>
+      <%= label_tag(field.section_type + "_" + field.section_to_link,"(" + field.section_type + ") " + field.section_to_link) %>
+      <br/>
+    <% end %>
+  </div>
+</div>

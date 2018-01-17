@@ -28,15 +28,21 @@ module ProgramsHelper
     id = f.id.to_s
     first_row = first_column = 1
     second_row = 2
+    display_sections_id = f.display_sections_id
+    display_name = f.display_name.to_s.strip
+    old_value = f.field_value.to_s.strip
+    new_value = f.field_value_temp.to_s.strip
+    field_name = f.field_name
+    field_size = f.field_size.to_s
+
+    if session[:user_role] == 'admin' && @mode == "edit"
+      can_edit = (@fields_allowed_to_edit.include? display_sections_id)
+    elsif session[:user_role] == 'admin' && @mode == "view"
+      can_edit = false
+    end
 
     # Form fields will be displayed if the user has edit role, or has approval role for changes submitted
     if this_is_a == 'field'
-
-      old_value = f.field_value.to_s.strip
-      new_value = f.field_value_temp.to_s.strip
-      field_name = f.field_name
-      display_name = f.display_name.to_s.strip
-      field_size = f.field_size.to_s
 
       # Field's default value = new value
       if can_edit
