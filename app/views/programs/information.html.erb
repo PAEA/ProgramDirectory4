@@ -1,6 +1,4 @@
-<% if @show_buttons %>
-  <form action="/save_changes" method="post">
-<% end %>
+<%= form_tag('/save_changes/'+@program.id.to_s, method: 'post', enctype: 'multipart/form-data') do %>
 
 <div class="row">
   <div class="overlay col-md-10 col-md-offset-1">
@@ -56,8 +54,6 @@
   </div>
 </div>
 
-<% if @show_buttons %>
-  </form>
 <% end %>
 
 <script>

@@ -1,38 +1,20 @@
 class ProgramsController < ApplicationController
-  @@form_fields = Array.new
-  @@form_cells = Array.new
-  @@school = @@edit = @@approve = @@show_buttons = ""
-  @@fields_allowed_to_edit = Array.new
 
   def index
 
     # Save today's date in a cookie so it won't show
     cookies[:adea_terms_accept] = Date.today
-
     @display_username = session[:display_username]
-
-    # Set permissions
-    if session[:user_role] == 'read'
-      @@edit = false
-      @@approve = false
-      @@show_buttons = false
-    elsif session[:user_role] == 'admin'
-      @@edit = true
-      @@approve = false
-      @@show_buttons = true
-      @id = (Program.find_by! program: session[:school_display]).id.to_s
-    elsif session[:user_role] == 'editor'
-      @@edit = true
-      @@approve = true
-      @@show_buttons = true
-    end
-
     @user_roles = session[:user_role]
 
-    if ( @display_username.nil? )
+    if @display_username.nil?
       redirect_to root_path
     end
 
+    if session[:user_role] == 'admin'
+      @id = (Program.find_by! program: session[:school_display]).id.to_s
+    end
+    
     @programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
     @programs.each do |p|
@@ -183,12 +165,42 @@ class ProgramsController < ApplicationController
 
   def save_changes
     fields_allowed_to_edit = Array.new
+    form_fields = Array.new
+    form_cells = Array.new
+
+    # If the user's school = school page to view
+    puts session[:user_role].inspect
+
+    if session[:user_role] == 'admin' && !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
+      @fields.each do |this_field|
+        fields_allowed_to_edit << this_field.display_sections_id
+      end
+    end
+
+    id = params[:id].to_i
+
+    @fields_to_display = FieldName.select_fields_to_display( id )
+
+    @fields_to_display.each do |f|
+      this_field = Array.new
+
+      # Save current values for all fields. This value will be compared against the form
+      # values after saving. If they are different, they get saved as "temp" values in each
+      # table. These new values need to get approved before displaying on the webpage.
+      this_field[0] = id                       # field program id
+      this_field[1] = f.id                      # field id
+      this_field[2] = f.field_name              # field name
+      this_field[3] = f.field_value.to_s.strip  # field original value
+      this_field[4] = f.content_type            # field or table cell
+      this_field[5] = f.field_type              # string, text, decimal or integer
+      this_field[6] = f.display_sections_id     # Display Section id (table)
+
+      form_fields << this_field
+    end
 
     # For each field that has been changed, save the new value as a temporary value.
     # The comparisson process is done between the field's current value vs the submitted form field value
-    fields_allowed_to_edit = @@fields_allowed_to_edit
-
-    @@form_fields.each do |field|
+    form_fields.each do |field|
 
       if ( fields_allowed_to_edit.include? field[6] )
         program_id = field[0]
@@ -226,10 +238,33 @@ class ProgramsController < ApplicationController
 
     end
 
+    # Get all of the table configurations (title, number of rows and columns)
+    data_table_configs = DataTableConfig.select_tables_by_program_id( id )
+
+    # Create array containing headers, subheaders, categories and data for each table
+    data_table_configs.each do |table_configuration|
+
+      data_table = DataTable.select_table_config_by_program_id( id, table_configuration.id )
+      data_table.each do |cell|
+        this_cell = Array.new
+
+        # Save current values for all table cells. This value will be compared against the form
+        # values after saving. If they are different, they get saved as "temp" values in each
+        # table. These new values need to get approved before displaying on the webpage.
+        this_cell[0] = cell.id                         # table cell id
+        this_cell[1] = cell.cell_value.to_s.strip      # table cell original value
+        this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
+        this_cell[3] = cell.program_id                 # program_id
+
+        form_cells << this_cell
+
+      end
+    end
+
     # For each table cell that has been changed, save the new value as a temporary value.
     # The comparisson process is done between the cell's current value vs the submitted form field value
 
-    @@form_cells.each do |cell|
+    form_cells.each do |cell|
 
       cell_id = cell[0]
       cell_old_value = cell[1].to_s.strip.delete("\u000A")
@@ -264,7 +299,8 @@ class ProgramsController < ApplicationController
 
     end
 
-    redirect_to "/information/"+@@school
+    school = [id.to_s, session[:school].parameterize].join("-")
+    redirect_to "/information/" + school
 
   end
 
@@ -311,8 +347,8 @@ class ProgramsController < ApplicationController
   #end
 
   def information
-    form_fields = Array.new
     form_cells = Array.new
+    @show_buttons = false
 
     @display_username = session[:display_username]
     # If the user has not logged in...
@@ -324,48 +360,41 @@ class ProgramsController < ApplicationController
     this_field = Array.new
 
     @id = params[:id].to_i
-    @@school = @school = params[:id].to_s
-
-    # Display View and Edit buttons on the school information page top
-    @show_buttons = @@show_buttons
+    school = params[:id].to_s
 
     # If the user's school = school page to view
     if session[:user_role] == 'admin'
-      if @school == [@id.to_s, session[:school].parameterize].join("-")
-        if @@edit && params.has_key?(:mode)
+      if school == [@id.to_s, session[:school].parameterize].join("-")
+        if params.has_key?(:mode)
           # Editing conditional to URL parameter ("edit" or "view" values)
           @edit = (params[:mode] == "edit")
           @mode = params[:mode]
-        elsif @@edit
+        else
           # Edit by role default
           @edit = true
           @mode = "edit"
-        else
-          # Not allowed to edit
-          @edit = false
-          @mode = "view"
         end
-        @approve = @@approve
+        @show_buttons = true
       else
         @edit = false
-        @approve = false
         @show_buttons = false
         @mode = "view"
       end
+      @approve = false
 
       if !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
         @fields.each do |this_field|
           @fields_allowed_to_edit << this_field.display_sections_id
         end
-        @@fields_allowed_to_edit = @fields_allowed_to_edit
       end
     elsif session[:user_role] == 'editor'
-      if @@edit && params.has_key?(:mode)
+      if params.has_key?(:mode)
         @edit = (params[:mode] == "edit")
       else
-        @edit = @@edit
+        @edit = true
       end
-      @approve = @@approve
+      @approve = true
+      @show_buttons = true
     end
 
     @program = Program.find(@id)
@@ -387,10 +416,7 @@ class ProgramsController < ApplicationController
       this_field[5] = f.field_type              # string, text, decimal or integer
       this_field[6] = f.display_sections_id     # Display Section id (table)
 
-      form_fields << this_field
     end
-
-    @@form_fields = form_fields
 
     # Get all of the table configurations (title, number of rows and columns)
     @data_table_configs = DataTableConfig.select_tables_by_program_id( @id )
@@ -440,8 +466,6 @@ class ProgramsController < ApplicationController
         end
 
       end
-
-      @@form_cells = form_cells
 
       # Add categories to the table from the bottom up, if exist
       if ( table_configuration.has_categories )

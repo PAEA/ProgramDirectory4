@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get "settings" => "settings#index"
   post "/save_settings" => "settings#save_settings"
   get "/terms-and-conditions" => "user_sessions#terms_and_conditions_pdf"
-  post "/save_changes" => "programs#save_changes"
+  post "/save_changes/:id" => "programs#save_changes"
   get "/approve_change/:program_id/:field_id/:field_type" => "programs#approve_change"
   get "/reject_change/:program_id/:field_id/:field_type" => "programs#reject_change"
   post "/role_x_fields/:role_id" => "settings#role_x_fields"
