@@ -14,7 +14,7 @@ class ProgramsController < ApplicationController
     if session[:user_role] == 'admin'
       @id = (Program.find_by! program: session[:school_display]).id.to_s
     end
-    
+
     @programs = Program.select_all_programs_sorted_alphabetically
     get_programs = Array.new
     @programs.each do |p|
@@ -202,7 +202,7 @@ class ProgramsController < ApplicationController
     # The comparisson process is done between the field's current value vs the submitted form field value
     form_fields.each do |field|
 
-      if ( fields_allowed_to_edit.include? field[6] )
+      if ( session[:user_role] == 'admin' && ( fields_allowed_to_edit.include? field[6] )) || session[:user_role] == 'editor'
         program_id = field[0]
         field_id = field[1]
         field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
