@@ -223,8 +223,6 @@ class ProgramsController < ApplicationController
           elsif field_type == "text"
             FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
           elsif field_type == "integer"
-            puts field_new_value.to_s
-            puts field_old_value.to_s
             FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_i)
           elsif field_type == "decimal"
             FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_f)
@@ -309,7 +307,8 @@ class ProgramsController < ApplicationController
 
     end
 
-    school = [id.to_s, session[:school].parameterize].join("-")
+    get_school_name = Program.find( id )
+    school = [id.to_s, get_school_name.program.parameterize].join("-")
     redirect_to "/information/" + school
 
   end

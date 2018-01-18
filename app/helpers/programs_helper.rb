@@ -333,7 +333,7 @@ module ProgramsHelper
           end
           html += "colspan='" + colspan.to_s.strip + "' class='" + alignment + "'>"
 
-          if !can_edit && cell_value.blank?
+          if !can_edit && cell_value.blank? && cell_value_temp.blank?
             html += "&nbsp;"
           else
             # Cell's default value = new value
