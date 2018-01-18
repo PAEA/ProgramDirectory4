@@ -222,6 +222,12 @@ class ProgramsController < ApplicationController
             FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
           elsif field_type == "text"
             FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+          elsif field_type == "integer"
+            puts field_new_value.to_s
+            puts field_old_value.to_s
+            FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_i)
+          elsif field_type == "decimal"
+            FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_f)
           end
 
         elsif content_type == 'field' && field_old_value == field_new_value
@@ -230,6 +236,10 @@ class ProgramsController < ApplicationController
             FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
           elsif field_type == "text"
             FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+          elsif field_type == "integer"
+            FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+          elsif field_type == "decimal"
+            FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
           end
 
         end
@@ -316,6 +326,10 @@ class ProgramsController < ApplicationController
     elsif field_type == "text"
       FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "integer"
+      FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "decimal"
+      FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "cell"
       DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
       DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
@@ -333,6 +347,10 @@ class ProgramsController < ApplicationController
       FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "text"
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "integer"
+      FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "decimal"
+      FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "cell"
       DataTable.where(id: field_id).update_all("cell_value_temp = null")
     end
