@@ -26,13 +26,24 @@ module AuthenticateMe
         # Strings containing \n need to get split using double quotes
         this_user_roles = user.at('roles').text.split("\n")
         this_user_roles.each do |this_role|
-          test = this_role.to_s
-          if check_role && ( get_role = SettingsRole.find_by role: test )
+          role_to_check = this_role.to_s
+          if check_role && ( get_role = SettingsRole.find_by role: role_to_check )
 
             # Set role
             session[:user_role_id] = get_role.id
             session[:user_role] = get_role.role_type
-            if session[:user_role]['admin'] || session[:user_role]['editor'] || session[:user_role]['read']
+
+            settings = Setting.first
+
+            editing_from = settings.editing_from
+            editing_to = settings.editing_to
+
+            if ( session[:user_role]['admin'] && Date.today >= editing_from && Date.today <= editing_to ) || session[:user_role]['editor'] || session[:user_role]['read']
+              flash[:success] = "Welcome!"
+              check_role = false
+              redirect_to '/index'
+            elsif session[:user_role]['admin'] && ( Date.today < editing_from || Date.today > editing_to )
+              session[:user_role] = 'read'
               flash[:success] = "Welcome!"
               check_role = false
               redirect_to '/index'
