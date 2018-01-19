@@ -168,9 +168,6 @@ class ProgramsController < ApplicationController
     form_fields = Array.new
     form_cells = Array.new
 
-    # If the user's school = school page to view
-    puts session[:user_role].inspect
-
     if session[:user_role] == 'admin' && !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
       @fields.each do |this_field|
         fields_allowed_to_edit << this_field.display_sections_id
@@ -290,6 +287,11 @@ class ProgramsController < ApplicationController
       cell_temp_value = cell[2].to_s.strip.delete("\u000A")
       program_id = cell[3]
 
+      if cell_old_value[0] == "#"
+        add_colspan = cell_old_value[0..2]
+        cell_new_value = add_colspan + cell_new_value
+      end
+
       if cell_old_value != cell_new_value && !cell_new_value.nil?
 
         # In case the new value is blank, meaning it was removed
@@ -338,18 +340,38 @@ class ProgramsController < ApplicationController
     field_type = params[:field_type].to_s
 
     if field_type == "string"
+      field_values = FieldsString.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
       FieldsString.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "text"
+      field_values = FieldsText.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
       FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "integer"
+      field_values = FieldsInteger.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
       FieldsInteger.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "decimal"
+      field_values = FieldsDecimal.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
       FieldsDecimal.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "cell"
+      cell_values = DataTable.get_cell_values( program_id, field_id )
+      cell_old_value = cell_values.first.cell_value
+      cell_new_value = cell_values.first.cell_value_temp
+      log_entry( program_id, field_id, cell_old_value, cell_new_value, 'Approved', 'cell' )
       DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
       DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
     end
@@ -363,14 +385,34 @@ class ProgramsController < ApplicationController
     field_type = params[:field_type].to_s
 
     if field_type == "string"
+      field_values = FieldsString.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
       FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "text"
+      field_values = FieldsText.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "integer"
+      field_values = FieldsInteger.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
       FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "decimal"
+      field_values = FieldsDecimal.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
       FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
     elsif field_type == "cell"
+      cell_values = DataTable.get_cell_values( program_id, field_id )
+      cell_old_value = cell_values.first.cell_value
+      cell_new_value = cell_values.first.cell_value_temp
+      log_entry( program_id, field_id, cell_old_value, cell_new_value, 'Rejected', 'cell' )
       DataTable.where(id: field_id).update_all("cell_value_temp = null")
     end
 
@@ -384,7 +426,7 @@ class ProgramsController < ApplicationController
   #end
 
   def information
-    form_cells = Array.new
+    #form_cells = Array.new
     @show_buttons = false
 
     @display_username = session[:display_username]
@@ -487,7 +529,7 @@ class ProgramsController < ApplicationController
         this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
         this_cell[3] = cell.program_id                 # program_id
 
-        form_cells << this_cell
+        #form_cells << this_cell
 
         # Get the number of the first data row
         if (first_data_row == 0)
@@ -607,6 +649,7 @@ class ProgramsController < ApplicationController
       @table_types[ table_configuration.table_name_id ] = @table
       @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
       @table_has_subheaders[ table_configuration.table_name_id ] = table_has_subheaders
+
     end
 
   end

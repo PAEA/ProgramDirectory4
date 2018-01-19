@@ -34,6 +34,7 @@ module ProgramsHelper
     new_value = f.field_value_temp.to_s.strip
     field_name = f.field_name
     field_size = f.field_size.to_s
+    program_id = f.program_id.to_s
 
     if session[:user_role] == 'admin' && @mode == "edit"
       can_edit = (@fields_allowed_to_edit.include? display_sections_id)
@@ -167,9 +168,15 @@ module ProgramsHelper
           x = colspan.to_i + 1
 
           # Remove the "#n#" (colspan) string from the cell value in the first column
-          @table_types[ table_name_id ][ this_row ][ first_column ] = { :value => cell_value[3..cell_value_length] }
+          @table_types[ table_name_id ][ this_row ][ first_column ][ :value ] = cell_value[3..cell_value_length]
           cell_value = @table_types[ table_name_id ][ this_row ][ first_column ][:value].to_s.strip
+
           cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value].to_s.strip
+          if cell_value_temp[0] == "#" and cell_value_temp[2] == "#"
+            cell_value_temp_length = cell_value_temp.length
+            @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_length]
+            cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value]
+          end
         end
 
         # If the cell value is a checkmark or any other single character, close the <td> tag
@@ -251,13 +258,13 @@ module ProgramsHelper
                 else
                   jquery += "$('#new-" + field_name + "').hide();"
                 end
-                jquery += "$.ajax('/approve_change/0/" + @table_types[ table_name_id ][ this_row ][ 1 ][:id].to_s + "/cell');"
+                jquery += "$.ajax('/approve_change/" + program_id + "/" + @table_types[ table_name_id ][ this_row ][ 1 ][:id].to_s + "/cell');"
               jquery += "});"
 
               jquery += "$('#reject-" + field_name + "').click(function(){ "
                 jquery += "$('#current-" + field_name + "').fadeIn('slow');"
                 jquery += "$('#proposal-" + field_name + "').fadeOut('slow');"
-                jquery += "$.ajax('/reject_change/0/" + @table_types[ table_name_id ][ this_row ][ 1 ][:id].to_s + "/cell');"
+                jquery += "$.ajax('/reject_change/" + program_id + "/" + @table_types[ table_name_id ][ this_row ][ 1 ][:id].to_s + "/cell');"
               jquery += "});"
             end
 
@@ -309,8 +316,14 @@ module ProgramsHelper
               # Otherwise get #n# for colspan
               length = cell_value.length
               # Remove #n# from cell
-              @table_types[ table_name_id ][ this_row ][ x ] = { :value => cell_value[3..length] }
+              #@table_types[ table_name_id ][ this_row ][ x ] = { :value => cell_value[3..length] }
+              @table_types[ table_name_id ][ this_row ][ x ][ :value ] = cell_value[3..length]
               cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
+              if cell_value_temp[0] == "#" && cell_value_temp[2] == "#"
+                cell_value_temp_length = cell_value_temp.length
+                @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_temp_length]
+                cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value]
+              end
             end
 
             header_first_row = cell_value
@@ -336,13 +349,13 @@ module ProgramsHelper
           if !can_edit && cell_value.blank? && cell_value_temp.blank?
             html += "&nbsp;"
           else
-            # Cell's default value = new value
 
             if !@table_types[ table_name_id ][ this_row ][ x ].nil?
               field_name = "c" + @table_types[ table_name_id ][ this_row ][ x ][:id].to_s
             else
               field_name = "x" + rand(100000).to_s
             end
+
             field_size = 500
 
             if can_edit && ( this_row >= 2 && !table_has_subheaders || this_row >= 3 && table_has_subheaders )
@@ -394,13 +407,13 @@ module ProgramsHelper
                   else
                     jquery += "$('#new-" + field_name + "').hide();"
                   end
-                  jquery += "$.ajax('/approve_change/0/" + @table_types[ table_name_id ][ this_row ][ x ][:id].to_s + "/cell');"
+                  jquery += "$.ajax('/approve_change/" + program_id + "/" + @table_types[ table_name_id ][ this_row ][ x ][:id].to_s + "/cell');"
                 jquery += "});"
 
                 jquery += "$('#reject-" + field_name + "').click(function(){ "
                   jquery += "$('#current-" + field_name + "').fadeIn('slow');"
                   jquery += "$('#proposal-" + field_name + "').fadeOut('slow');"
-                  jquery += "$.ajax('/reject_change/0/" + @table_types[ table_name_id ][ this_row ][ x ][:id].to_s + "/cell');"
+                  jquery += "$.ajax('/reject_change/" + program_id + "/" + @table_types[ table_name_id ][ this_row ][ x ][:id].to_s + "/cell');"
                 jquery += "});"
 
               end

@@ -5,6 +5,10 @@ class DataTable < ApplicationRecord
   has_many :sub_header
   has_many :category
 
+  def self.get_cell_values( program_id, cell_id )
+    select(:cell_value, :cell_value_temp).where( program_id: program_id, id: cell_id )
+  end
+
   def self.select_tables_by_filter( filter_field )
     find_by_sql("
       SELECT distinct categories.category as field_value
