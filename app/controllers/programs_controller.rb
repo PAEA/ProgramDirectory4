@@ -194,6 +194,7 @@ class ProgramsController < ApplicationController
       this_field[4] = f.content_type            # field or table cell
       this_field[5] = f.field_type              # string, text, decimal or integer
       this_field[6] = f.display_sections_id     # Display Section id (table)
+      this_field[7] = f.field_value_temp        # field temp value
 
       form_fields << this_field
     end
@@ -207,6 +208,7 @@ class ProgramsController < ApplicationController
         field_id = field[1]
         field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
         field_old_value = field[3].to_s.strip.delete("\u000A")
+        field_value_temp = field[7].to_s.strip.delete("\u000A")
         content_type = field[4]
         field_type = field[5]
 
@@ -220,24 +222,32 @@ class ProgramsController < ApplicationController
           # Save the new value as a temporary value depending on the data type of the field
           if field_type == "string"
             FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
           elsif field_type == "text"
             FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
           elsif field_type == "integer"
             FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_i)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
           elsif field_type == "decimal"
             FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_f)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
           end
 
-        elsif content_type == 'field' && field_old_value == field_new_value
+        elsif content_type == 'field' && field_old_value == field_new_value && !field_value_temp.blank?
 
           if field_type == "string"
             FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
           elsif field_type == "text"
             FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
           elsif field_type == "integer"
             FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
           elsif field_type == "decimal"
             FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
           end
 
         end
@@ -277,31 +287,24 @@ class ProgramsController < ApplicationController
       cell_id = cell[0]
       cell_old_value = cell[1].to_s.strip.delete("\u000A")
       cell_new_value = params[("c"+cell[0].to_s).to_sym].to_s.strip.delete("\u000A")
-
+      cell_temp_value = cell[2].to_s.strip.delete("\u000A")
       program_id = cell[3]
 
       if cell_old_value != cell_new_value && !cell_new_value.nil?
 
         # In case the new value is blank, meaning it was removed
-        #if cell_new_value.blank?
-        #  cell_new_value = "(((DELETED)))"
-        #end
+        if cell_new_value.blank?
+          cell_new_value = "(((DELETED)))"
+        end
 
         # Save the new value as a temporary value
         DataTable.where(id: cell_id).update(:cell_value_temp => cell_new_value)
+        log_entry( program_id, cell_id, cell_old_value, cell_new_value, 'Update', 'cell' )
 
-        # Add a log entry
-        #new_log_entry = Log.create(
-        #  program_id: program_id,
-        #  field_id: cell_id,
-        #  old_value: cell_old_value,
-        #  new_value: cell_new_value,
-        #  user_id: 1
-        #)
-
-      elsif cell_old_value == cell_new_value
+      elsif cell_old_value == cell_new_value && !cell_temp_value.blank?
 
         DataTable.where(id: cell_id).update(:cell_value_temp => nil)
+        log_entry( program_id, cell_id, cell_old_value, cell_new_value, 'Restore', 'cell' )
 
       end
 
@@ -310,6 +313,21 @@ class ProgramsController < ApplicationController
     get_school_name = Program.find( id )
     school = [id.to_s, get_school_name.program.parameterize].join("-")
     redirect_to "/information/" + school
+
+  end
+
+  def log_entry( program_id, field_id, field_old_value, field_new_value, action, field_type )
+
+    # Add a log entry
+    new_log_entry = Log.create(
+      program_id: program_id,
+      field_id: field_id,
+      field_type: field_type,
+      old_value: field_old_value,
+      new_value: field_new_value,
+      display_username: session[:display_username],
+      action: action
+    )
 
   end
 
@@ -326,8 +344,10 @@ class ProgramsController < ApplicationController
       FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "integer"
+      FieldsInteger.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "decimal"
+      FieldsDecimal.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
       FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
     elsif field_type == "cell"
       DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
