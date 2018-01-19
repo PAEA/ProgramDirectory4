@@ -42,7 +42,7 @@ module AuthenticateMe
               flash[:success] = "Welcome!"
               check_role = false
               redirect_to '/index'
-            elsif session[:user_role]['admin'] && ( Date.today < editing_from || Date.today > editing_to )
+            elsif (session[:user_role]['admin'] && ( Date.today < editing_from || Date.today > editing_to )) || (session[:user_role]['admin'] && session[:school_display].to_s.blank?)
               session[:user_role] = 'read'
               flash[:success] = "Welcome!"
               check_role = false
