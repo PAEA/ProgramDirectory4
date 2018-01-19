@@ -12,7 +12,7 @@ class ProgramsController < ApplicationController
     end
 
     if session[:user_role] == 'admin'
-      @id = (Program.find_by! program: session[:school_display]).id.to_s
+      @id = (Program.find_by program: session[:school_display]).id.to_s
     end
 
     @programs = Program.select_all_programs_sorted_alphabetically
