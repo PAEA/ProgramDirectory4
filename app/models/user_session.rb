@@ -1,2 +1,2 @@
-class UserSession < ActiveRecord
+class UserSession < ApplicationRecord
 end
