@@ -283,6 +283,13 @@ module ProgramsHelper
         # Data cells are center-aligned
         # Loop through the cell values of each column for each row
         while x <= data_table_config.columns
+
+          if @table_types[ table_name_id ][ 1 ][ x ]
+            header_first_row = @table_types[ table_name_id ][ 1 ][ x ][:value]
+          else
+            header_first_row = " > "
+          end
+
           if !@table_types[ table_name_id ][ this_row ][ x ].nil?
             cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
             cell_value_temp = @table_types[ table_name_id ][ this_row ][ x ][:temp_value].to_s.strip
@@ -301,7 +308,7 @@ module ProgramsHelper
             length = cell_value.length
 
             # Remove #n# from the cell
-            @table_types[ table_name_id ][ this_row ][ x ] = { :value => cell_value[3..length] }
+            @table_types[ table_name_id ][ this_row ][ x ][:value] = cell_value[3..length]
             cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
 
             # Open table header
@@ -321,12 +328,12 @@ module ProgramsHelper
               cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
               if cell_value_temp[0] == "#" && cell_value_temp[2] == "#"
                 cell_value_temp_length = cell_value_temp.length
-                @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_temp_length]
+                @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_length]
                 cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value]
               end
             end
 
-            header_first_row = cell_value
+            #header_first_row = cell_value
 
             if ( @table_has_subheaders[ table_name_id ] )
               subheader = @table_types[ table_name_id ][ second_row ][ x ][:value].to_s
