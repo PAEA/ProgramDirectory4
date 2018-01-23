@@ -257,7 +257,8 @@ a:active, a:hover {
   display: block;
   white-space: pre-wrap;
   font-family: $font;
-  //width: 99%;
+  min-width: 15%;
+  max-width: 100%;
   overflow: auto;
 }
 

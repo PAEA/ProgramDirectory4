@@ -28,6 +28,21 @@ class DataTable < ApplicationRecord
     where( :program_id => program_id ).where( :data_table_config_id => table_configuration_id )
   end
 
+  def self.select_role_allowed_table_config_by_program_id( program_id, table_configuration_id, user_role_id )
+    find_by_sql("
+      SELECT data_tables.*
+        FROM data_tables, data_table_configs, table_names, display_sections, settings_fields
+        WHERE data_tables.data_table_config_id = " + table_configuration_id.to_s + "
+          AND data_tables.program_id = " + program_id.to_s + "
+          AND data_table_configs.id = " + table_configuration_id.to_s + "
+          AND table_names.id = data_table_configs.table_name_id
+          AND table_names.table_name = display_sections.section_to_link
+          AND display_sections.id = settings_fields.display_sections_id
+          AND settings_fields.settings_roles_id = " + user_role_id.to_s + "
+        ORDER BY data_tables.id
+    ")
+  end
+
   def self.select_fields_by_keywords( search_query )
     distinct.where( search_query )
   end

@@ -259,7 +259,7 @@ class ProgramsController < ApplicationController
     # Create array containing headers, subheaders, categories and data for each table
     data_table_configs.each do |table_configuration|
 
-      data_table = DataTable.select_table_config_by_program_id( id, table_configuration.id )
+      data_table = DataTable.select_role_allowed_table_config_by_program_id( id, table_configuration.id, session[:user_role_id] )
       data_table.each do |cell|
         this_cell = Array.new
 
@@ -426,7 +426,6 @@ class ProgramsController < ApplicationController
   #end
 
   def information
-    #form_cells = Array.new
     @show_buttons = false
 
     @display_username = session[:display_username]
@@ -528,8 +527,6 @@ class ProgramsController < ApplicationController
         this_cell[1] = cell.cell_value.to_s.strip      # table cell original value
         this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
         this_cell[3] = cell.program_id                 # program_id
-
-        #form_cells << this_cell
 
         # Get the number of the first data row
         if (first_data_row == 0)
