@@ -114,13 +114,14 @@ ActiveRecord::Schema.define(version: 20171116150105) do
   create_table "logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
-    t.text     "old_value",  limit: 65535
-    t.text     "new_value",  limit: 65535
-    t.integer  "user_id"
+    t.text     "old_value",        limit: 65535
+    t.text     "new_value",        limit: 65535
+    t.string   "display_username", limit: 100
     t.string   "action"
     t.integer  "action_by"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "field_type",       limit: 5
     t.index ["program_id", "field_id", "created_at"], name: "index_logs_on_program_id_and_field_id_and_created_at", using: :btree
   end
 
