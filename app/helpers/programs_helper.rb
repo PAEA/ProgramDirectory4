@@ -308,8 +308,10 @@ module ProgramsHelper
             length = cell_value.length
 
             # Remove #n# from the cell
-            @table_types[ table_name_id ][ this_row ][ x ][:value] = cell_value[3..length]
-            cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
+            if cell_value[0] == "#" && cell_value[2] == "#"
+              @table_types[ table_name_id ][ this_row ][ x ][:value] = cell_value[3..length]
+              cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
+            end
 
             # Open table header
             html += "<th scope='row' "
@@ -462,7 +464,7 @@ module ProgramsHelper
       html += "</table>"
 
       # If the table has no data, don't display it
-      if table_empty
+      if table_empty && !show_buttons
         html = ""
       else
         html += "<script>$(document).ready(function(){ " + jquery + "}); </script>"
