@@ -356,8 +356,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
         end
 
         for x in starting_column..columns
-          #if !array_from_csv[ y ][ x ].nil?
-          if rows_counter < final_table_amount_of_rows
+          if !array_from_csv[ table_start_line ][ x ].nil?
+          #if rows_counter < final_table_amount_of_rows
 
             # Adds headers
             column_counter = 0
