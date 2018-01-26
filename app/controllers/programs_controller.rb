@@ -13,6 +13,8 @@ class ProgramsController < ApplicationController
 
     if session[:user_role] == 'admin'
       @id = (Program.find_by program: session[:school_display]).id.to_s
+    elsif session[:user_role] == 'editor'
+      @schools_pending_approval = DataTable.schools_pending_approval
     end
 
     @programs = Program.select_all_programs_sorted_alphabetically

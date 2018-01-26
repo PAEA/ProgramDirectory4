@@ -5,6 +5,39 @@ class DataTable < ApplicationRecord
   has_many :sub_header
   has_many :category
 
+  def self.schools_pending_approval
+    find_by_sql("
+      SELECT DISTINCT *
+        FROM (
+          SELECT DISTINCT fields_strings.program_id, programs.program
+            FROM fields_strings, programs
+            WHERE fields_strings.program_id = programs.id
+            AND fields_strings.field_value_temp IS NOT NULL
+          UNION
+          SELECT DISTINCT fields_texts.program_id, programs.program
+            FROM fields_texts, programs
+            WHERE fields_texts.program_id = programs.id
+            AND fields_texts.field_value_temp IS NOT NULL
+          UNION
+          SELECT DISTINCT fields_integers.program_id, programs.program
+            FROM fields_integers, programs
+            WHERE fields_integers.program_id = programs.id
+            AND fields_integers.field_value_temp IS NOT NULL
+          UNION
+          SELECT DISTINCT fields_decimals.program_id, programs.program
+            FROM fields_decimals, programs
+            WHERE fields_decimals.program_id = programs.id
+            AND fields_decimals.field_value_temp IS NOT NULL
+          UNION
+          SELECT DISTINCT data_tables.program_id, programs.program
+            FROM data_tables, programs
+            WHERE data_tables.program_id = programs.id
+            AND data_tables.cell_value_temp IS NOT NULL
+      ) as t1
+      ORDER BY t1.program
+    ")
+  end
+
   def self.get_cell_values( program_id, cell_id )
     select(:cell_value, :cell_value_temp).where( program_id: program_id, id: cell_id )
   end
