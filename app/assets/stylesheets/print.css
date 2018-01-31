@@ -1,0 +1,25 @@
+//////////// PRINT /////////
+@media print {
+
+  footer {
+    display: none;
+  }
+
+  header {
+    display: none;
+  }
+
+  .collapse {
+    display: block !important;
+    height: auto !important;
+  }
+
+  .container {
+    padding: 0 10% 0 10%;
+  }
+
+  #show_all_schools {
+    display: none;
+  }
+
+}

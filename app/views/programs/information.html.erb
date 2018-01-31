@@ -56,28 +56,30 @@
 
 <% end %>
 
-<script>
-$(document).ready(function(){
+<% if @approve %>
+  <script>
+  $(document).ready(function(){
 
-  <% @fields_to_display.each do |f| %>
-    <% if ( f.content_type == 'field' ) %>
-      $("#new-<%= f.id %>").hide();
-      $("#success-<%= f.id %>").click(function(){
-          $("#current-<%= f.id %>").hide();
-          $("#proposal-<%= f.id %>").hide();
-          <% if f.field_value_temp != "(((DELETE)))" %>
-            $("#new-<%= f.id %>").fadeIn('slow');
-          <% else %>
-            $("#new-<%= f.id %>").hide();
-          <% end %>
-          $.ajax("/approve_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
-      });
-      $("#reject-<%= f.id %>").click(function(){
-          $("#current-<%= f.id %>").fadeIn('slow');
-          $("#proposal-<%= f.id %>").fadeOut('slow');
-          $.ajax("/reject_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
-      });
+    <% @fields_to_display.each do |f| %>
+      <% if ( f.content_type == 'field' ) %>
+        $("#new-<%= f.id %>").hide();
+        $("#success-<%= f.id %>").click(function(){
+            $("#current-<%= f.id %>").hide();
+            $("#proposal-<%= f.id %>").hide();
+            <% if f.field_value_temp != "(((DELETE)))" %>
+              $("#new-<%= f.id %>").fadeIn('slow');
+            <% else %>
+              $("#new-<%= f.id %>").hide();
+            <% end %>
+            $.ajax("/approve_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
+        });
+        $("#reject-<%= f.id %>").click(function(){
+            $("#current-<%= f.id %>").fadeIn('slow');
+            $("#proposal-<%= f.id %>").fadeOut('slow');
+            $.ajax("/reject_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
+        });
+      <% end %>
     <% end %>
-  <% end %>
-});
-</script>
+  });
+  </script>
+<% end %>
