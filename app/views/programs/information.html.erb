@@ -1,6 +1,6 @@
-<% if @show_buttons %>
-  <%= stylesheet_link_tag "print", :media => "print" %>
-<% end %>
+<% # if @show_buttons %>
+  <%= # stylesheet_link_tag "print", :media => "print" %>
+<% # end %>
 
 <%= form_tag('/save_changes/'+@program.id.to_s, method: 'post', enctype: 'multipart/form-data') do %>
 
