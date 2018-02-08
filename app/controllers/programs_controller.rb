@@ -289,9 +289,16 @@ class ProgramsController < ApplicationController
       cell_temp_value = cell[2].to_s.strip.delete("\u000A")
       program_id = cell[3]
 
-      if cell_old_value[0] == "#"
+      if cell_old_value[0] == "#" && cell_old_value[2] == "#"
         add_colspan = cell_old_value[0..2]
         cell_new_value = add_colspan + cell_new_value
+      end
+
+      if cell_id == 17708
+        puts cell_id.to_s
+        puts cell_old_value
+        puts cell_new_value
+        puts cell_temp_value
       end
 
       if cell_old_value != cell_new_value && !cell_new_value.nil?
@@ -299,6 +306,8 @@ class ProgramsController < ApplicationController
         # In case the new value is blank, meaning it was removed
         if cell_new_value.blank?
           cell_new_value = "(((DELETED)))"
+        elsif cell_new_value[0] == "#" && cell_new_value[2] == "#" && cell_new_value.length == 3
+          cell_new_value = cell_new_value + "(((DELETED)))"
         end
 
         # Save the new value as a temporary value
@@ -373,9 +382,23 @@ class ProgramsController < ApplicationController
       cell_values = DataTable.get_cell_values( program_id, field_id )
       cell_old_value = cell_values.first.cell_value
       cell_new_value = cell_values.first.cell_value_temp
+
+      if !cell_old_value.nil? && cell_old_value[0] == "#" && cell_old_value[2] == "#"
+        add_colspan = cell_old_value[0..2]
+        #cell_new_value = add_colspan + cell_new_value
+        #cell_temp_value = cell_new_value
+        DataTable.where(id: field_id, cell_value_temp: add_colspan+"(((DELETED)))" ).update_all("cell_value_temp = null")
+        if cell_new_value[3..15] == "(((DELETED)))"
+          DataTable.where(id: field_id).update_all("cell_value = '"+ add_colspan + "', cell_value_temp = null")
+        else
+          DataTable.where(id: field_id).update_all("cell_value = '"+ cell_new_value + "', cell_value_temp = null")
+        end
+      else
+        DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
+        DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
+      end
       log_entry( program_id, field_id, cell_old_value, cell_new_value, 'Approved', 'cell' )
-      DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
-      DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
+
     end
 
   end

@@ -172,9 +172,9 @@ module ProgramsHelper
           cell_value = @table_types[ table_name_id ][ this_row ][ first_column ][:value].to_s.strip
 
           cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value].to_s.strip
-          if cell_value_temp[0] == "#" and cell_value_temp[2] == "#"
+          if cell_value_temp[0] == "#" && cell_value_temp[2] == "#"
             cell_value_temp_length = cell_value_temp.length
-            @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_length]
+            @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_temp_length]
             cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value]
           end
         end
@@ -206,7 +206,7 @@ module ProgramsHelper
         end
         field_size = 500
 
-        if !can_edit && cell_value.blank?
+        if !can_edit && cell_value.blank? && cell_value_temp.blank?
           html += "&nbsp;"
         else
           # Cell's default value = new value
@@ -330,7 +330,7 @@ module ProgramsHelper
               cell_value = @table_types[ table_name_id ][ this_row ][ x ][:value].to_s.strip
               if cell_value_temp[0] == "#" && cell_value_temp[2] == "#"
                 cell_value_temp_length = cell_value_temp.length
-                @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_length]
+                @table_types[ table_name_id ][ this_row ][ first_column ][ :temp_value ] = cell_value_temp[3..cell_value_temp_length]
                 cell_value_temp = @table_types[ table_name_id ][ this_row ][ first_column ][:temp_value]
               end
             end
