@@ -4,10 +4,8 @@ require 'bcrypt'
 
 if ( File.file?("lib/special_access.rb") )
   load 'lib/special_access.rb'
-  puts "special_access.file?:" + File.file?("lib/special_access.rb").to_s
 else
   load 'lib/regular_access.rb'
-  puts "regular_access.file?:" + File.file?("lib/regular_access.rb").to_s
 end
 
 class UserSessionsController < ApplicationController

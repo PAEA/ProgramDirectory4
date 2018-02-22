@@ -1,0 +1,94 @@
+<div class="row">
+
+    <div class="block block-blue">
+      <h2>Settings</h2>
+
+      <%= form_tag('/save_settings', :method => "post", :remote => true) do %>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>School editing:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
+            <div class="form-group">
+              <%= label_tag(:sf_edit_from, "From:") %>
+              <%= date_field_tag(:sf_edit_from, @editing_from, class: "form-control", style: "width: 250px; display: inline;") %>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
+            <div class="form-group">
+              <%= label_tag(:sf_edit_to, "To:") %>
+              <%= date_field_tag(:sf_edit_to, @editing_to, class: "form-control", style: "width: 250px; display: inline;") %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>Role:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+            <div class="form-group">
+              <%= select_tag(:sf_roles, options_from_collection_for_select(@roles, 'id', 'role') , class: 'info-subhed') %>
+            </div>
+          </div>
+
+          <!-- Ajax section. Updates the display depending on the role selected. -->
+          <div id="list_of_fields">
+            <%= render partial: 'role_x_fields' %>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <p>Notifications:</p>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+            <div class="form-group">
+              <%= label_tag(:sf_emails, "Email addresses (separated by ;) :") %>
+              <%= text_field_tag(:sf_emails, @email_notifications, class: "form-control") %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="text-center">
+              <%= submit_tag("SAVE", class: 'btn btn-inverse btn-lg', id: 'sf_save-settings') %>
+            </div>
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+
+</div>
+
+<script>
+
+    $("label:contains('(field)')").click(function(){
+        $(this).find('> span').toggleClass("arrowup");
+        console.log("arrow up");
+    });
+
+    if ($(window).width() < 768) {
+        $("#collapseAllFilters").removeClass("in");
+    } else {
+        $("#collapseAllFilters").addClass("in");
+    }
+
+    $("#sf_roles").change(function() {
+      $.ajax({
+        url: "/role_x_fields/" + $(this).val(),
+        type: "POST"});
+    });
+
+    //(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    //(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    //m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    //})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    //ga('create', 'UA-25560883-14', 'auto');
+    //ga('send', 'pageview');
+</script>

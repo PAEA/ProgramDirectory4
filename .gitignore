@@ -25,6 +25,7 @@
 /config/secrets.yml
 /config/database.yml
 /lib/special_access.rb
+/public/assets/*
 
 # Source files
 /fields_*

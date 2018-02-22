@@ -1,37 +1,85 @@
+<%= form_tag('/save_changes/'+@program.id.to_s, method: 'post', enctype: 'multipart/form-data') do %>
+
 <div class="row">
   <div class="overlay col-md-10 col-md-offset-1">
     <div class="information-page" id="<%= @program.id %>">
+
       <h1 class="info-hed"><%= @program.program %></h1>
 
+      <% if @show_buttons %>
+        <%= link_to( "VIEW" , {:controller => 'programs', :action => 'information', :id => params[:id], :mode => 'view' }, :class => "btn navbar-btn btn-inverse" ) %>
+        <%= link_to( "EDIT" , {:controller => 'programs', :action => 'information', :id => params[:id], :mode => 'edit' }, :class => "btn navbar-btn btn-inverse" ) %>
+      <% end %>
+
       <% this_section = "" %>
-      <div>
-        <div>
-          <% @fields_to_display.each do |f| %>
 
-            <% if ( this_section != f.section_name ) %>
-              </div>
-              </div>
-              <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-                <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
-              </a>
-              <br />
-              <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
-                <div class="info-well">
-                  <% this_section = f.section_name %>
-            <% end %>
-            <%= display_fields_and_tables(f) %>
-            <% if ( f.equal?(f.section_name.last) ) %>
-                </div>
-              </div>
-            <% end %>
+      <% @fields_to_display.each do |f| %>
 
+        <% if ( this_section != f.section_name ) %>
+          <% if ( this_section != "" ) %>
+            </div>
+            </div>
+          <% end %>
+          <% section_name_trimmed = f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>
+          <div class="subsection-table">
+            <div class="subsection-table-cell">
+            <a class="btn btn-lg btn-primary btn-header collapsed" role="button" data-toggle="collapse" href="#collapse_<%= section_name_trimmed %>" aria-expanded="false" aria-controls="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+              <span class="glyphicon glyphicon-menu-down nodisplay"></span> <%= f.section_name %>
+            </a>
+            </div>
+            <% if @edit %>
+              <div class="save-button-area">
+                <%= submit_tag("SAVE", class: 'btn btn-lg btn-inverse save-button', id: 'save-button') %>
+              </div>
+            <% end %>
+          </div>
+          <!-- opening divs -->
+          <div class="collapse" id="collapse_<%= f.section_name.gsub(/[^a-zA-Z]/, "").downcase %>">
+            <div class="info-well">
+              <% this_section = f.section_name %>
         <% end %>
-        </div>
-        </div>
+
+        <%= display_fields_and_tables(f, @edit, @approve, @show_buttons) %>
+
+      <% end %>
+
+      <!-- closing divs -->
+      </div>
+      </div>
+
     </div>
 
     <!-- Back to index.html -->
-    <p><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
+    <p id="show_all_schools"><%= link_to( 'Show all schools' , {:action => 'index'}, :class => 'btn btn-primary btn-sm' ) %></p>
   </div>
 </div>
 
+<% end %>
+
+<% if @approve %>
+  <script>
+  $(document).ready(function(){
+
+    <% @fields_to_display.each do |f| %>
+      <% if ( f.content_type == 'field' ) %>
+        $("#new-<%= f.id %>").hide();
+        $("#success-<%= f.id %>").click(function(){
+            $("#current-<%= f.id %>").hide();
+            $("#proposal-<%= f.id %>").hide();
+            <% if f.field_value_temp != "(((DELETE)))" %>
+              $("#new-<%= f.id %>").fadeIn('slow');
+            <% else %>
+              $("#new-<%= f.id %>").hide();
+            <% end %>
+            $.ajax("/approve_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
+        });
+        $("#reject-<%= f.id %>").click(function(){
+            $("#current-<%= f.id %>").fadeIn('slow');
+            $("#proposal-<%= f.id %>").fadeOut('slow');
+            $.ajax("/reject_change/<%= @id %>/<%= f.id %>/<%= f.field_type %>");
+        });
+      <% end %>
+    <% end %>
+  });
+  </script>
+<% end %>

@@ -2,13 +2,19 @@ class ProgramsController < ApplicationController
 
   def index
 
+    # Save today's date in a cookie so it won't show
     cookies[:adea_terms_accept] = Date.today
-
     @display_username = session[:display_username]
-    @user_roles = session[:user_roles]
+    @user_roles = session[:user_role]
 
-    if ( @display_username.nil? )
+    if @display_username.nil?
       redirect_to root_path
+    end
+
+    if session[:user_role] == 'admin'
+      @id = (Program.find_by program: session[:school_display]).id.to_s
+    elsif session[:user_role] == 'editor'
+      @schools_pending_approval = DataTable.schools_pending_approval
     end
 
     @programs = Program.select_all_programs_sorted_alphabetically
@@ -17,7 +23,7 @@ class ProgramsController < ApplicationController
       get_programs << p.id
     end
 
-    # Get preselected filters
+    # Get preselected filters - This comes from the metadata in the spreadsheets
     @filters = CustomFilter.select_all_filters_sorted_by_display_order
 
     $filter_values = Array.new
@@ -53,7 +59,7 @@ class ProgramsController < ApplicationController
     @filters = CustomFilter.select_all_filters_sorted_by_display_order
 
     @display_username = session[:display_username]
-    @user_roles = session[:user_roles]
+    @user_roles = session[:user_role]
 
     if ( @display_username.nil? )
       redirect_to root_path
@@ -87,8 +93,6 @@ class ProgramsController < ApplicationController
       where_condition_for_programs = ""
       where_condition_for_tables = ""
       where_values = Array.new
-
-      puts keywords_array
 
       keywords_array.each_with_index do |keyword, index|
         if ( index == 0 )
@@ -161,20 +165,361 @@ class ProgramsController < ApplicationController
 
   end
 
+  def save_changes
+    fields_allowed_to_edit = Array.new
+    form_fields = Array.new
+    form_cells = Array.new
+
+    if session[:user_role] == 'admin' && !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
+      @fields.each do |this_field|
+        fields_allowed_to_edit << this_field.display_sections_id
+      end
+    end
+
+    id = params[:id].to_i
+
+    @fields_to_display = FieldName.select_fields_to_display( id )
+
+    @fields_to_display.each do |f|
+      this_field = Array.new
+
+      # Save current values for all fields. This value will be compared against the form
+      # values after saving. If they are different, they get saved as "temp" values in each
+      # table. These new values need to get approved before displaying on the webpage.
+      this_field[0] = id                       # field program id
+      this_field[1] = f.id                      # field id
+      this_field[2] = f.field_name              # field name
+      this_field[3] = f.field_value.to_s.strip  # field original value
+      this_field[4] = f.content_type            # field or table cell
+      this_field[5] = f.field_type              # string, text, decimal or integer
+      this_field[6] = f.display_sections_id     # Display Section id (table)
+      this_field[7] = f.field_value_temp        # field temp value
+
+      form_fields << this_field
+    end
+
+    # For each field that has been changed, save the new value as a temporary value.
+    # The comparisson process is done between the field's current value vs the submitted form field value
+    form_fields.each do |field|
+
+      if ( session[:user_role] == 'admin' && ( fields_allowed_to_edit.include? field[6] )) || session[:user_role] == 'editor'
+        program_id = field[0]
+        field_id = field[1]
+        field_new_value = params[field[2].to_sym].to_s.strip.delete("\u000A")
+        field_old_value = field[3].to_s.strip.delete("\u000A")
+        field_value_temp = field[7].to_s.strip.delete("\u000A")
+        content_type = field[4]
+        field_type = field[5]
+
+        if content_type == 'field' && field_old_value != field_new_value && !field_new_value.nil?
+
+          # In case the new value is blank, meaning it was removed
+          if field_new_value.blank?
+            field_new_value = "(((DELETED)))"
+          end
+
+          # Save the new value as a temporary value depending on the data type of the field
+          if field_type == "string"
+            FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
+          elsif field_type == "text"
+            FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
+          elsif field_type == "integer"
+            FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_i)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
+          elsif field_type == "decimal"
+            FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => field_new_value.to_f)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Update', 'field' )
+          end
+
+        elsif content_type == 'field' && field_old_value == field_new_value && !field_value_temp.blank?
+
+          if field_type == "string"
+            FieldsString.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
+          elsif field_type == "text"
+            FieldsText.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
+          elsif field_type == "integer"
+            FieldsInteger.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
+          elsif field_type == "decimal"
+            FieldDecimal.where(program_id: program_id, field_id: field_id).update(:field_value_temp => nil)
+            log_entry( program_id, field_id, field_old_value, field_new_value, 'Restore', 'field' )
+          end
+
+        end
+
+      end
+
+    end
+
+    # Get all of the table configurations (title, number of rows and columns)
+    data_table_configs = DataTableConfig.select_tables_by_program_id( id )
+
+    # Create array containing headers, subheaders, categories and data for each table
+    data_table_configs.each do |table_configuration|
+
+      data_table = DataTable.select_role_allowed_table_config_by_program_id( id, table_configuration.id, session[:user_role_id] )
+      data_table.each do |cell|
+        this_cell = Array.new
+
+        # Save current values for all table cells. This value will be compared against the form
+        # values after saving. If they are different, they get saved as "temp" values in each
+        # table. These new values need to get approved before displaying on the webpage.
+        this_cell[0] = cell.id                         # table cell id
+        this_cell[1] = cell.cell_value.to_s.strip      # table cell original value
+        this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
+        this_cell[3] = cell.program_id                 # program_id
+
+        form_cells << this_cell
+
+      end
+    end
+
+    # For each table cell that has been changed, save the new value as a temporary value.
+    # The comparisson process is done between the cell's current value vs the submitted form field value
+
+    form_cells.each do |cell|
+
+      cell_id = cell[0]
+      cell_old_value = cell[1].to_s.strip.delete("\u000A")
+      cell_new_value = params[("c"+cell[0].to_s).to_sym].to_s.strip.delete("\u000A")
+      cell_temp_value = cell[2].to_s.strip.delete("\u000A")
+      program_id = cell[3]
+
+      if cell_old_value[0] == "#" && cell_old_value[2] == "#"
+        add_colspan = cell_old_value[0..2]
+        cell_new_value = add_colspan + cell_new_value
+      end
+
+      if cell_id == 17708
+        puts cell_id.to_s
+        puts cell_old_value
+        puts cell_new_value
+        puts cell_temp_value
+      end
+
+      if cell_old_value != cell_new_value && !cell_new_value.nil?
+
+        # In case the new value is blank, meaning it was removed
+        if cell_new_value.blank?
+          cell_new_value = "(((DELETED)))"
+        elsif cell_new_value[0] == "#" && cell_new_value[2] == "#" && cell_new_value.length == 3
+          cell_new_value = cell_new_value + "(((DELETED)))"
+        end
+
+        # Save the new value as a temporary value
+        DataTable.where(id: cell_id).update(:cell_value_temp => cell_new_value)
+        log_entry( program_id, cell_id, cell_old_value, cell_new_value, 'Update', 'cell' )
+
+      elsif cell_old_value == cell_new_value && !cell_temp_value.blank?
+
+        DataTable.where(id: cell_id).update(:cell_value_temp => nil)
+        log_entry( program_id, cell_id, cell_old_value, cell_new_value, 'Restore', 'cell' )
+
+      end
+
+    end
+
+    get_school_name = Program.find( id )
+    school = [id.to_s, get_school_name.program.parameterize].join("-")
+    redirect_to "/information/" + school
+
+  end
+
+  def log_entry( program_id, field_id, field_old_value, field_new_value, action, field_type )
+
+    # Add a log entry
+    new_log_entry = Log.create(
+      program_id: program_id,
+      field_id: field_id,
+      field_type: field_type,
+      old_value: field_old_value,
+      new_value: field_new_value,
+      display_username: session[:display_username],
+      action: action
+    )
+
+  end
+
+  def approve_change
+
+    program_id = params[:program_id].to_s
+    field_id =  params[:field_id].to_s
+    field_type = params[:field_type].to_s
+
+    if field_type == "string"
+      field_values = FieldsString.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
+      FieldsString.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "text"
+      field_values = FieldsText.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
+      FieldsText.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "integer"
+      field_values = FieldsInteger.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
+      FieldsInteger.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "decimal"
+      field_values = FieldsDecimal.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Approved', 'field' )
+      FieldsDecimal.where(program_id: program_id, field_id: field_id, field_value_temp: "(((DELETED)))" ).update_all("field_value_temp = null")
+      FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value = field_value_temp, field_value_temp = null")
+    elsif field_type == "cell"
+      cell_values = DataTable.get_cell_values( program_id, field_id )
+      cell_old_value = cell_values.first.cell_value
+      cell_new_value = cell_values.first.cell_value_temp
+
+      if !cell_old_value.nil? && cell_old_value[0] == "#" && cell_old_value[2] == "#"
+        add_colspan = cell_old_value[0..2]
+        #cell_new_value = add_colspan + cell_new_value
+        #cell_temp_value = cell_new_value
+        DataTable.where(id: field_id, cell_value_temp: add_colspan+"(((DELETED)))" ).update_all("cell_value_temp = null")
+        if cell_new_value[3..15] == "(((DELETED)))"
+          DataTable.where(id: field_id).update_all("cell_value = '"+ add_colspan + "', cell_value_temp = null")
+        else
+          DataTable.where(id: field_id).update_all("cell_value = '"+ cell_new_value + "', cell_value_temp = null")
+        end
+      else
+        DataTable.where(id: field_id, cell_value_temp: "(((DELETED)))" ).update_all("cell_value_temp = null")
+        DataTable.where(id: field_id).update_all("cell_value = cell_value_temp, cell_value_temp = null")
+      end
+      log_entry( program_id, field_id, cell_old_value, cell_new_value, 'Approved', 'cell' )
+
+    end
+
+  end
+
+  def reject_change
+
+    program_id = params[:program_id].to_s
+    field_id =  params[:field_id].to_s
+    field_type = params[:field_type].to_s
+
+    if field_type == "string"
+      field_values = FieldsString.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
+      FieldsString.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "text"
+      field_values = FieldsText.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
+      FieldsText.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "integer"
+      field_values = FieldsInteger.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
+      FieldsInteger.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "decimal"
+      field_values = FieldsDecimal.get_field_values( program_id, field_id )
+      field_old_value = field_values.first.field_value
+      field_new_value = field_values.first.field_value_temp
+      log_entry( program_id, field_id, field_old_value, field_new_value, 'Rejected', 'field' )
+      FieldsDecimal.where(program_id: program_id, field_id: field_id).update_all("field_value_temp = null")
+    elsif field_type == "cell"
+      cell_values = DataTable.get_cell_values( program_id, field_id )
+      cell_old_value = cell_values.first.cell_value
+      cell_new_value = cell_values.first.cell_value_temp
+      log_entry( program_id, field_id, cell_old_value, cell_new_value, 'Rejected', 'cell' )
+      DataTable.where(id: field_id).update_all("cell_value_temp = null")
+    end
+
+  end
+
+  # Returns boolean value for this_var
+  #def to_boolean(this_var)
+
+    #this_var == "true"
+
+  #end
+
   def information
+    @show_buttons = false
 
     @display_username = session[:display_username]
-    @user_roles = session[:user_roles]
-
+    # If the user has not logged in...
     if ( @display_username.nil? )
       redirect_to root_path
     end
+    @fields_allowed_to_edit = Array.new
+    @user_roles = session[:user_role]
+    this_field = Array.new
 
     @id = params[:id].to_i
+    school = params[:id].to_s
+
+    # If the user's school = school page to view
+    if session[:user_role] == 'admin'
+      if school == [@id.to_s, session[:school].parameterize].join("-")
+        if params.has_key?(:mode)
+          # Editing conditional to URL parameter ("edit" or "view" values)
+          @edit = (params[:mode] == "edit")
+          @mode = params[:mode]
+        else
+          # Edit by role default
+          @edit = true
+          @mode = "edit"
+        end
+        @show_buttons = true
+      else
+        @edit = false
+        @show_buttons = false
+        @mode = "view"
+      end
+      @approve = false
+
+      if !(@fields = SettingsField.get_editing_fields( session[:user_role_id] )).nil?
+        @fields.each do |this_field|
+          @fields_allowed_to_edit << this_field.display_sections_id
+        end
+      end
+    elsif session[:user_role] == 'editor'
+      if params.has_key?(:mode)
+        @edit = (params[:mode] == "edit")
+      else
+        @edit = true
+      end
+      @approve = true
+      @show_buttons = true
+    end
+
     @program = Program.find(@id)
     @field_string = FieldsString.find_by_program_id(@id)
 
     @fields_to_display = FieldName.select_fields_to_display( @id )
+
+    @fields_to_display.each do |f|
+      this_field = Array.new
+
+      # Save current values for all fields. This value will be compared against the form
+      # values after saving. If they are different, they get saved as "temp" values in each
+      # table. These new values need to get approved before displaying on the webpage.
+      this_field[0] = @id                       # field program id
+      this_field[1] = f.id                      # field id
+      this_field[2] = f.field_name              # field name
+      this_field[3] = f.field_value.to_s.strip  # field original value
+      this_field[4] = f.content_type            # field or table cell
+      this_field[5] = f.field_type              # string, text, decimal or integer
+      this_field[6] = f.display_sections_id     # Display Section id (table)
+
+    end
 
     # Get all of the table configurations (title, number of rows and columns)
     @data_table_configs = DataTableConfig.select_tables_by_program_id( @id )
@@ -191,12 +536,22 @@ class ProgramsController < ApplicationController
       first_data_row = 0
       this_row = table_configuration.rows
       this_column_subheader = 1
+      table_name = table_configuration.table_name_id
 
       # +1 since arrays start in 0
       @table = Array.new( table_configuration.rows + 1 ) { Array.new( table_configuration.columns + 1) }
 
       data_table = DataTable.select_table_config_by_program_id( @id, table_configuration.id )
       data_table.each do |cell|
+        this_cell = Array.new
+
+        # Save current values for all table cells. This value will be compared against the form
+        # values after saving. If they are different, they get saved as "temp" values in each
+        # table. These new values need to get approved before displaying on the webpage.
+        this_cell[0] = cell.id                         # table cell id
+        this_cell[1] = cell.cell_value.to_s.strip      # table cell original value
+        this_cell[2] = cell.cell_value_temp.to_s.strip # table cell temporary value
+        this_cell[3] = cell.program_id                 # program_id
 
         # Get the number of the first data row
         if (first_data_row == 0)
@@ -204,11 +559,11 @@ class ProgramsController < ApplicationController
         end
 
         # Fills each table type with its cell values per row and column
-        if ( cell.cell_value.to_s == "x" || ( cell.cell_value.to_s.include? "x ") || ( cell.cell_value.to_s.include? "x\n") || ( cell.cell_value.to_s.include? "x\r") )
+        if ( this_cell[1] == "x" || ( this_cell[1][0..1].include? "x ") || ( this_cell[1][0..1].include? "x\n") || ( this_cell[1][0..1].include? "x\r") )
           # ascii checkmark symbol
-          @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s.gsub("x","\u2713")
+          @table[ cell.cell_row ][ cell.cell_column ] = { :value => this_cell[1].gsub("x","\u2713"), :temp_value => this_cell[2], :id => this_cell[0] }
         else
-          @table[ cell.cell_row ][ cell.cell_column ] = cell.cell_value.to_s
+          @table[ cell.cell_row ][ cell.cell_column ] = { :value => this_cell[1], :temp_value => this_cell[2], :id => this_cell[0] }
         end
 
       end
@@ -217,11 +572,11 @@ class ProgramsController < ApplicationController
       if ( table_configuration.has_categories )
         categories = Category.select_categories_by_table_config_id( table_configuration.id )
         categories.each do |category|
-          if ( category.category.to_s == "x" || ( category.category.to_s.include? "x " ) || ( category.category.to_s.include? "x\n") || ( category.category.to_s.include? "x\r") )
+          if ( category.category.to_s == "x" || ( category.category.to_s[0..1].include? "x " ) || ( category.category.to_s[0..1].include? "x\n") || ( category.category.to_s[0..1].include? "x\r") )
             # ascii checkmark symbol
-            @table[ this_row ][ 1 ] = category.category.to_s.gsub("x","\u2713")
+            @table[ this_row ][ 1 ] = { :value => category.category.to_s.gsub("x","\u2713"), :temp_value => nil, :id => category.id }
           else
-            @table[ this_row ][ 1 ] = category.category
+            @table[ this_row ][ 1 ] = { :value => category.category, :temp_value => nil, :id => category.id }
           end
           this_row -= 1
         end
@@ -257,11 +612,11 @@ class ProgramsController < ApplicationController
           end
 
           subheaders.each do |subheader|
-            @table[ 2 ][ this_column_subheader ] = subheader.subheader
+            @table[ 2 ][ this_column_subheader ] = { :value => subheader.subheader, :temp_value => nil, :id => subheader.id }
 
             # Subheaders duplication will happen at current column number + amount_of_subheaders
             if ( duplicate_subheaders && this_column_subheader >= 2 || duplicate_subheaders && this_column_subheader >= 1 && !table_configuration.has_categories )
-              @table[ 2 ][ this_column_subheader + amount_of_subheaders ] = subheader.subheader
+              @table[ 2 ][ this_column_subheader + amount_of_subheaders ] = { :value => subheader.subheader, :temp_value => nil, :id => subheader.id }
             end
             this_column_subheader += 1
           end
@@ -289,13 +644,23 @@ class ProgramsController < ApplicationController
 
       headers.each do |header|
 
-        # Adds a column span number between hash symbols for column >= 2 when categories are present
+        # Adds a column span number between hashes for column >= 2 when categories are present
         # or for tables without categories
-        if ( ( this_column_header >= 2 and table_configuration.has_categories ) or ( this_column_header >= 1 and !table_configuration.has_categories ) )
-          @table[ 1 ][ this_column_header ] = "#" + column_increment.to_s + "#" + header.header.to_s + @table[ 1 ][ this_column_header ].to_s
+        if ( this_column_header >= 2 && table_configuration.has_categories ) || ( this_column_header >= 1 && !table_configuration.has_categories )
+
+          #if @table[ 1 ][ this_column_header ].has_key?("value")
+            new_value = "#" + column_increment.to_s + "#" + header.header.to_s.strip
+          #else
+            #new_value = ""
+          #end
+          @table[ 1 ][ this_column_header ] = { :value => new_value, :temp_value => nil, :id => header.id }
+
         else
-          @table[ 1 ][ this_column_header ] = header.header.to_s
+
+          @table[ 1 ][ this_column_header ] = { :value => header.header.to_s, :temp_value => nil, :id => header.id }
+
         end
+
         this_column_header += column_increment
 
       end
@@ -306,6 +671,7 @@ class ProgramsController < ApplicationController
       @table_types[ table_configuration.table_name_id ] = @table
       @table_names[ table_configuration.table_name_id ] = table_title.display_table_name
       @table_has_subheaders[ table_configuration.table_name_id ] = table_has_subheaders
+
     end
 
   end

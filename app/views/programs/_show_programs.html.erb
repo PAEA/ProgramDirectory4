@@ -2,7 +2,9 @@
   <h3><%= link_to( p.program , {:controller => 'programs', :action => 'information', :id => [p.id, p.program.parameterize].join("-")} ) %></h3>
 	<% program_card = $get_card_fields.select{ |item| item[:program_id] == p.id } %>
   <h4 class="card-location">
-    <%= program_card[0].field_value.to_s %>
+    <% if program_card[0] %>
+      <%= program_card[0].field_value.to_s %>
+    <% end %>
   </h4>
 
   <ul class="card-summary">

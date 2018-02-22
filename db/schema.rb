@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518134410) do
+ActiveRecord::Schema.define(version: 20171116150105) do
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "data_table_config_id"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20170518134410) do
     t.integer  "sub_header_id"
     t.integer  "category_id"
     t.text     "cell_value",           limit: 65535
+    t.text     "cell_value_temp",      limit: 65535
     t.integer  "program_id"
     t.integer  "cell_row",             limit: 2
     t.integer  "cell_column",          limit: 2
@@ -77,38 +78,56 @@ ActiveRecord::Schema.define(version: 20170518134410) do
   create_table "fields_decimals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
-    t.decimal  "field_value", precision: 10
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.decimal  "field_value",      precision: 10
+    t.decimal  "field_value_temp", precision: 10
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "fields_integers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
     t.integer  "field_value"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "field_value_temp"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "fields_strings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
     t.string   "field_value"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "field_value_temp"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "fields_texts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "program_id"
     t.integer  "field_id"
-    t.text     "field_value", limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.text     "field_value",      limit: 65535
+    t.text     "field_value_temp", limit: 65535
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  create_table "logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "program_id"
+    t.integer  "field_id"
+    t.string   "field_type"
+    t.text     "old_value",        limit: 65535
+    t.text     "new_value",        limit: 65535
+    t.string   "display_username"
+    t.string   "action"
+    t.integer  "action_by"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["program_id", "field_id", "created_at"], name: "index_logs_on_program_id_and_field_id_and_created_at", using: :btree
   end
 
   create_table "main_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer  "table_name_id"
-    t.string   "header",        limit: 90
+    t.string   "header",        limit: 95
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.index ["table_name_id"], name: "index_main_headers_on_table_name_id", using: :btree
@@ -119,6 +138,30 @@ ActiveRecord::Schema.define(version: 20170518134410) do
     t.string   "program_string", limit: 90
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+  end
+
+  create_table "settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.date     "editing_from"
+    t.date     "editing_to"
+    t.string   "email_notifications"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  create_table "settings_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "settings_roles_id"
+    t.integer  "display_sections_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.index ["display_sections_id"], name: "index_settings_fields_on_display_sections_id", using: :btree
+    t.index ["settings_roles_id"], name: "index_settings_fields_on_settings_roles_id", using: :btree
+  end
+
+  create_table "settings_roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string   "role",       limit: 50
+    t.string   "role_type",  limit: 10
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
   create_table "sub_headers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

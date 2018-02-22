@@ -1,7 +1,17 @@
 <div class="row">
   <div class="overlay col-md-8 col-md-offset-2">
     <h3>Welcome, <%= @display_username %></h3>
-
+    <% if session[:user_role] == 'editor' %>
+      <% if @schools_pending_approval.count > 0 %>
+        <h3><%= pluralize(@schools_pending_approval.size, 'school') %> pending for review:</h3>
+        <% @schools_pending_approval.each do |school| %>
+          <h4><%= link_to( school.program , {:controller => 'programs', :action => 'information', :id => [school.program_id, school.program.parameterize].join("-"), :mode => 'view'} ) %></h4>
+        <% end %>
+      <% end %>
+    <% end %>
+    <% if session[:user_role] == 'admin' %>
+      <h4><%= link_to( session[:school_display] , {:controller => 'programs', :action => 'information', :id => [@id, session[:school_display].parameterize].join("-")} ) %></h4>
+    <% end %>
     <%= render 'form' %>
 
     <a name="all-schools"></a>

@@ -98,12 +98,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
       t.references :main_header, index: true
       t.references :sub_header, index: true
       t.references :category, index: true
-      #t.integer :data_table_config_id
-      #t.integer :main_header_id
-      #t.integer :sub_header_id
-      #t.integer :category_id
       t.text  :cell_value
-      #t.integer :program_id
+      t.text  :cell_value_temp
       t.references :program, index: true
       t.integer :cell_row, :limit => 2
       t.integer :cell_column, :limit => 2
@@ -360,7 +356,8 @@ class ReadTables < ActiveRecord::Migration[5.0]
         end
 
         for x in starting_column..columns
-          if ( !array_from_csv[ y ][ x ].nil? )
+          if !array_from_csv[ table_start_line ][ x ].nil?
+          #if rows_counter < final_table_amount_of_rows
 
             # Adds headers
             column_counter = 0

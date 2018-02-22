@@ -1,5 +1,9 @@
 class FieldsString < ApplicationRecord
 
+  def self.get_field_values( program_id, field_id )
+    select(:field_value, :field_value_temp).where( program_id: program_id, field_id: field_id )
+  end
+
   def self.select_fields_by_filter( filter_field )
     select(:field_value).distinct.where( field_id: filter_field ).sort_by { |item| item.field_value.to_i }
   end

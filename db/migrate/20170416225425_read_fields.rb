@@ -34,6 +34,7 @@ class ReadFields < ActiveRecord::Migration[5.0]
       t.integer :program_id
       t.integer :field_id
       t.integer :field_value
+      t.integer :field_value_temp
 
       t.timestamps
     end
@@ -43,6 +44,7 @@ class ReadFields < ActiveRecord::Migration[5.0]
       t.integer :program_id
       t.integer :field_id
       t.string :field_value
+      t.string :field_value_temp
 
       t.timestamps
     end
@@ -52,6 +54,7 @@ class ReadFields < ActiveRecord::Migration[5.0]
       t.integer :program_id
       t.integer :field_id
       t.text :field_value
+      t.text :field_value_temp
 
       t.timestamps
     end
@@ -61,6 +64,7 @@ class ReadFields < ActiveRecord::Migration[5.0]
       t.integer :program_id
       t.integer :field_id
       t.decimal :field_value
+      t.decimal :field_value_temp
 
       t.timestamps
     end
