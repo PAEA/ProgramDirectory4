@@ -721,27 +721,40 @@ table th:first-child {
 }
 
 //////////// PRINT /////////
-//@media print {
-//
-//  footer {
-//    display: none;
-//  }
-//
-//  header {
-//    display: none;
-//  }
-//
-//  .collapse {
-//    display: block !important;
-//    height: auto !important;
-//  }
-//
-//  .container {
-//    padding: 0 10% 0 10%;
-//  }
-//
-//  #show_all_schools {
-//    display: none;
-//  }
-//
-//}
+@media print {
+
+  div, p, span, td, th {
+    font-size: 12px !important;
+    line-height: normal;
+  }
+
+  footer {
+    display: none;
+  }
+
+  h1 .infohead-shrink {
+    display: none;
+  }
+
+  h4 {
+    font-size: smaller;
+  }
+
+  header {
+    display: none;
+  }
+
+  .collapse {
+    display: block !important;
+    height: auto !important;
+  }
+
+  .container {
+    padding: 0 10% 0 10%;
+  }
+
+  #show_all_schools {
+    display: none;
+  }
+
+}
